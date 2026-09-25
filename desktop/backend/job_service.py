@@ -31,7 +31,27 @@ class JobService:
         return json.loads((self.root / f"{job_id}.json").read_text(encoding="utf-8"))
 
     def get(self, job_id: str) -> dict:
+        if not job_id.replace("-", "").isalnum():
+            raise ValueError("Nieprawidłowy identyfikator zadania")
         return self._read(job_id)
+
+    def list(self, limit: int = 50) -> list[dict]:
+        rows = []
+        for file in sorted(self.root.glob("*.json"), key=lambda p: p.stat().st_mtime, reverse=True)[:limit]:
+            try:
+                rows.append(json.loads(file.read_text(encoding="utf-8")))
+            except Exception:
+                continue
+        return rows
+
+    def locks_state(self) -> list[dict]:
+        rows = []
+        for file in sorted(self.locks.glob("*.json")):
+            try:
+                rows.append({"resource": file.stem, **json.loads(file.read_text(encoding="utf-8"))})
+            except Exception:
+                rows.append({"resource": file.stem, "error": "uszkodzona blokada"})
+        return rows
 
     def start(self, post_id: str, channel: str, expected_revision: str, request_id: str) -> dict:
         if not self.adapter.settings.allow_publication:
@@ -39,6 +59,8 @@ class JobService:
         card = self.adapter.get(post_id, channel)
         if card["revision"] != expected_revision:
             raise RuntimeError("Paczka zmieniła się przed startem")
+        if (card["brand"], channel) not in PROFILE_RESOURCE:
+            raise ValueError("Nieprawidłowy kanał")
         resource = PROFILE_RESOURCE[(card["brand"], channel)]
         lock = self.locks / (resource.replace(":", "-") + ".json")
         if lock.exists():
@@ -59,7 +81,9 @@ class JobService:
         return state
 
     def release(self, job_id: str, result: str = "interrupted") -> dict:
-        state = self._read(job_id)
+        if result not in {"interrupted", "failed", "verifying"}:
+            raise ValueError("Nieprawidłowy wynik zadania")
+        state = self.get(job_id)
         state.update({"state": result, "updated_at": time.time()})
         (self.root / f"{job_id}.json").write_text(json.dumps(state, ensure_ascii=False, indent=2), encoding="utf-8")
         lock = self.locks / (state["resource"].replace(":", "-") + ".json")

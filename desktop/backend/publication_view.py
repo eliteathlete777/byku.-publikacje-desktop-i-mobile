@@ -13,8 +13,10 @@ def channel_view(raw: dict[str, Any] | None, *, manual_checked: bool = False) ->
     state = dict(raw or {})
     legacy = str(state.get("stan") or "czeka").lower()
     evidence = str(state.get("platform_evidence") or state.get("dowod") or "unknown").lower()
-    if evidence == "unknown" and legacy == "potwierdzony":
-        evidence = "scheduled"  # LIVE nie rozstrzyga publikacji bez czasu/rodzaju wpisu.
+    if evidence == "unknown" and legacy == "potwierdzony" and not manual_checked:
+        # LIVE nie rozstrzyga publikacji bez czasu/rodzaju wpisu. Gdy stan „potwierdzony”
+        # pochodzi z ręcznego haczyka, nie jest dowodem platformy.
+        evidence = "scheduled"
     delivery = str(state.get("delivery") or "idle").lower()
     if delivery == "idle" and legacy in RUNNING:
         delivery = "running"

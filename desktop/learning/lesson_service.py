@@ -15,7 +15,9 @@ class LessonService:
     def create(self, data: dict) -> dict:
         kind = str(data.get("kind", "process"))
         if kind not in self.KINDS: raise ValueError("Nieprawidłowy typ lekcji")
-        brand = data.get("brand")
+        brand = data.get("brand") or None
+        if brand not in (None, "atlet", "rigger"): raise ValueError("Nieznana marka")
+        if not str(data.get("problem", "")).strip(): raise ValueError("Opisz problem, którego dotyczy lekcja")
         with self.store.connect() as con:
             version = con.execute("SELECT COALESCE(MAX(version),0)+1 FROM lessons WHERE kind=? AND brand IS ?", (kind, brand)).fetchone()[0]
             lesson_id = str(uuid.uuid4())
@@ -33,11 +35,23 @@ class LessonService:
         if not row: raise FileNotFoundError(lesson_id)
         return dict(row)
 
+    def record_test(self, lesson_id: str, status: str, note: str = "") -> dict:
+        if status not in {"ok", "failed"}: raise ValueError("Wynik testu: ok albo failed")
+        self.get(lesson_id)
+        with self.store.connect() as con:
+            con.execute("UPDATE lessons SET test_json=? WHERE lesson_id=?", (json.dumps({"status": status, "note": note, "at": datetime.now(timezone.utc).isoformat()}, ensure_ascii=False), lesson_id))
+        return self.get(lesson_id)
+
     def set_status(self, lesson_id: str, status: str) -> dict:
         if status not in {"draft", "active", "reverted", "rejected"}: raise ValueError("Nieprawidłowy status")
         lesson = self.get(lesson_id)
-        if status == "active" and (not lesson["solution"] or not lesson["test_json"]):
-            raise ValueError("Aktywacja wymaga rozwiązania i dowodu testu")
+        if status == "active":
+            try:
+                test = json.loads(lesson["test_json"] or "{}")
+            except ValueError:
+                test = {}
+            if not lesson["solution"] or str(test.get("status", "")) not in {"ok", "passed"} and test.get("type") != "explicit_approval":
+                raise ValueError("Aktywacja wymaga rozwiązania i testu ze statusem „ok”")
         with self.store.connect() as con:
             con.execute("UPDATE lessons SET status=? WHERE lesson_id=?", (status, lesson_id))
         return self.get(lesson_id)

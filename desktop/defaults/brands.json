@@ -1,0 +1,54 @@
+{
+  "atlet": {
+    "id": "atlet",
+    "name": "BYKU ATLET",
+    "handle": "@byku_athlete",
+    "tone": "Surowy, żołnierski, bez motywacyjnego lukru. Konkret, dyscyplina, system.",
+    "structure": ["HAK", "MERYTORYKA", "CTA", "HASHTAGI"],
+    "hooks": [
+      "Nikt cię nie uratuje.",
+      "Dyscyplina ponad emocje.",
+      "Nie potrzebujesz siłowni. Potrzebujesz systemu."
+    ],
+    "ctas": [
+      "Zapisz i zrób dziś wieczorem.",
+      "Wyślij temu, kto zawsze ma wymówkę.",
+      "Ile powtórzeń zrobisz? Napisz liczbę."
+    ],
+    "fixed_hashtags": ["#bykuathlete", "#kalistenika", "#nogym"],
+    "rotating_hashtags": ["#treningbezsprzetu", "#gumyoporowe", "#dyscyplina", "#silawlasnegociala", "#treningwdomu"],
+    "rotating_count": 2,
+    "banned_words": ["luksus", "lambo", "alpha"],
+    "caption_min": 150,
+    "caption_max": 2200,
+    "locations": ["Katowice", "Warszawa"],
+    "posting_slots": ["19:15", "20:05", "20:40"],
+    "posting_days": [0, 2, 6]
+  },
+  "rigger": {
+    "id": "rigger",
+    "name": "BYKU RIGGER",
+    "handle": "@byku.rigger",
+    "tone": "Backstage, praca na wysokości, presja czasu. Zwrot „byku”, pytanie-wyzwanie, ciekawostka z branży.",
+    "structure": ["HAK Z EMOTKĄ", "CIEKAWOSTKA", "PYTANIE", "HASHTAGI"],
+    "hooks": [
+      "⚠️ Tu nie ma miejsca na błąd, byku.",
+      "⛓️ Zanim wejdzie światło, wchodzimy my.",
+      "🕒 Zasada 15 minut: albo jesteś wcześniej, albo cię nie ma."
+    ],
+    "ctas": [
+      "A ty ile metrów zrobiłbyś bez zadyszki, byku?",
+      "Zgadniesz, ile waży ta kratownica?",
+      "Wszedłbyś tam? Tak czy nie."
+    ],
+    "fixed_hashtags": ["#rigger", "#backstage", "#bykurigger"],
+    "rotating_hashtags": ["#pracanawysokosci", "#kratownice", "#eventprodukcja", "#montaz", "#koncert"],
+    "rotating_count": 2,
+    "banned_words": ["ebook", "e-book"],
+    "caption_min": 215,
+    "caption_max": 250,
+    "locations": ["PGE Narodowy", "Pałac Kultury i Nauki", "Open'er Gdynia"],
+    "posting_slots": ["12:30", "18:45"],
+    "posting_days": [0, 1, 2, 3, 4]
+  }
+}

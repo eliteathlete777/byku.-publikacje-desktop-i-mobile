@@ -1,6 +1,7 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "mode": "production",
+  "core": "auto",
   "source_root": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop",
   "production_queue": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio-kolejka",
   "sandbox_queue": "data\\sandbox-queue",
@@ -11,10 +12,14 @@
   "allow_production_writes": false,
   "timezone": "Europe/Warsaw",
   "google_drive": {
+    "local_sync_dir": "",
     "root_folder_id": "1O2DJuWIarEjfObcvDnNgiLgjj6L085CD",
     "brand_folder_ids": {
       "atlet": "1Ln2SdkFZWY784sJn73Gv6VTIX7g-tZ6G",
       "rigger": "1MozqWoI71Cg2R_n9PHEOdlEVpVTIO2si"
     }
+  },
+  "mobile_server": {
+    "url": ""
   }
 }

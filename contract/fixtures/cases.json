@@ -1,0 +1,1737 @@
+[
+ {
+  "name": "poprawna rolka",
+  "valid": true,
+  "error": null,
+  "manifest": {
+   "schema_version": 2,
+   "package_id": "atlet--post-1",
+   "post_id": "post-1",
+   "brand": "atlet",
+   "title": "Pompki na poręczach",
+   "type": "reel",
+   "content_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "exported_at": "2026-09-25T10:00:00Z",
+   "channel": "instagram",
+   "caption": "Opis",
+   "hashtags": "#byku #trening",
+   "location": "Katowice",
+   "platforms": {
+    "tiktok": {
+     "evidence": "published",
+     "manual_checked": true
+    },
+    "instagram": {
+     "evidence": "unknown",
+     "manual_checked": false
+    },
+    "facebook": {
+     "evidence": "unknown",
+     "manual_checked": false
+    }
+   },
+   "transfer": {
+    "from": "tiktok",
+    "to": "instagram",
+    "tiktok": "published",
+    "instagram": "pending"
+   },
+   "files": [
+    {
+     "name": "film.mp4",
+     "role": "video",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 10
+    },
+    {
+     "name": "miniaturka.png",
+     "role": "thumbnail",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "opis-do-skopiowania.txt",
+     "role": "caption",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "hashtagi.txt",
+     "role": "hashtags",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 0
+    }
+   ]
+  }
+ },
+ {
+  "name": "poprawna karuzela",
+  "valid": true,
+  "error": null,
+  "manifest": {
+   "schema_version": 2,
+   "package_id": "rigger--kar-1",
+   "post_id": "kar-1",
+   "brand": "rigger",
+   "title": "Pompki na poręczach",
+   "type": "carousel",
+   "content_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "exported_at": "2026-09-25T10:00:00Z",
+   "channel": "instagram",
+   "caption": "Opis",
+   "hashtags": "#byku #trening",
+   "location": "Katowice",
+   "platforms": {
+    "tiktok": {
+     "evidence": "published",
+     "manual_checked": true
+    },
+    "instagram": {
+     "evidence": "unknown",
+     "manual_checked": false
+    },
+    "facebook": {
+     "evidence": "unknown",
+     "manual_checked": false
+    }
+   },
+   "transfer": {
+    "from": "tiktok",
+    "to": "instagram",
+    "tiktok": "published",
+    "instagram": "pending"
+   },
+   "files": [
+    {
+     "name": "slajd-1.jpg",
+     "role": "slide",
+     "order": 1,
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 3
+    },
+    {
+     "name": "slajd-2.jpg",
+     "role": "slide",
+     "order": 2,
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 3
+    },
+    {
+     "name": "miniaturka.png",
+     "role": "thumbnail",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "opis-do-skopiowania.txt",
+     "role": "caption",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "hashtagi.txt",
+     "role": "hashtags",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 0
+    }
+   ]
+  }
+ },
+ {
+  "name": "schemat 1 wycofany",
+  "valid": false,
+  "error": "SCHEMA",
+  "manifest": {
+   "schema_version": 1,
+   "package_id": "atlet--post-1",
+   "post_id": "post-1",
+   "brand": "atlet",
+   "title": "Pompki na poręczach",
+   "type": "reel",
+   "content_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "exported_at": "2026-09-25T10:00:00Z",
+   "channel": "instagram",
+   "caption": "Opis",
+   "hashtags": "#byku #trening",
+   "location": "Katowice",
+   "platforms": {
+    "tiktok": {
+     "evidence": "published",
+     "manual_checked": true
+    },
+    "instagram": {
+     "evidence": "unknown",
+     "manual_checked": false
+    },
+    "facebook": {
+     "evidence": "unknown",
+     "manual_checked": false
+    }
+   },
+   "transfer": {
+    "from": "tiktok",
+    "to": "instagram",
+    "tiktok": "published",
+    "instagram": "pending"
+   },
+   "files": [
+    {
+     "name": "film.mp4",
+     "role": "video",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 10
+    },
+    {
+     "name": "miniaturka.png",
+     "role": "thumbnail",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "opis-do-skopiowania.txt",
+     "role": "caption",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "hashtagi.txt",
+     "role": "hashtags",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 0
+    }
+   ]
+  }
+ },
+ {
+  "name": "nieznana marka",
+  "valid": false,
+  "error": "BRAND",
+  "manifest": {
+   "schema_version": 2,
+   "package_id": "atlet--post-1",
+   "post_id": "post-1",
+   "brand": "inna",
+   "title": "Pompki na poręczach",
+   "type": "reel",
+   "content_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "exported_at": "2026-09-25T10:00:00Z",
+   "channel": "instagram",
+   "caption": "Opis",
+   "hashtags": "#byku #trening",
+   "location": "Katowice",
+   "platforms": {
+    "tiktok": {
+     "evidence": "published",
+     "manual_checked": true
+    },
+    "instagram": {
+     "evidence": "unknown",
+     "manual_checked": false
+    },
+    "facebook": {
+     "evidence": "unknown",
+     "manual_checked": false
+    }
+   },
+   "transfer": {
+    "from": "tiktok",
+    "to": "instagram",
+    "tiktok": "published",
+    "instagram": "pending"
+   },
+   "files": [
+    {
+     "name": "film.mp4",
+     "role": "video",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 10
+    },
+    {
+     "name": "miniaturka.png",
+     "role": "thumbnail",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "opis-do-skopiowania.txt",
+     "role": "caption",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "hashtagi.txt",
+     "role": "hashtags",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 0
+    }
+   ]
+  }
+ },
+ {
+  "name": "zły kanał",
+  "valid": false,
+  "error": "CHANNEL",
+  "manifest": {
+   "schema_version": 2,
+   "package_id": "atlet--post-1",
+   "post_id": "post-1",
+   "brand": "atlet",
+   "title": "Pompki na poręczach",
+   "type": "reel",
+   "content_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "exported_at": "2026-09-25T10:00:00Z",
+   "channel": "tiktok",
+   "caption": "Opis",
+   "hashtags": "#byku #trening",
+   "location": "Katowice",
+   "platforms": {
+    "tiktok": {
+     "evidence": "published",
+     "manual_checked": true
+    },
+    "instagram": {
+     "evidence": "unknown",
+     "manual_checked": false
+    },
+    "facebook": {
+     "evidence": "unknown",
+     "manual_checked": false
+    }
+   },
+   "transfer": {
+    "from": "tiktok",
+    "to": "instagram",
+    "tiktok": "published",
+    "instagram": "pending"
+   },
+   "files": [
+    {
+     "name": "film.mp4",
+     "role": "video",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 10
+    },
+    {
+     "name": "miniaturka.png",
+     "role": "thumbnail",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "opis-do-skopiowania.txt",
+     "role": "caption",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "hashtagi.txt",
+     "role": "hashtags",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 0
+    }
+   ]
+  }
+ },
+ {
+  "name": "brak post_id",
+  "valid": false,
+  "error": "FIELD",
+  "manifest": {
+   "schema_version": 2,
+   "package_id": "atlet--post-1",
+   "post_id": "",
+   "brand": "atlet",
+   "title": "Pompki na poręczach",
+   "type": "reel",
+   "content_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "exported_at": "2026-09-25T10:00:00Z",
+   "channel": "instagram",
+   "caption": "Opis",
+   "hashtags": "#byku #trening",
+   "location": "Katowice",
+   "platforms": {
+    "tiktok": {
+     "evidence": "published",
+     "manual_checked": true
+    },
+    "instagram": {
+     "evidence": "unknown",
+     "manual_checked": false
+    },
+    "facebook": {
+     "evidence": "unknown",
+     "manual_checked": false
+    }
+   },
+   "transfer": {
+    "from": "tiktok",
+    "to": "instagram",
+    "tiktok": "published",
+    "instagram": "pending"
+   },
+   "files": [
+    {
+     "name": "film.mp4",
+     "role": "video",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 10
+    },
+    {
+     "name": "miniaturka.png",
+     "role": "thumbnail",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "opis-do-skopiowania.txt",
+     "role": "caption",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "hashtagi.txt",
+     "role": "hashtags",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 0
+    }
+   ]
+  }
+ },
+ {
+  "name": "package_id niezgodny",
+  "valid": false,
+  "error": "FIELD",
+  "manifest": {
+   "schema_version": 2,
+   "package_id": "rigger--post-1",
+   "post_id": "post-1",
+   "brand": "atlet",
+   "title": "Pompki na poręczach",
+   "type": "reel",
+   "content_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "exported_at": "2026-09-25T10:00:00Z",
+   "channel": "instagram",
+   "caption": "Opis",
+   "hashtags": "#byku #trening",
+   "location": "Katowice",
+   "platforms": {
+    "tiktok": {
+     "evidence": "published",
+     "manual_checked": true
+    },
+    "instagram": {
+     "evidence": "unknown",
+     "manual_checked": false
+    },
+    "facebook": {
+     "evidence": "unknown",
+     "manual_checked": false
+    }
+   },
+   "transfer": {
+    "from": "tiktok",
+    "to": "instagram",
+    "tiktok": "published",
+    "instagram": "pending"
+   },
+   "files": [
+    {
+     "name": "film.mp4",
+     "role": "video",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 10
+    },
+    {
+     "name": "miniaturka.png",
+     "role": "thumbnail",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "opis-do-skopiowania.txt",
+     "role": "caption",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "hashtagi.txt",
+     "role": "hashtags",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 0
+    }
+   ]
+  }
+ },
+ {
+  "name": "rewizja nie jest sha256",
+  "valid": false,
+  "error": "FIELD",
+  "manifest": {
+   "schema_version": 2,
+   "package_id": "atlet--post-1",
+   "post_id": "post-1",
+   "brand": "atlet",
+   "title": "Pompki na poręczach",
+   "type": "reel",
+   "content_revision": "rev-1",
+   "exported_at": "2026-09-25T10:00:00Z",
+   "channel": "instagram",
+   "caption": "Opis",
+   "hashtags": "#byku #trening",
+   "location": "Katowice",
+   "platforms": {
+    "tiktok": {
+     "evidence": "published",
+     "manual_checked": true
+    },
+    "instagram": {
+     "evidence": "unknown",
+     "manual_checked": false
+    },
+    "facebook": {
+     "evidence": "unknown",
+     "manual_checked": false
+    }
+   },
+   "transfer": {
+    "from": "tiktok",
+    "to": "instagram",
+    "tiktok": "published",
+    "instagram": "pending"
+   },
+   "files": [
+    {
+     "name": "film.mp4",
+     "role": "video",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 10
+    },
+    {
+     "name": "miniaturka.png",
+     "role": "thumbnail",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "opis-do-skopiowania.txt",
+     "role": "caption",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "hashtagi.txt",
+     "role": "hashtags",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 0
+    }
+   ]
+  }
+ },
+ {
+  "name": "zła data eksportu",
+  "valid": false,
+  "error": "FIELD",
+  "manifest": {
+   "schema_version": 2,
+   "package_id": "atlet--post-1",
+   "post_id": "post-1",
+   "brand": "atlet",
+   "title": "Pompki na poręczach",
+   "type": "reel",
+   "content_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "exported_at": "wczoraj",
+   "channel": "instagram",
+   "caption": "Opis",
+   "hashtags": "#byku #trening",
+   "location": "Katowice",
+   "platforms": {
+    "tiktok": {
+     "evidence": "published",
+     "manual_checked": true
+    },
+    "instagram": {
+     "evidence": "unknown",
+     "manual_checked": false
+    },
+    "facebook": {
+     "evidence": "unknown",
+     "manual_checked": false
+    }
+   },
+   "transfer": {
+    "from": "tiktok",
+    "to": "instagram",
+    "tiktok": "published",
+    "instagram": "pending"
+   },
+   "files": [
+    {
+     "name": "film.mp4",
+     "role": "video",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 10
+    },
+    {
+     "name": "miniaturka.png",
+     "role": "thumbnail",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "opis-do-skopiowania.txt",
+     "role": "caption",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "hashtagi.txt",
+     "role": "hashtags",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 0
+    }
+   ]
+  }
+ },
+ {
+  "name": "nieznany typ",
+  "valid": false,
+  "error": "TYPE",
+  "manifest": {
+   "schema_version": 2,
+   "package_id": "atlet--post-1",
+   "post_id": "post-1",
+   "brand": "atlet",
+   "title": "Pompki na poręczach",
+   "type": "story",
+   "content_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "exported_at": "2026-09-25T10:00:00Z",
+   "channel": "instagram",
+   "caption": "Opis",
+   "hashtags": "#byku #trening",
+   "location": "Katowice",
+   "platforms": {
+    "tiktok": {
+     "evidence": "published",
+     "manual_checked": true
+    },
+    "instagram": {
+     "evidence": "unknown",
+     "manual_checked": false
+    },
+    "facebook": {
+     "evidence": "unknown",
+     "manual_checked": false
+    }
+   },
+   "transfer": {
+    "from": "tiktok",
+    "to": "instagram",
+    "tiktok": "published",
+    "instagram": "pending"
+   },
+   "files": [
+    {
+     "name": "film.mp4",
+     "role": "video",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 10
+    },
+    {
+     "name": "miniaturka.png",
+     "role": "thumbnail",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "opis-do-skopiowania.txt",
+     "role": "caption",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "hashtagi.txt",
+     "role": "hashtags",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 0
+    }
+   ]
+  }
+ },
+ {
+  "name": "pusta lista plików",
+  "valid": false,
+  "error": "FILES",
+  "manifest": {
+   "schema_version": 2,
+   "package_id": "atlet--post-1",
+   "post_id": "post-1",
+   "brand": "atlet",
+   "title": "Pompki na poręczach",
+   "type": "reel",
+   "content_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "exported_at": "2026-09-25T10:00:00Z",
+   "channel": "instagram",
+   "caption": "Opis",
+   "hashtags": "#byku #trening",
+   "location": "Katowice",
+   "platforms": {
+    "tiktok": {
+     "evidence": "published",
+     "manual_checked": true
+    },
+    "instagram": {
+     "evidence": "unknown",
+     "manual_checked": false
+    },
+    "facebook": {
+     "evidence": "unknown",
+     "manual_checked": false
+    }
+   },
+   "transfer": {
+    "from": "tiktok",
+    "to": "instagram",
+    "tiktok": "published",
+    "instagram": "pending"
+   },
+   "files": []
+  }
+ },
+ {
+  "name": "rolka bez wideo",
+  "valid": false,
+  "error": "ROLE_MISSING",
+  "manifest": {
+   "schema_version": 2,
+   "package_id": "atlet--post-1",
+   "post_id": "post-1",
+   "brand": "atlet",
+   "title": "Pompki na poręczach",
+   "type": "reel",
+   "content_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "exported_at": "2026-09-25T10:00:00Z",
+   "channel": "instagram",
+   "caption": "Opis",
+   "hashtags": "#byku #trening",
+   "location": "Katowice",
+   "platforms": {
+    "tiktok": {
+     "evidence": "published",
+     "manual_checked": true
+    },
+    "instagram": {
+     "evidence": "unknown",
+     "manual_checked": false
+    },
+    "facebook": {
+     "evidence": "unknown",
+     "manual_checked": false
+    }
+   },
+   "transfer": {
+    "from": "tiktok",
+    "to": "instagram",
+    "tiktok": "published",
+    "instagram": "pending"
+   },
+   "files": [
+    {
+     "name": "miniaturka.png",
+     "role": "thumbnail",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "opis-do-skopiowania.txt",
+     "role": "caption",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "hashtagi.txt",
+     "role": "hashtags",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 0
+    }
+   ]
+  }
+ },
+ {
+  "name": "brak miniatury",
+  "valid": false,
+  "error": "ROLE_MISSING",
+  "manifest": {
+   "schema_version": 2,
+   "package_id": "atlet--post-1",
+   "post_id": "post-1",
+   "brand": "atlet",
+   "title": "Pompki na poręczach",
+   "type": "reel",
+   "content_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "exported_at": "2026-09-25T10:00:00Z",
+   "channel": "instagram",
+   "caption": "Opis",
+   "hashtags": "#byku #trening",
+   "location": "Katowice",
+   "platforms": {
+    "tiktok": {
+     "evidence": "published",
+     "manual_checked": true
+    },
+    "instagram": {
+     "evidence": "unknown",
+     "manual_checked": false
+    },
+    "facebook": {
+     "evidence": "unknown",
+     "manual_checked": false
+    }
+   },
+   "transfer": {
+    "from": "tiktok",
+    "to": "instagram",
+    "tiktok": "published",
+    "instagram": "pending"
+   },
+   "files": [
+    {
+     "name": "film.mp4",
+     "role": "video",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 10
+    },
+    {
+     "name": "opis-do-skopiowania.txt",
+     "role": "caption",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "hashtagi.txt",
+     "role": "hashtags",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 0
+    }
+   ]
+  }
+ },
+ {
+  "name": "brak opisu",
+  "valid": false,
+  "error": "ROLE_MISSING",
+  "manifest": {
+   "schema_version": 2,
+   "package_id": "atlet--post-1",
+   "post_id": "post-1",
+   "brand": "atlet",
+   "title": "Pompki na poręczach",
+   "type": "reel",
+   "content_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "exported_at": "2026-09-25T10:00:00Z",
+   "channel": "instagram",
+   "caption": "Opis",
+   "hashtags": "#byku #trening",
+   "location": "Katowice",
+   "platforms": {
+    "tiktok": {
+     "evidence": "published",
+     "manual_checked": true
+    },
+    "instagram": {
+     "evidence": "unknown",
+     "manual_checked": false
+    },
+    "facebook": {
+     "evidence": "unknown",
+     "manual_checked": false
+    }
+   },
+   "transfer": {
+    "from": "tiktok",
+    "to": "instagram",
+    "tiktok": "published",
+    "instagram": "pending"
+   },
+   "files": [
+    {
+     "name": "film.mp4",
+     "role": "video",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 10
+    },
+    {
+     "name": "miniaturka.png",
+     "role": "thumbnail",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "hashtagi.txt",
+     "role": "hashtags",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 0
+    }
+   ]
+  }
+ },
+ {
+  "name": "brak pliku hashtagów",
+  "valid": false,
+  "error": "ROLE_MISSING",
+  "manifest": {
+   "schema_version": 2,
+   "package_id": "atlet--post-1",
+   "post_id": "post-1",
+   "brand": "atlet",
+   "title": "Pompki na poręczach",
+   "type": "reel",
+   "content_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "exported_at": "2026-09-25T10:00:00Z",
+   "channel": "instagram",
+   "caption": "Opis",
+   "hashtags": "#byku #trening",
+   "location": "Katowice",
+   "platforms": {
+    "tiktok": {
+     "evidence": "published",
+     "manual_checked": true
+    },
+    "instagram": {
+     "evidence": "unknown",
+     "manual_checked": false
+    },
+    "facebook": {
+     "evidence": "unknown",
+     "manual_checked": false
+    }
+   },
+   "transfer": {
+    "from": "tiktok",
+    "to": "instagram",
+    "tiktok": "published",
+    "instagram": "pending"
+   },
+   "files": [
+    {
+     "name": "film.mp4",
+     "role": "video",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 10
+    },
+    {
+     "name": "miniaturka.png",
+     "role": "thumbnail",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "opis-do-skopiowania.txt",
+     "role": "caption",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    }
+   ]
+  }
+ },
+ {
+  "name": "ścieżka w nazwie",
+  "valid": false,
+  "error": "FILE_NAME",
+  "manifest": {
+   "schema_version": 2,
+   "package_id": "atlet--post-1",
+   "post_id": "post-1",
+   "brand": "atlet",
+   "title": "Pompki na poręczach",
+   "type": "reel",
+   "content_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "exported_at": "2026-09-25T10:00:00Z",
+   "channel": "instagram",
+   "caption": "Opis",
+   "hashtags": "#byku #trening",
+   "location": "Katowice",
+   "platforms": {
+    "tiktok": {
+     "evidence": "published",
+     "manual_checked": true
+    },
+    "instagram": {
+     "evidence": "unknown",
+     "manual_checked": false
+    },
+    "facebook": {
+     "evidence": "unknown",
+     "manual_checked": false
+    }
+   },
+   "transfer": {
+    "from": "tiktok",
+    "to": "instagram",
+    "tiktok": "published",
+    "instagram": "pending"
+   },
+   "files": [
+    {
+     "name": "../film.mp4",
+     "role": "video",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 10
+    },
+    {
+     "name": "miniaturka.png",
+     "role": "thumbnail",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "opis-do-skopiowania.txt",
+     "role": "caption",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "hashtagi.txt",
+     "role": "hashtags",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 0
+    }
+   ]
+  }
+ },
+ {
+  "name": "manifest na liście",
+  "valid": false,
+  "error": "FILE_NAME",
+  "manifest": {
+   "schema_version": 2,
+   "package_id": "atlet--post-1",
+   "post_id": "post-1",
+   "brand": "atlet",
+   "title": "Pompki na poręczach",
+   "type": "reel",
+   "content_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "exported_at": "2026-09-25T10:00:00Z",
+   "channel": "instagram",
+   "caption": "Opis",
+   "hashtags": "#byku #trening",
+   "location": "Katowice",
+   "platforms": {
+    "tiktok": {
+     "evidence": "published",
+     "manual_checked": true
+    },
+    "instagram": {
+     "evidence": "unknown",
+     "manual_checked": false
+    },
+    "facebook": {
+     "evidence": "unknown",
+     "manual_checked": false
+    }
+   },
+   "transfer": {
+    "from": "tiktok",
+    "to": "instagram",
+    "tiktok": "published",
+    "instagram": "pending"
+   },
+   "files": [
+    {
+     "name": "film.mp4",
+     "role": "video",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 10
+    },
+    {
+     "name": "miniaturka.png",
+     "role": "thumbnail",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "opis-do-skopiowania.txt",
+     "role": "caption",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "hashtagi.txt",
+     "role": "hashtags",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 0
+    },
+    {
+     "name": "manifest.json",
+     "role": "caption",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 1
+    }
+   ]
+  }
+ },
+ {
+  "name": "powtórzony plik",
+  "valid": false,
+  "error": "FILE_NAME",
+  "manifest": {
+   "schema_version": 2,
+   "package_id": "atlet--post-1",
+   "post_id": "post-1",
+   "brand": "atlet",
+   "title": "Pompki na poręczach",
+   "type": "reel",
+   "content_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "exported_at": "2026-09-25T10:00:00Z",
+   "channel": "instagram",
+   "caption": "Opis",
+   "hashtags": "#byku #trening",
+   "location": "Katowice",
+   "platforms": {
+    "tiktok": {
+     "evidence": "published",
+     "manual_checked": true
+    },
+    "instagram": {
+     "evidence": "unknown",
+     "manual_checked": false
+    },
+    "facebook": {
+     "evidence": "unknown",
+     "manual_checked": false
+    }
+   },
+   "transfer": {
+    "from": "tiktok",
+    "to": "instagram",
+    "tiktok": "published",
+    "instagram": "pending"
+   },
+   "files": [
+    {
+     "name": "film.mp4",
+     "role": "video",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 10
+    },
+    {
+     "name": "miniaturka.png",
+     "role": "thumbnail",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "opis-do-skopiowania.txt",
+     "role": "caption",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "hashtagi.txt",
+     "role": "hashtags",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 0
+    },
+    {
+     "name": "film.mp4",
+     "role": "video",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 10
+    }
+   ]
+  }
+ },
+ {
+  "name": "zła suma",
+  "valid": false,
+  "error": "FILE_HASH",
+  "manifest": {
+   "schema_version": 2,
+   "package_id": "atlet--post-1",
+   "post_id": "post-1",
+   "brand": "atlet",
+   "title": "Pompki na poręczach",
+   "type": "reel",
+   "content_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "exported_at": "2026-09-25T10:00:00Z",
+   "channel": "instagram",
+   "caption": "Opis",
+   "hashtags": "#byku #trening",
+   "location": "Katowice",
+   "platforms": {
+    "tiktok": {
+     "evidence": "published",
+     "manual_checked": true
+    },
+    "instagram": {
+     "evidence": "unknown",
+     "manual_checked": false
+    },
+    "facebook": {
+     "evidence": "unknown",
+     "manual_checked": false
+    }
+   },
+   "transfer": {
+    "from": "tiktok",
+    "to": "instagram",
+    "tiktok": "published",
+    "instagram": "pending"
+   },
+   "files": [
+    {
+     "name": "film.mp4",
+     "role": "video",
+     "sha256": "xyz",
+     "size": 10
+    },
+    {
+     "name": "miniaturka.png",
+     "role": "thumbnail",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "opis-do-skopiowania.txt",
+     "role": "caption",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "hashtagi.txt",
+     "role": "hashtags",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 0
+    }
+   ]
+  }
+ },
+ {
+  "name": "ujemny rozmiar",
+  "valid": false,
+  "error": "FILE_HASH",
+  "manifest": {
+   "schema_version": 2,
+   "package_id": "atlet--post-1",
+   "post_id": "post-1",
+   "brand": "atlet",
+   "title": "Pompki na poręczach",
+   "type": "reel",
+   "content_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "exported_at": "2026-09-25T10:00:00Z",
+   "channel": "instagram",
+   "caption": "Opis",
+   "hashtags": "#byku #trening",
+   "location": "Katowice",
+   "platforms": {
+    "tiktok": {
+     "evidence": "published",
+     "manual_checked": true
+    },
+    "instagram": {
+     "evidence": "unknown",
+     "manual_checked": false
+    },
+    "facebook": {
+     "evidence": "unknown",
+     "manual_checked": false
+    }
+   },
+   "transfer": {
+    "from": "tiktok",
+    "to": "instagram",
+    "tiktok": "published",
+    "instagram": "pending"
+   },
+   "files": [
+    {
+     "name": "film.mp4",
+     "role": "video",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": -1
+    },
+    {
+     "name": "miniaturka.png",
+     "role": "thumbnail",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "opis-do-skopiowania.txt",
+     "role": "caption",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "hashtagi.txt",
+     "role": "hashtags",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 0
+    }
+   ]
+  }
+ },
+ {
+  "name": "nieznana rola",
+  "valid": false,
+  "error": "FILE_NAME",
+  "manifest": {
+   "schema_version": 2,
+   "package_id": "atlet--post-1",
+   "post_id": "post-1",
+   "brand": "atlet",
+   "title": "Pompki na poręczach",
+   "type": "reel",
+   "content_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "exported_at": "2026-09-25T10:00:00Z",
+   "channel": "instagram",
+   "caption": "Opis",
+   "hashtags": "#byku #trening",
+   "location": "Katowice",
+   "platforms": {
+    "tiktok": {
+     "evidence": "published",
+     "manual_checked": true
+    },
+    "instagram": {
+     "evidence": "unknown",
+     "manual_checked": false
+    },
+    "facebook": {
+     "evidence": "unknown",
+     "manual_checked": false
+    }
+   },
+   "transfer": {
+    "from": "tiktok",
+    "to": "instagram",
+    "tiktok": "published",
+    "instagram": "pending"
+   },
+   "files": [
+    {
+     "name": "film.mp4",
+     "role": "muzyka",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 10
+    },
+    {
+     "name": "miniaturka.png",
+     "role": "thumbnail",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "opis-do-skopiowania.txt",
+     "role": "caption",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "hashtagi.txt",
+     "role": "hashtags",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 0
+    }
+   ]
+  }
+ },
+ {
+  "name": "zły dowód platformy",
+  "valid": false,
+  "error": "PLATFORMS",
+  "manifest": {
+   "schema_version": 2,
+   "package_id": "atlet--post-1",
+   "post_id": "post-1",
+   "brand": "atlet",
+   "title": "Pompki na poręczach",
+   "type": "reel",
+   "content_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "exported_at": "2026-09-25T10:00:00Z",
+   "channel": "instagram",
+   "caption": "Opis",
+   "hashtags": "#byku #trening",
+   "location": "Katowice",
+   "platforms": {
+    "tiktok": {
+     "evidence": "maybe",
+     "manual_checked": true
+    },
+    "instagram": {
+     "evidence": "unknown",
+     "manual_checked": false
+    },
+    "facebook": {
+     "evidence": "unknown",
+     "manual_checked": false
+    }
+   },
+   "transfer": {
+    "from": "tiktok",
+    "to": "instagram",
+    "tiktok": "published",
+    "instagram": "pending"
+   },
+   "files": [
+    {
+     "name": "film.mp4",
+     "role": "video",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 10
+    },
+    {
+     "name": "miniaturka.png",
+     "role": "thumbnail",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "opis-do-skopiowania.txt",
+     "role": "caption",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "hashtagi.txt",
+     "role": "hashtags",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 0
+    }
+   ]
+  }
+ },
+ {
+  "name": "haczyk nie jest bool",
+  "valid": false,
+  "error": "PLATFORMS",
+  "manifest": {
+   "schema_version": 2,
+   "package_id": "atlet--post-1",
+   "post_id": "post-1",
+   "brand": "atlet",
+   "title": "Pompki na poręczach",
+   "type": "reel",
+   "content_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "exported_at": "2026-09-25T10:00:00Z",
+   "channel": "instagram",
+   "caption": "Opis",
+   "hashtags": "#byku #trening",
+   "location": "Katowice",
+   "platforms": {
+    "tiktok": {
+     "evidence": "published",
+     "manual_checked": true
+    },
+    "instagram": {
+     "evidence": "unknown",
+     "manual_checked": "tak"
+    },
+    "facebook": {
+     "evidence": "unknown",
+     "manual_checked": false
+    }
+   },
+   "transfer": {
+    "from": "tiktok",
+    "to": "instagram",
+    "tiktok": "published",
+    "instagram": "pending"
+   },
+   "files": [
+    {
+     "name": "film.mp4",
+     "role": "video",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 10
+    },
+    {
+     "name": "miniaturka.png",
+     "role": "thumbnail",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "opis-do-skopiowania.txt",
+     "role": "caption",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "hashtagi.txt",
+     "role": "hashtags",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 0
+    }
+   ]
+  }
+ },
+ {
+  "name": "instagram nie oczekuje",
+  "valid": false,
+  "error": "TRANSFER",
+  "manifest": {
+   "schema_version": 2,
+   "package_id": "atlet--post-1",
+   "post_id": "post-1",
+   "brand": "atlet",
+   "title": "Pompki na poręczach",
+   "type": "reel",
+   "content_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "exported_at": "2026-09-25T10:00:00Z",
+   "channel": "instagram",
+   "caption": "Opis",
+   "hashtags": "#byku #trening",
+   "location": "Katowice",
+   "platforms": {
+    "tiktok": {
+     "evidence": "published",
+     "manual_checked": true
+    },
+    "instagram": {
+     "evidence": "unknown",
+     "manual_checked": false
+    },
+    "facebook": {
+     "evidence": "unknown",
+     "manual_checked": false
+    }
+   },
+   "transfer": {
+    "from": "tiktok",
+    "to": "instagram",
+    "tiktok": "published",
+    "instagram": "published"
+   },
+   "files": [
+    {
+     "name": "film.mp4",
+     "role": "video",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 10
+    },
+    {
+     "name": "miniaturka.png",
+     "role": "thumbnail",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "opis-do-skopiowania.txt",
+     "role": "caption",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "hashtagi.txt",
+     "role": "hashtags",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 0
+    }
+   ]
+  }
+ },
+ {
+  "name": "tiktok bez dowodu",
+  "valid": false,
+  "error": "TRANSFER",
+  "manifest": {
+   "schema_version": 2,
+   "package_id": "atlet--post-1",
+   "post_id": "post-1",
+   "brand": "atlet",
+   "title": "Pompki na poręczach",
+   "type": "reel",
+   "content_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "exported_at": "2026-09-25T10:00:00Z",
+   "channel": "instagram",
+   "caption": "Opis",
+   "hashtags": "#byku #trening",
+   "location": "Katowice",
+   "platforms": {
+    "tiktok": {
+     "evidence": "published",
+     "manual_checked": true
+    },
+    "instagram": {
+     "evidence": "unknown",
+     "manual_checked": false
+    },
+    "facebook": {
+     "evidence": "unknown",
+     "manual_checked": false
+    }
+   },
+   "transfer": {
+    "from": "tiktok",
+    "to": "instagram",
+    "tiktok": "unknown",
+    "instagram": "pending"
+   },
+   "files": [
+    {
+     "name": "film.mp4",
+     "role": "video",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 10
+    },
+    {
+     "name": "miniaturka.png",
+     "role": "thumbnail",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "opis-do-skopiowania.txt",
+     "role": "caption",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "hashtagi.txt",
+     "role": "hashtags",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 0
+    }
+   ]
+  }
+ },
+ {
+  "name": "karuzela z jednym slajdem",
+  "valid": false,
+  "error": "ROLE_MISSING",
+  "manifest": {
+   "schema_version": 2,
+   "package_id": "rigger--kar-1",
+   "post_id": "kar-1",
+   "brand": "rigger",
+   "title": "Pompki na poręczach",
+   "type": "carousel",
+   "content_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "exported_at": "2026-09-25T10:00:00Z",
+   "channel": "instagram",
+   "caption": "Opis",
+   "hashtags": "#byku #trening",
+   "location": "Katowice",
+   "platforms": {
+    "tiktok": {
+     "evidence": "published",
+     "manual_checked": true
+    },
+    "instagram": {
+     "evidence": "unknown",
+     "manual_checked": false
+    },
+    "facebook": {
+     "evidence": "unknown",
+     "manual_checked": false
+    }
+   },
+   "transfer": {
+    "from": "tiktok",
+    "to": "instagram",
+    "tiktok": "published",
+    "instagram": "pending"
+   },
+   "files": [
+    {
+     "name": "slajd-1.jpg",
+     "role": "slide",
+     "order": 1,
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 3
+    },
+    {
+     "name": "miniaturka.png",
+     "role": "thumbnail",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "opis-do-skopiowania.txt",
+     "role": "caption",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "hashtagi.txt",
+     "role": "hashtags",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 0
+    }
+   ]
+  }
+ },
+ {
+  "name": "powtórzona kolejność slajdów",
+  "valid": false,
+  "error": "ORDER",
+  "manifest": {
+   "schema_version": 2,
+   "package_id": "rigger--kar-1",
+   "post_id": "kar-1",
+   "brand": "rigger",
+   "title": "Pompki na poręczach",
+   "type": "carousel",
+   "content_revision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+   "exported_at": "2026-09-25T10:00:00Z",
+   "channel": "instagram",
+   "caption": "Opis",
+   "hashtags": "#byku #trening",
+   "location": "Katowice",
+   "platforms": {
+    "tiktok": {
+     "evidence": "published",
+     "manual_checked": true
+    },
+    "instagram": {
+     "evidence": "unknown",
+     "manual_checked": false
+    },
+    "facebook": {
+     "evidence": "unknown",
+     "manual_checked": false
+    }
+   },
+   "transfer": {
+    "from": "tiktok",
+    "to": "instagram",
+    "tiktok": "published",
+    "instagram": "pending"
+   },
+   "files": [
+    {
+     "name": "slajd-1.jpg",
+     "role": "slide",
+     "order": 1,
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 3
+    },
+    {
+     "name": "slajd-2.jpg",
+     "role": "slide",
+     "order": 1,
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 3
+    },
+    {
+     "name": "miniaturka.png",
+     "role": "thumbnail",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "opis-do-skopiowania.txt",
+     "role": "caption",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 5
+    },
+    {
+     "name": "hashtagi.txt",
+     "role": "hashtags",
+     "sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+     "size": 0
+    }
+   ]
+  }
+ }
+]
