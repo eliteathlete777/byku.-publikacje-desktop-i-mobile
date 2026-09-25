@@ -1,7 +1,42 @@
-<!doctype html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BYKU.PUBLIKACJE</title><link rel="stylesheet" href="styles.css"></head>
-<body><div class="shell">
-<aside><div class="brand"><span class="brand-mark">B</span><div><strong>BYKU</strong><small>Publikacje desktop</small></div></div><nav id="nav"></nav><div class="system"><span id="healthDot"></span><div><strong id="mode">Łączenie…</strong><small id="queue">Stan lokalny</small></div></div></aside>
-<main><header><div><p id="sectionKicker">Praca na dziś</p><h1 id="sectionTitle">Stół publikacji</h1></div><div class="toolbar"><label>Marka<select id="brand"><option value="atlet">ATLET</option><option value="rigger">RIGGER</option><option value="all">Obie</option></select></label><label>Znajdź<input id="search" type="search" placeholder="Nazwa lub identyfikator"></label><button id="refresh" class="icon" title="Odśwież" aria-label="Odśwież">↻</button></div></header>
-<section class="summary" id="summary"></section><section class="filters" id="filters"></section>
-<section class="workspace"><div class="table-wrap"><div class="table-head"><span>Materiał i termin</span><span>TikTok</span><span>Instagram</span><span>Facebook</span><span>Następny krok</span></div><div id="rows" class="rows"><div class="loading">Odczytuję prawdziwą kolejkę…</div></div></div><aside class="detail" id="detail"><div class="empty"><b>Wybierz publikację</b><span>Zobaczysz materiał, treść, kanały i historię.</span></div></aside></section>
-</main></div><div id="toast" role="status" aria-live="polite"></div><script src="app.js"></script></body></html>
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>BYKU.PUBLIKACJE DESKTOP</title>
+  <link rel="icon" href="favicon.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="rail">
+      <div class="brand"><span class="brand-mark">B</span><div><strong>BYKU</strong><small>Publikacje · desktop</small></div></div>
+      <nav id="nav" aria-label="Panele"></nav>
+      <button class="system-card" id="systemCard" type="button">
+        <span id="healthDot" class="dot"></span>
+        <span><strong id="modeLabel">Łączenie…</strong><small id="modeDetail">Sprawdzam stan</small></span>
+      </button>
+    </aside>
+    <main>
+      <header class="topbar">
+        <div><p id="kicker" class="kicker">Praca na dziś</p><h1 id="title">Stół publikacji</h1></div>
+        <div class="toolbar">
+          <div class="segmented" id="brandSwitch" role="group" aria-label="Marka">
+            <button type="button" data-brand="atlet">ATLET</button>
+            <button type="button" data-brand="rigger">RIGGER</button>
+            <button type="button" data-brand="all">OBIE</button>
+          </div>
+          <label class="search"><span class="sr">Szukaj</span><input id="search" type="search" placeholder="Szukaj: nazwa, id, opis"></label>
+          <button id="refresh" class="icon-btn" type="button" title="Odśwież dane z kolejki" aria-label="Odśwież">↻</button>
+        </div>
+      </header>
+      <div id="banner" class="banner" hidden></div>
+      <section id="view" class="view" aria-live="polite"><div class="loading">Odczytuję kolejkę…</div></section>
+    </main>
+    <aside id="drawer" class="drawer" aria-label="Szczegóły publikacji"></aside>
+  </div>
+  <dialog id="modal" class="modal"><div id="modalBody"></div></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
