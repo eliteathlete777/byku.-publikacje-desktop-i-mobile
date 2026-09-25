@@ -1,0 +1,3640 @@
+{
+  "generated": "2026-09-24",
+  "count": 110,
+  "items": [
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\app.py",
+      "sha256": "556a4ffad4e60b03e6fe0e08059e60016476545c02bb6254592e9145d7004b21",
+      "size": 288423,
+      "classification": "aplikacja/scheduler — wymaga koordynacji",
+      "imports": [
+        "PIL",
+        "concurrent.futures",
+        "cv2",
+        "datetime",
+        "hashlib",
+        "imageio_ffmpeg",
+        "json",
+        "meta_uploader",
+        "niezawodnosc",
+        "os",
+        "patchright.sync_api",
+        "pathlib",
+        "planer",
+        "playsound",
+        "random",
+        "re",
+        "requests",
+        "shutil",
+        "studio.rdzen.model",
+        "studio.rdzen.most_publikacji",
+        "studio.rdzen.wideo_hd",
+        "subprocess",
+        "sys",
+        "threading",
+        "tiktok_uploader",
+        "time",
+        "tkinter",
+        "tkinterdnd2",
+        "traceback",
+        "webbrowser"
+      ],
+      "functions": [
+        "wczytaj_config",
+        "zapisz_config",
+        "zastosuj_config",
+        "szablony_wczytaj",
+        "szablony_zapisz",
+        "wyslij_telegram",
+        "sciezka_uploadera",
+        "sciezka_automatu",
+        "sciezka_meta_uploadera",
+        "znajdz_pythona_z_patchright",
+        "manifest_wczytaj",
+        "manifest_zapisz",
+        "sha1_pliku",
+        "wolna_nazwa_docelowa",
+        "_znajdz_identyczny_w_folderze",
+        "kopiuj_bezpiecznie",
+        "zamknij_osierocone_edge",
+        "zamknij_osierocone_chrome",
+        "wyslij_payload_w_tle",
+        "webhook_generuj_opis",
+        "_parsuj_gotowy_opis",
+        "nowy_id_wpisu",
+        "fmt_data_pl",
+        "kopiuj_do_schowka",
+        "poniedzialek",
+        "_cache_klucz",
+        "_lock_dla_klucza",
+        "_ffmpeg_klatka_atomowo",
+        "_dlugosc_wideo_s",
+        "generuj_klatki",
+        "wyciagnij_klatke_o_czasie",
+        "_dopasuj_rozmiar_fontu",
+        "_rysuj_tekst_obrys",
+        "renderuj_okladke_hook",
+        "generuj_jedna_klatke",
+        "_zaloguj_blad",
+        "_globalny_handler_bledow",
+        "_zamknij_appke",
+        "main",
+        "zadanie",
+        "__init__",
+        "_build_shell",
+        "_pokaz_tab",
+        "_wybierz_marke",
+        "_pokaz_samouczek",
+        "_build_tab_kolejka",
+        "_kolejka_strona_wheel",
+        "_ustaw_widok_kolejki",
+        "_renderuj_siatke_kolejki",
+        "_kafelek_kolejki",
+        "_idz_do_karty_z_siatki",
+        "_klawisz_lewo",
+        "_klawisz_prawo",
+        "_w_polu_tekstowym",
+        "_nawiguj_karte",
+        "_idz_do_karty",
+        "_zapisz_biezaca_karte_cicho",
+        "_render_kolejka_sidebar",
+        "_scrollowalna",
+        "_render_kolejka",
+        "_pokaz_karte_kolejki",
+        "_karta_kolejki",
+        "_sciezki_trwale_miniatur",
+        "_zaladuj_klatki_karty",
+        "_generuj_klatki_karty_w_tle",
+        "_wstaw_klatki_karty",
+        "_generuj_wszystkie_klatki",
+        "_generuj_wszystkie_w_tle",
+        "_archiwizuj",
+        "_termin_z_karty",
+        "_zapisz_karte",
+        "_zapisz_wszystko",
+        "_zapisz_karte_bez_odswiezania",
+        "_eksportuj_tekst",
+        "_build_tab_archiwum",
+        "_render_archiwum",
+        "_karta_archiwum",
+        "_cofnij_z_archiwum",
+        "_build_tab_kalendarz",
+        "_ustaw_widok_kalendarza",
+        "_zmien_zoom",
+        "_przesun_okres",
+        "_render_kalendarz",
+        "_zoom_pt",
+        "_bind_klik_dnia",
+        "_render_tydzien",
+        "_render_miesiac",
+        "_kafelek_miesiac",
+        "_pokaz_szczegoly_dnia",
+        "_render_tresc",
+        "_karta_tresc",
+        "_tresc_kopiuj",
+        "_tresc_edytuj",
+        "_parsuj_date",
+        "_karta_klip",
+        "_usun_termin",
+        "_drag_start",
+        "_drag_motion",
+        "_drag_end",
+        "_build_tab_biblioteka",
+        "_wczytaj_opisy_biblioteki",
+        "_zapisz_opisy_biblioteki",
+        "_importuj_gotowe_opisy",
+        "_importuj_opisy_w_tle",
+        "_parsuj_opisy_txt",
+        "_odswiez_liste_hashtagow",
+        "_pokaz_pliki_po_hashtagu",
+        "_biblioteka_wypelnij_drzewo",
+        "_nowy_folder_biblioteki",
+        "_na_wybor_biblioteki",
+        "_zaladuj_folder_biblioteki",
+        "_pokaz_siatke",
+        "_biblioteka_zmien_strone",
+        "_renderuj_strone_biblioteki",
+        "_kafelek_biblioteki",
+        "_zaladuj_miniature_w_tle",
+        "_wstaw_miniature",
+        "_otworz_edytor_pliku",
+        "_zamknij_edytor_pliku",
+        "_biblioteka_nawiguj",
+        "_pokaz_plik_w_edytorze",
+        "_zaladuj_podglad_pliku_w_tle",
+        "_wstaw_podglad_pliku",
+        "_zapisz_opis_biezacego_pliku",
+        "_zapisz_i_odswiez_biblioteke",
+        "_przenies_plik_biblioteki",
+        "_zgadnij_marke",
+        "_wczytaj_typy_tresci",
+        "_zapisz_typy_tresci",
+        "_slugifikuj_typ",
+        "_otworz_przydzial",
+        "_przydziel_plik",
+        "_po_ui",
+        "_bezpiecznie",
+        "_build_tab_materialy",
+        "_render_materialy",
+        "_zbierz_materialy",
+        "_kafelek_materialu",
+        "_usun_material",
+        "_otworz_plik",
+        "_otworz_folder",
+        "_pokaz_zrodlo",
+        "_build_tab_planer",
+        "_render_planer",
+        "_planer_sekcja_zrodla",
+        "_planer_wybierz_zrodlo",
+        "_planer_reset",
+        "_planer_skanuj",
+        "_planer_sekcja_material",
+        "_planer_przygotuj",
+        "_planer_generuj_w_tle",
+        "_planer_po_generowaniu",
+        "_planer_sekcja_podglad",
+        "_planer_zbierz_z_pol",
+        "_planer_sprawdz_ponownie",
+        "_planer_zatwierdz",
+        "_planer_zapisz_w_tle",
+        "_planer_po_zapisie",
+        "_planer_ramka",
+        "_build_tab_ustawienia",
+        "_wybierz_folder_ustawien",
+        "_sprawdz_sciezki",
+        "_login_konta",
+        "_zapisz_ustawienia",
+        "_test_telegrama",
+        "_przywroc_domyslne",
+        "_build_tab_dzwieki",
+        "_otworz_folder_dzwiekow",
+        "_render_dzwieki",
+        "_karta_dzwieku",
+        "_odtworz_dzwiek",
+        "_otworz_plik_bezpiecznie",
+        "_dograj_do_klipu",
+        "_dograj_w_tle",
+        "_po_dograniu",
+        "_build_tab_opisy",
+        "_otworz_panel_opisy",
+        "odswiez",
+        "_fetch",
+        "_po_odswiezeniu",
+        "on_drop",
+        "wybierz_plik_recznie",
+        "wybierz_folder_recznie",
+        "wybierz_kilka_folderow",
+        "_zbierz_media",
+        "_importuj_sciezki",
+        "_importuj_w_tle",
+        "_importuj_w_tle_wewnetrznie",
+        "_okno_podgladu_importu",
+        "_znajdz_opis_txt_obok",
+        "_auto_przydziel_z_opisami",
+        "_po_imporcie",
+        "publikuj",
+        "_publikuj_tiktok_auto",
+        "_publikuj_meta_auto",
+        "_start_automatu",
+        "_stop_automatu",
+        "_automat_dziala_wg_pid",
+        "_odswiez_status_automatu",
+        "_okno_okladki_hook",
+        "_okno_okladki_hook_dla",
+        "_ai_hook_w_tle",
+        "_po_ai_hook",
+        "_generuj_okladke_w_tle",
+        "_po_wygenerowaniu_okladki",
+        "_znajdz_okladke_obok",
+        "_znajdz_okladke_dla_wpisu",
+        "_znajdz_lokalny_plik",
+        "_odtworz_plik_kolejki",
+        "_otworz_przegladarke",
+        "_zapisz_wiersz",
+        "oznacz_opublikowane",
+        "handler",
+        "_wheel",
+        "_licz",
+        "zadanie",
+        "data_pliku",
+        "data_pliku",
+        "przerysuj_typy",
+        "usun_typ",
+        "dodaj_typ",
+        "potwierdz",
+        "po_sukcesie",
+        "po_bledzie",
+        "graj",
+        "_odswiez_liste",
+        "_dodaj",
+        "_usun",
+        "_wczytaj",
+        "_anuluj",
+        "_tak",
+        "_nie",
+        "_fmt_czas",
+        "_pokaz_podglad",
+        "_wyciagnij_w_tle",
+        "_skocz_do",
+        "_ai_wypelnij_hook",
+        "_generuj",
+        "po_sukcesie",
+        "po_bledzie"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\automat.py",
+      "sha256": "be83c2dfcee00ef0b0f1e6ff2963e7c8d34bac73f2da56e8f9d4d9b58079bcc2",
+      "size": 33384,
+      "classification": "aplikacja/scheduler — wymaga koordynacji",
+      "imports": [
+        "argparse",
+        "datetime",
+        "json",
+        "meta_uploader",
+        "niezawodnosc",
+        "os",
+        "patchright.sync_api",
+        "pathlib",
+        "random",
+        "requests",
+        "sys",
+        "tiktok_uploader",
+        "time"
+      ],
+      "functions": [
+        "wczytaj_config",
+        "wczytaj_ustawienia_automatu",
+        "log",
+        "wyslij_telegram",
+        "pobierz_rejestr",
+        "zapisz_wiersz",
+        "znajdz_lokalny_plik",
+        "gotowe_wpisy",
+        "_zglos_przeterminowane",
+        "_parsuj_datetime_lokalnie",
+        "_parsuj_termin",
+        "_znajdz_okladke",
+        "_publikuj_tiktok",
+        "_publikuj_meta",
+        "_platforma_zakonczona",
+        "opublikuj_wpis",
+        "wczytaj_stan",
+        "zapisz_stan",
+        "_dzis",
+        "_reset_licznika_jesli_nowy_dzien",
+        "_w_godzinach_aktywnosci",
+        "_nastepne_okno_aktywnosci",
+        "_czekaj_do",
+        "_zdobadz_jednoinstancyjny_lock",
+        "_zwolnij_jednoinstancyjny_lock",
+        "_przeladuj_config",
+        "main"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\meta_karuzela_uploader.py",
+      "sha256": "bf6886bf50a831825fa93bf5e95aaabdcadbe6b9d9a837e3530b0d99eb7743f6",
+      "size": 24785,
+      "classification": "publikowanie — tylko przez most",
+      "imports": [
+        "PIL",
+        "__future__",
+        "argparse",
+        "datetime",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "re",
+        "sys",
+        "tiktok_uploader",
+        "time"
+      ],
+      "functions": [
+        "normalizuj_slajdy",
+        "_kliknij_utworz_post",
+        "_otworz_kompozytor_karuzeli",
+        "_wgraj_zdjecia_karuzeli",
+        "wgraj_i_wypelnij_karuzele",
+        "main",
+        "_ile_miniatur"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\meta_uploader.py",
+      "sha256": "4b5bd12ffc9a1c58fb70780994c824a762d74e38b0df2c885c25d22d528fc16b",
+      "size": 248255,
+      "classification": "publikowanie — tylko przez most",
+      "imports": [
+        "argparse",
+        "ctypes",
+        "datetime",
+        "json",
+        "nadzor_wrzutu",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "random",
+        "re",
+        "studio.rdzen.model",
+        "studio.rdzen.pulpit_wrzutu",
+        "subprocess",
+        "sys",
+        "tiktok_uploader",
+        "time",
+        "zaslony_meta"
+      ],
+      "functions": [
+        "profil_meta_dla_marki",
+        "kanal_meta_dla_marki",
+        "marker_profilu_meta",
+        "profil_chrome_dla_marki",
+        "_to_ekran_logowania",
+        "composer_url_dla_marki",
+        "reels_composer_url_dla_marki",
+        "planner_url_dla_marki",
+        "scheduled_url_dla_marki",
+        "home_url_dla_marki",
+        "_goto_suite",
+        "_pewnij_okno_meta",
+        "_strona_do_wrzutu_meta",
+        "content_url_dla_marki",
+        "_ostrzezenie_proporcji_posta",
+        "_js_klik_po_fragmencie",
+        "_kliknij_kontynuuj",
+        "_zarejestruj_handler_kontynuuj",
+        "_zdejmij_handler_kontynuuj",
+        "_zostan_w_kompozytorze",
+        "_zamknij_dymek_przywrocic_strony",
+        "_zamknij_dialog_cookie",
+        "_zamknij_chrome_bubbles",
+        "_kliknij_utworz_rolke",
+        "url_to_edytor_rolek",
+        "url_zly_tor_suite",
+        "marka_z_strony_meta",
+        "_wroc_na_kompozytor_jesli_zbity",
+        "_punkt_w_panelu_rolki",
+        "_jest_edytor_rolek",
+        "_jest_kompozytor_postu",
+        "_poczekaj_na_pusty_edytor_rolek",
+        "zamknij_osierocone_chrome",
+        "zamknij_baner_reklamowy",
+        "zamknij_popup_jednorazowy",
+        "_odrzuc_przywracanie_chrome",
+        "_odczytaj_cel_opublikuj",
+        "_cel_jest_sam",
+        "_cel_jest_para",
+        "_ustaw_cel_opublikuj",
+        "_cel_ma_crosspost",
+        "_upewnij_crosspost_fb_ig",
+        "_zostaw_cta_damianowi",
+        "_zamknij_przywroc_chrome",
+        "_wybierz_portfolio_mety",
+        "_wybierz_strone_marki",
+        "_otworz_kompozytor",
+        "_czytelny_blad_mety",
+        "_zainstaluj_detektor_odmowy",
+        "_stan_uploadu_rolki",
+        "_odrzuc_zmiany_wiszacy_upload",
+        "_restart_kompozytora_po_wiszacym_uploadzie",
+        "_media_faktycznie_wgrane",
+        "_wgraj_wideo_przez_chooser",
+        "_wgraj_wideo_przez_input",
+        "_wgraj_plik",
+        "_znajdz_pole_opisu",
+        "_wpisz_opis",
+        "_wpisz_pole_z_czyszczeniem",
+        "_int_aria",
+        "_ustaw_spinbutton_do",
+        "_warianty_godziny",
+        "_tekst_ma_godzine",
+        "_data_slownie_pl",
+        "_body_ma_pola_terminu_rolki",
+        "_okladka_wgrana_z_tekstu",
+        "_trwa_upload_mediow_z_tekstu",
+        "_okladka_jest_wgrana",
+        "_czekaj_az_okladka_w_kafelku",
+        "_ile_razy_godzina_w_tekscie",
+        "_ile_razy_daty_w_tekscie",
+        "_strefa_z_pola",
+        "_klasyfikuj_pole_terminu",
+        "_wartosc_docelowa_terminu",
+        "_termin_fb_ig_zgodny",
+        "_wpisz_pole_bez_czyszczenia",
+        "_panel_dialogu",
+        "_zrzut_inputow_dialogu",
+        "_sa_pola_terminu",
+        "_znajdz_przelacznik_harmonogramu",
+        "_stan_share_jak_rigger",
+        "_kliknij_trio_share",
+        "_zamknij_warstwe_miniatury",
+        "_zatwierdz_warstwe_miniatury",
+        "_wroc_na_krok_utworz",
+        "_wlacz_tryb_wlasnej_miniatury",
+        "_okladka_chooser_po_kliknieciu",
+        "_zakladka_kroku_rolki",
+        "_jest_share_po_edycji",
+        "_otworz_dobor_muzyki",
+        "idz_na_udostepnij_bez_muzyki",
+        "_okno_niezywe",
+        "zatrzymaj_na_muzyce_do_koloru",
+        "_kliknij_cta_stopki",
+        "_zrzut_cta_share",
+        "_kliknij_zakladke_udostepnij_y60",
+        "_dojdz_do_ekranu_zaplanuj",
+        "_odczytaj_pola_terminu_tekst",
+        "_wpisz_pole_terminu_tekst",
+        "_wypelnij_termin_fb_ig_tekst",
+        "_zatwierdz_termin_tekstowy_fb_ig",
+        "ustaw_harmonogram",
+        "_kliknij_widoczny",
+        "_wejdz_do_edytora_rolek",
+        "_wymusz_rolke_albo_czekaj",
+        "_y_el",
+        "_wlacz_zakladke_zaplanuj",
+        "_kliknij_dalej_jesli_jest",
+        "_wlacz_udostepnij_teraz",
+        "_rodzaj_cta",
+        "_znajdz_cta_publikacji",
+        "_kliknij_dialogi_po_cta",
+        "_sygnal_ze_rolka_wyszla",
+        "_kliknij_zaplanuj",
+        "_niedziela_tygodnia",
+        "_przejdz_do_tygodnia",
+        "_zweryfikuj_w_kalendarzu",
+        "lista_znacznikow_z_echa",
+        "lista_znacznikow",
+        "_znajdz_przelacznik_dostosuj",
+        "_wylacz_dostosuj_platformy",
+        "_rozwin_dostosuj_platformy",
+        "_znajdz_pole_lokalizacji",
+        "_kliknij_zakladke_instagram",
+        "_modal_lokalizacji",
+        "_chip_jest_w",
+        "_kandydat_pinu_lokalizacji",
+        "_otworz_modal_lokalizacji",
+        "ustaw_lokalizacje_meta",
+        "_kliknij_zakladke_facebook",
+        "_znajdz_pole_znacznikow",
+        "_wyczysc_pole_znacznika",
+        "_liczba_krzyzykow_chipow",
+        "_widoczny_dymek_dodaj",
+        "_czekaj_na_dymek_dodaj",
+        "_kliknij_dodaj_nowy_znacznik",
+        "ustaw_znaczniki",
+        "_wgraj_obraz_w_input_plik",
+        "_okladka_przez_wybierz_plik",
+        "_folder_i_nazwa_okladki",
+        "_win_alt_litera",
+        "_win_ctrl_litera",
+        "_win_enter",
+        "_dialog_otworz_wstaw_plik",
+        "_ranguj_cele_przeslij_obraz",
+        "_bbox_strefy_przeslij",
+        "_kliknij_zakladke_przeslij_obraz",
+        "_rozwin_sekcje_miniatury",
+        "_kliknij_kafel_przeslij_w_miniaturze",
+        "_kliknij_link_przeslij_w_miniaturze",
+        "_kliknij_przycisk_przeslij_plik",
+        "_kliknij_przeslij_obraz",
+        "_potwierdz_okladke_po_wstawieniu",
+        "zatrzymaj_na_okladce",
+        "ustaw_okladke",
+        "_ig_handle_marki",
+        "_ig_wymaga_logowania",
+        "_ig_jest_modal_uploadu",
+        "_ig_otworz_modal_nowego_posta",
+        "_ig_ustaw_okladke",
+        "_ig_wgraj_wybierz_z_komputera",
+        "_ig_wpisz_podpis",
+        "_ig_kliknij_udostepnij_teraz",
+        "publikuj_ig_scheduled",
+        "wgraj_i_wypelnij",
+        "main",
+        "na_odpowiedz",
+        "_trafione",
+        "_tytul",
+        "_klasa",
+        "_ma_otworz",
+        "_szukaj_hwnd",
+        "_edit",
+        "_klik_otworz",
+        "_handler",
+        "_pierwszy_lokator",
+        "cb"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\nadzor_wrzutu.py",
+      "sha256": "502eb1b5e62a806f34bcd27281bb1486e8c633297eea37fd1ffa86d64f9cd230",
+      "size": 10945,
+      "classification": "pomocniczy",
+      "imports": [
+        "__future__",
+        "datetime",
+        "json",
+        "niezawodnosc",
+        "zaslony_meta"
+      ],
+      "functions": [
+        "hook_opisu",
+        "_fmt_daty_pl",
+        "_pole",
+        "ocen_pola",
+        "tablica_nadzoru",
+        "raporter_dla_celu",
+        "__init__",
+        "krok",
+        "ok",
+        "w_toku",
+        "blad",
+        "__init__",
+        "odczytaj",
+        "po",
+        "braki"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\niezawodnosc.py",
+      "sha256": "9317eceb7e1f152fea441987f27546c03bdad5a10f273d51a251b1bd845eb021",
+      "size": 65948,
+      "classification": "pomocniczy",
+      "imports": [
+        "ctypes",
+        "datetime",
+        "functools",
+        "json",
+        "os",
+        "pathlib",
+        "random",
+        "shutil",
+        "subprocess",
+        "time",
+        "urllib.request"
+      ],
+      "functions": [
+        "kopiuj_do_schowka_win",
+        "nogi_jsonl",
+        "tlumacz_blad_wrzutu",
+        "wypisz_blad_na_biale",
+        "zostaw_cta_damianowi",
+        "etykieta_nogi_wrzutu",
+        "wrzut_padl_przed_kalendarzem",
+        "ostatni_blad_z_jsonl",
+        "_ostatni_blad_w_pliku",
+        "pokaz_modal_okladki_po_wrzucie",
+        "okladka_nie_przerywa_sesji",
+        "_okladka_nie_przerywa_w_pliku",
+        "krok_pola_nie_abortuje",
+        "wrzut_python_zyje",
+        "szczegoly_okna_zamknietego",
+        "_krok_ok_w_pliku",
+        "film_juz_w_oknie",
+        "raport_bledu_wrzutu",
+        "asercja_profilu_dla_marki",
+        "_sygnatury_w_tekscie",
+        "odczytaj_slady_konta",
+        "weryfikuj_zalogowane_konto",
+        "wczytaj_status",
+        "odloz_jsonl_przed_ponownym",
+        "klikniecie_juz_probowane",
+        "_klikniecie_w_pliku",
+        "jsonl_ma_limit_1390008",
+        "jsonl_meta_ma_limit_1390008",
+        "formularz_gotowy_na_cta",
+        "_formularz_w_pliku",
+        "ostatni_krok_jsonl",
+        "skrot_banera_wrzutu",
+        "jsonl_wrzut_byl_probowany",
+        "stan_klikniecia",
+        "znajdz_z_fallbackiem",
+        "z_ponawianiem",
+        "zrob_zrzut",
+        "zdejmij_osierocona_blokade",
+        "zresetuj_przerwany_wrzut",
+        "parsuj_datetime",
+        "parsuj_termin",
+        "formatuj_termin",
+        "zlagodz_blokady_sieci_w_profilu",
+        "_exe_przegladarki",
+        "zamknij_osierocone_przegladarke",
+        "cdp_port_dla_profilu",
+        "otworz_przegladarke_natywna",
+        "otworz_url_nowe_okno",
+        "czekaj_na_cdp",
+        "odlacz_bez_gaszenia_przegladarki",
+        "_profil_moze_byc_zajety",
+        "_to_blad_launch_sesji",
+        "_cdp_porty_dla_kanalu",
+        "_polacz_przez_cdp",
+        "_blad_brak_cdp",
+        "_ctx_ma_zywe_karty",
+        "uruchom_kontekst_przegladarki",
+        "__init__",
+        "krok",
+        "ok",
+        "blad",
+        "w_toku",
+        "dekorator",
+        "__init__",
+        "__enter__",
+        "__exit__",
+        "__init__",
+        "__enter__",
+        "__exit__",
+        "opakowana"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\planer.py",
+      "sha256": "19ef82789001be582060a69fed1a32ed8bf917e07809c728266b9ce697d440cc",
+      "size": 14785,
+      "classification": "aplikacja/scheduler — wymaga koordynacji",
+      "imports": [
+        "datetime",
+        "hashlib",
+        "json",
+        "pathlib",
+        "re"
+      ],
+      "functions": [
+        "_sha1",
+        "skanuj_karuzele",
+        "skanuj_wideo",
+        "odfiltruj_nowe",
+        "zbuduj_harmonogram",
+        "sprawdz_opis",
+        "_otwarcie",
+        "sprawdz_partie",
+        "zbuduj_brief",
+        "nazwa_docelowa",
+        "__init__",
+        "_wczytaj",
+        "zapisz",
+        "klucz",
+        "uzyte",
+        "oznacz"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\tiktok_karuzela_uploader.py",
+      "sha256": "432a693da7d0c8211e26b4ba5aed4144355daab18c818c3d951b060b07899fda",
+      "size": 20974,
+      "classification": "publikowanie — tylko przez most",
+      "imports": [
+        "argparse",
+        "datetime",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "tiktok_uploader",
+        "time"
+      ],
+      "functions": [
+        "_przelacz_na_tryb_zdjec",
+        "_wgraj_zdjecia_karuzeli",
+        "wgraj_i_wypelnij_karuzele",
+        "main"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\tiktok_uploader.py",
+      "sha256": "df2db8d6b9912876b3e8f17a8a80820142e487f7118c25fad9cbbeb4ae2ff9a2",
+      "size": 67538,
+      "classification": "publikowanie — tylko przez most",
+      "imports": [
+        "argparse",
+        "datetime",
+        "json",
+        "meta_uploader",
+        "niezawodnosc",
+        "os",
+        "patchright.sync_api",
+        "pathlib",
+        "random",
+        "re",
+        "requests",
+        "shutil",
+        "studio.rdzen.pulpit_wrzutu",
+        "subprocess",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "profil_tiktok_dla_marki",
+        "kanal_tiktok_dla_marki",
+        "marker_profilu_tiktok",
+        "zamknij_osierocone_tiktok",
+        "profil_edge_dla_marki",
+        "zapewnij_profil_tiktok_atleta",
+        "zamknij_osierocone_edge",
+        "losowa_pauza",
+        "human_type",
+        "human_paste",
+        "_telegram_alert_captcha",
+        "sprawdz_captcha",
+        "_edytor_tiktok_juz_otwarty",
+        "_kliknij_wybierz_film",
+        "_wgraj_plik",
+        "odrzuc_modal_odrzucic_post",
+        "_wpisz_opis",
+        "_posprzataj_portal_lokalizacji",
+        "_ustaw_lokalizacje",
+        "_ustaw_godzine",
+        "_ustaw_dzien",
+        "ustaw_harmonogram",
+        "odrzuc_baner_niezapisanej_edycji",
+        "zamknij_modal_podgladu_telefonu",
+        "ustaw_okladke",
+        "_kliknij_opublikuj",
+        "_tiktok_data_do_plakietki",
+        "zweryfikuj_publikacje",
+        "_otworz_dobor_dzwieku",
+        "zatrzymaj_na_dzwieku",
+        "wgraj_i_wypelnij",
+        "main",
+        "_fragment_opisu_dla_dopasowania",
+        "pobierz_opublikowany_z_dzwiekiem"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\zaslony_meta.py",
+      "sha256": "f9ec8d93c99f21d274e71a5b3885853fb087887889c94d2ba7adb0fc63953117",
+      "size": 7755,
+      "classification": "pomocniczy",
+      "imports": [
+        "__future__",
+        "ctypes",
+        "re"
+      ],
+      "functions": [
+        "_norm",
+        "_nigdy",
+        "wybierz_zaslone",
+        "instrukcja_zaslony",
+        "zdejmij_zaslony",
+        "wyciagnij_hwnd_na_wierzch",
+        "wyciagnij_okno_przegladarki",
+        "_hit",
+        "cb"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\_diag_biala_strona.py",
+      "sha256": "be00f2533b7c6b964c0e86462fca028f71f2a29762f3c78e318382e65fd5bb21",
+      "size": 3368,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys"
+      ],
+      "functions": [],
+      "top_level_calls": [
+        "sys.path.insert",
+        "print",
+        "print",
+        "print",
+        "print",
+        "print"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\_dopelnij_okladke_lok.py",
+      "sha256": "a4f795127becb249680a8eda04579f0f73e9ea332c86903b9785e9b86775ffde",
+      "size": 1475,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib"
+      ],
+      "functions": [
+        "main",
+        "w_toku",
+        "ok",
+        "blad"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\_ig_native_b_athlete.py",
+      "sha256": "f19ae7d462a565d6495fa7d6bd052dc63bf57aa85aaee1bbb17d05d932ffcc23",
+      "size": 17683,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "json",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "re",
+        "time"
+      ],
+      "functions": [
+        "_norm",
+        "_ig_api_profil",
+        "_krawedzie",
+        "_reel_pasuje",
+        "znajdz_rolke",
+        "odrzuc_suite_0_i_idz_na_ig",
+        "ig_lokalizacja",
+        "ig_sprobuj_harmonogram",
+        "ig_cta",
+        "wrzuc_jedna",
+        "main"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\_jedz_wrzut.py",
+      "sha256": "84664e1eb4f487f869b178757c101ac9a976533ac6f9d17e5c08fa282b267240",
+      "size": 2066,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "niezawodnosc",
+        "pathlib",
+        "studio.rdzen.konfiguracja",
+        "studio.rdzen.magazyn",
+        "studio.rdzen.most_publikacji",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.stdout.reconfigure",
+        "sys.stderr.reconfigure"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\_klik_add_video.py",
+      "sha256": "c423762fc1dc6caa1e730db3ab464000a7aaf9bfee8e836305bdaafe0d921dcb",
+      "size": 5069,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "ctypes",
+        "time"
+      ],
+      "functions": [
+        "_tytul",
+        "_klasa",
+        "znajdz_okna",
+        "klik_ekran",
+        "klient_na_ekran",
+        "wklej_do_dialogu",
+        "main",
+        "cb"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\_noc_do_szostej.py",
+      "sha256": "13bdc7802f41939f70f1346f1d1146f69db0fffc3314cc0e8581772da2b1ecd0",
+      "size": 2363,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "datetime",
+        "json",
+        "pathlib",
+        "subprocess",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "koniec_nocy",
+        "meta_ok",
+        "oba_ok",
+        "main"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\_przygotuj_ig.py",
+      "sha256": "0b43470faa958681f09cf7ef3fa8ebbd8c2f65847bb77f3d33483c73dc309fb7",
+      "size": 2134,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "automat",
+        "imageio_ffmpeg",
+        "pathlib",
+        "subprocess",
+        "sys"
+      ],
+      "functions": [
+        "transkoduj",
+        "main"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\_run_mercedes1_meta_recznie.py",
+      "sha256": "83a7c71e7943b27bde0d8d7a29f837cd5ceedc519f89bdccda965370cbd7ad32",
+      "size": 482,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "meta_uploader",
+        "sys"
+      ],
+      "functions": [],
+      "top_level_calls": [
+        "meta_uploader.main"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\_run_pompki_meta_atlet.py",
+      "sha256": "72c62f35407daa507e23b94802058b9e2a8a8033d23c57255e8eabe5ff875a05",
+      "size": 767,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "meta_uploader",
+        "pathlib",
+        "sys"
+      ],
+      "functions": [],
+      "top_level_calls": [
+        "meta_uploader.main"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\_tmp_wrzuc_z_czatu.py",
+      "sha256": "ef0b2019f9ecb215e27e12f3498b4f03dd2d3149f26a224805b635c4ea0028e6",
+      "size": 1649,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "automat",
+        "requests"
+      ],
+      "functions": [
+        "anuluj",
+        "main"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\_wrzut_straznik.py",
+      "sha256": "74ff707faa1202f729e248f6d3a4a91366a0f4db3d024728ce7ad28c421d08e5",
+      "size": 16361,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "automat",
+        "datetime",
+        "json",
+        "niezawodnosc",
+        "pathlib",
+        "queue",
+        "requests",
+        "subprocess",
+        "sys",
+        "threading",
+        "time"
+      ],
+      "functions": [
+        "powiadom_gotowe",
+        "wniosek",
+        "marka_wpisu",
+        "zabij_okno",
+        "caption_path",
+        "slot_miniony",
+        "komenda",
+        "_czytaj_stdout",
+        "uruchom_z_straznikiem",
+        "platforma_do_skutku",
+        "material_w_calosci",
+        "main"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\_zloz_wrzutki_hd.py",
+      "sha256": "15fcb54d8b87b94204a5bb68c53a40ad95059c0daa0911c0f1a4b4ef53336257",
+      "size": 1596,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "json",
+        "pathlib",
+        "shutil",
+        "studio.rdzen.wideo_hd"
+      ],
+      "functions": [],
+      "top_level_calls": [
+        "out.mkdir",
+        "print"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_anuluj_pusty_i_lista.py",
+      "sha256": "e35f41f39f3fec4d097730c8ad14cbdc111c39d052585d8f72897452915f5cc2",
+      "size": 4505,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_czekaj_composer_0700.py",
+      "sha256": "322826b2a957df154ee3b9d7a9fdd0cec1433bf882397dbce35a245940f365fc",
+      "size": 3036,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_dokoncz_merc2_cta.py",
+      "sha256": "b90a9e1dc462b26a816940f12cfd64c878451fc3d634e56cedfe513ad31c0f63",
+      "size": 3924,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys"
+      ],
+      "functions": [
+        "_wybierz_strone",
+        "_dump_js",
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_dump_atlet_zap_cdp.py",
+      "sha256": "8771bfbcbe81e6b075bc2da41475df19261d5969e9d74405c9eb8d2d22cd9795",
+      "size": 1387,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "json",
+        "urllib.request",
+        "websocket"
+      ],
+      "functions": [],
+      "top_level_calls": [
+        "print",
+        "ws.settimeout",
+        "ws.send",
+        "print",
+        "ws.send",
+        "ws.close",
+        "print",
+        "print",
+        "print",
+        "open('status\\\\proof-atlet-zap-pompki-check.txt', 'w', encoding='utf-8').write"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_dump_chrome_now.py",
+      "sha256": "b9989beb06bc1079e9282ee76882a9d7f8910b81e269b4350db6bc5d4bdb9dc2",
+      "size": 1429,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys"
+      ],
+      "functions": [
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_dump_duplikaty_meta.py",
+      "sha256": "3380c0f7dfdf9cf4299ebf70728019d74fb0a6e7816a33d48841b11e6901d508",
+      "size": 3018,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "blob",
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_dump_zap_teraz.py",
+      "sha256": "d9c381d19da259c1125dc06cca983ef4baa66182dc5e2e99c7775c1c1e66b811",
+      "size": 4094,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "json",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_dzialania2.py",
+      "sha256": "01f8cb675f5b964694aea918640cdf1c94818408074ae9056448e4279dbb7e31",
+      "size": 2493,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_dzialania_posta.py",
+      "sha256": "097f2cda7ed0959a8387c8e8857726732072e9a4e65c23758f3c5a9da3ca2f62",
+      "size": 2691,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_edytuj_composer_1815.py",
+      "sha256": "d9ee0178f79511fa4adb00dc960b09076a1a40ed56e2136d9595aeeeb7e9b51c",
+      "size": 5756,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "czekaj_composer",
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_insight_merc3.py",
+      "sha256": "35d4eee6a67c9236675415f608420debb5fad8b19cfd5fca2e9829cb13ff97a5",
+      "size": 3495,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_inspekt_karty_0700.py",
+      "sha256": "9b9582148e5f0cd5120723442eb7cee8a9e830e52b35e56569547ddc1e97c813",
+      "size": 4357,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "anuluj_pusty",
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_kebab_646.py",
+      "sha256": "3fc276bc746427dc1313ac853340c48e8b2fbcb78058500af16e88d45db5a4be",
+      "size": 2229,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_klatki_okladki.py",
+      "sha256": "77fe361c38fa918ce7727a53b23cd9bcc40ec0a2c7fcf037663123aac599e38e",
+      "size": 1211,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "imageio_ffmpeg",
+        "pathlib",
+        "subprocess"
+      ],
+      "functions": [
+        "main"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_klatki_picker.py",
+      "sha256": "ad96877ed6e52be173bbad7dd06a6e6a28b698eeb6c6099a87696b5a5bdf2574",
+      "size": 901,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "imageio_ffmpeg",
+        "pathlib",
+        "subprocess"
+      ],
+      "functions": [
+        "main"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_klik_karty_2130.py",
+      "sha256": "312f6d4adfd7f467201399143b4520e2d7936979c00773a50c7e0b6139b99591",
+      "size": 7391,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "datetime",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "czekaj_tydzien",
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_klik_pon_0700.py",
+      "sha256": "2dacd542f8ac7056b6de092373fb9ad67cf02dab7def106aa2443ab3fdbd2833",
+      "size": 3670,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "datetime",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_klik_przenies.py",
+      "sha256": "0314e6769de6c1fe2b4cfc988288692c46d4b8c037499d6ea98653be04270761",
+      "size": 2800,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_klik_tytul_merc3.py",
+      "sha256": "a6b0252f95d7804146d0e05f2da303cbe184b1a9c91769c27fad91355c443f39",
+      "size": 2600,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_klik_wiecej.py",
+      "sha256": "a2dea3e5389b86401ccc48db732788b9b6da467f0c4138581236f1e8f934aa5d",
+      "size": 3347,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_kosz_fail_zap.py",
+      "sha256": "233c2c07d88889c2b529c94547457093a481f8736c35b3981fd6a7d9935e5b74",
+      "size": 10996,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "json",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "blob",
+        "dump_btns",
+        "kebabs",
+        "klik_kebab_y",
+        "klik_tekst",
+        "wiersze_fail",
+        "stop_139",
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_kosz_wszystkie_fail_zap.py",
+      "sha256": "6a0f959d0cff681aa7fe64eefb989ec887a1f4d686dd8d888af67725fa5c2736",
+      "size": 7162,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "json",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "blob",
+        "dump_btns",
+        "klik_tekst",
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_menu_fail_ig.py",
+      "sha256": "101c4b5b965bf23b2d60cef8446f6b2bf80412b047ddde186dd2117f37ee19ab",
+      "size": 2665,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_menu_zlej_rolki.py",
+      "sha256": "98fc84ae7c1fc9054afb960a197d1fa5a86e1e0baed496cce9480ab79363992a",
+      "size": 4208,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_meta_tab_zaplanowane.py",
+      "sha256": "520f696152abcb009e162fd5b6c764ba0838c5f9e2e2efb86f03a6c6afe1c041",
+      "size": 3305,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_otworz_post_fb.py",
+      "sha256": "518739d11b30a39b5ff769019170dbb497975b736056165f55dc052528f13750",
+      "size": 2670,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "dump",
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_peek_merc2_next_week.py",
+      "sha256": "98b891e84866ea82f0ad000deb81df99bb7678a9a66b05afa559d41206a3daa8",
+      "size": 3239,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys"
+      ],
+      "functions": [
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_peek_rigger_week.py",
+      "sha256": "5e02d1c58df5c5edb4e5782e09f02d6fd76bbd8f6b2d229096f5adf34293ad92",
+      "size": 2891,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys"
+      ],
+      "functions": [
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_przesun_niedziele_1815.py",
+      "sha256": "d06a379a1d0367d753db4ba3a38575c8ab6b07d9d161c2790fa5c9866d349298",
+      "size": 8741,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "datetime",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "dump_btns",
+        "klik_frag",
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_rigger_scheduled.py",
+      "sha256": "d6c5a60d36f1b054fd010a635b5181d7d6d2ecd4ed730f578f95241ed3ad498a",
+      "size": 2850,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_stan_merc3_meta.py",
+      "sha256": "f7c02a5a44f75d89e55c428e057a296de6931a41a99f3e7d4634e85c66647092",
+      "size": 3272,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "hits",
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_tab_zap2.py",
+      "sha256": "6314712c2aa6bc0aee3c8b88a2952625ad98347107f784185e0c4165369d8969",
+      "size": 3919,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_tab_zaplanowane.py",
+      "sha256": "002c185aec5ea38b174f7968a7f5256656b75eff6e584645cfdf6ea19d887aa8",
+      "size": 1745,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys"
+      ],
+      "functions": [
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_tab_zaplanowane_teraz.py",
+      "sha256": "f828d1eca2158871c5b109cd99c8fe23bdde4cb417b889019b892f5596685efd",
+      "size": 2361,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_tresc_zaplanowane.py",
+      "sha256": "34a4c68e16391f3c3acae5c73828aec943d499be35516579d63b28cbc8f0fc35",
+      "size": 2699,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "klik_nav",
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_usun_dup_merc3_zap.py",
+      "sha256": "9f8f9c6ee25e899a726279554e3422f7e74376deae8ef65b1cbcd7a34aaf51db",
+      "size": 5446,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "kebabs",
+        "klik_kebab_y",
+        "klik_menu",
+        "potwierdz_kosz",
+        "blob",
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_usun_merc3.py",
+      "sha256": "cdc001924c859e73b582a7d9b535435f116ec2b76eaf547aff86aca8c17d33f6",
+      "size": 5975,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_usun_merc3_kropki.py",
+      "sha256": "d0c1503cc9ad606c326c87c94c06ff81f3cdfe5bd5dbede2aac4a87926740615",
+      "size": 6468,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_usun_merc3_overlay.py",
+      "sha256": "ea8b3d35fa80c37da22a7cac60d3dfb5b72087a4d15d9ce420369d09d6edec3c",
+      "size": 5662,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_usun_merc3_potwierdz.py",
+      "sha256": "6ca1771e8ed0c89c5bf199a48c0f864c8103567574092f88f1e2c8ce813ab3ae",
+      "size": 4327,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_verify_tiktok_studio.py",
+      "sha256": "656030c36d318677417ce88d7bd7664019325d9fa41fc98127f07d8613aa1276",
+      "size": 2985,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "json",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "tiktok_uploader",
+        "time"
+      ],
+      "functions": [
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_zap_czekaj.py",
+      "sha256": "cb06b1b918ca65ba7dc3025b98179b49a6ef9327e294cbb36c72bc5364c20525",
+      "size": 2545,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_zap_wiersze.py",
+      "sha256": "d9cb23776a2eb9f26c502020f4be5f75fc88a9b8b954f252af22d6169f453590",
+      "size": 3290,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\status\\_zrzut_rigger_kal.py",
+      "sha256": "857ae0be7790cda6fe6757e10b32487adaed6decdcbed825e87855525f8abcf9",
+      "size": 4058,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "datetime",
+        "json",
+        "meta_uploader",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "studio.rdzen.kalendarz_live",
+        "studio.rdzen.model",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "_tt_z_proof",
+        "main"
+      ],
+      "top_level_calls": [
+        "sys.path.insert"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\uruchom.py",
+      "sha256": "afc9650f8396ed6c0296142ce16cea44c53719b3cbb1e47a6fbf8f4448574a98",
+      "size": 1562,
+      "classification": "pomocniczy",
+      "imports": [
+        "__future__",
+        "ctypes",
+        "pathlib",
+        "studio.gui.okno",
+        "studio.rdzen.instancja",
+        "sys",
+        "traceback"
+      ],
+      "functions": [
+        "_excepthook",
+        "_app_user_model_id"
+      ],
+      "top_level_calls": [
+        "podlacz_strumienie_pythonw",
+        "_app_user_model_id"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\zainstaluj_na_pulpicie.py",
+      "sha256": "b2098af21dbfdfe8a33cb047d6d5d90722605a7aa57faad42120bc79515f0786",
+      "size": 4605,
+      "classification": "pomocniczy",
+      "imports": [
+        "__future__",
+        "pathlib",
+        "shutil",
+        "studio.rdzen.konfiguracja",
+        "studio.zasoby.zrob_ikone",
+        "subprocess",
+        "sys"
+      ],
+      "functions": [
+        "_ps_cytat",
+        "zrob_skrot",
+        "przenies_kolejke_z_pulpitu",
+        "usun_stare",
+        "main"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\__init__.py",
+      "sha256": "586c98a57dc271772259d5042f022ba64ca3f1c799b3e11849fb29969063f48d",
+      "size": 75,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [],
+      "functions": [],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\gui\\okno.py",
+      "sha256": "0521e6f12f585b5c8d079ca7b47573d1380d76a934944909089eaa5baaf4f4cd",
+      "size": 177517,
+      "classification": "GUI",
+      "imports": [
+        "PIL",
+        "__future__",
+        "datetime",
+        "json",
+        "niezawodnosc",
+        "os",
+        "pathlib",
+        "planer",
+        "random",
+        "re",
+        "requests",
+        "studio.gui.sloty_ui",
+        "studio.rdzen.drive_telefon",
+        "studio.rdzen.gestosc",
+        "studio.rdzen.instancja",
+        "studio.rdzen.kalendarz_live",
+        "studio.rdzen.konfiguracja",
+        "studio.rdzen.magazyn",
+        "studio.rdzen.model",
+        "studio.rdzen.most_generatora",
+        "studio.rdzen.most_publikacji",
+        "studio.rdzen.osadzenie",
+        "studio.rdzen.pineski",
+        "studio.rdzen.przebieg",
+        "studio.rdzen.pulpit_wrzutu",
+        "studio.rdzen.segmenty",
+        "studio.rdzen.sloty",
+        "studio.rdzen.tempo",
+        "studio.rdzen.walidacja",
+        "studio.rdzen.weryfikacja_statusu",
+        "subprocess",
+        "sys",
+        "threading",
+        "time",
+        "tkinter",
+        "traceback"
+      ],
+      "functions": [
+        "_wczytaj_webhook_generuj_opis",
+        "_poniedzialek",
+        "_wstaw_opis_z_emoji",
+        "_badge",
+        "_widok_werdyktu",
+        "_sciezka_okladki",
+        "_nr_z_nazwy",
+        "_miniatura",
+        "_pasek_slajdow",
+        "_etap_paczki",
+        "main",
+        "__init__",
+        "_pierwsze_odswiezenie",
+        "_domyslny_termin",
+        "_pozycje_segmentu",
+        "_mozna_archiwizowac",
+        "_odswiez_pasek_segmentu",
+        "_wybierz_marke",
+        "_odswiez_przyciski_marki",
+        "_pas_marki_navy",
+        "_ukryj_ekrany",
+        "_pokaz_tresc",
+        "_wciagnij_inbox_do_kolejki",
+        "_wciagnij_inbox_start",
+        "_synchronizuj_telefon",
+        "_pokaz_kolejke",
+        "_pokaz_kalendarze",
+        "_pokaz_publikacje",
+        "_pokaz_opisy",
+        "_rysuj_opisy",
+        "_karta_opisu",
+        "_otworz_w_generatorze",
+        "_rysuj_publikacje",
+        "_odblokuj_haczyki_publikacji",
+        "_karta_publikacji",
+        "_kopiuj_tekst",
+        "_wiersz_backup",
+        "_backup_publikacji",
+        "_podlacz_okladke_karty",
+        "_btn_zegar_publikacji",
+        "_pas_wrzutu_publikacji",
+        "_blok_okladki_publikacji",
+        "_kopiuj_sciezke_okladki",
+        "_otworz_folder_paczki",
+        "_odswiez_belke_cdp",
+        "_zakolejkuj_hd_cicho",
+        "_domknij_obce_studio",
+        "_petla_pulpit",
+        "_blok_live_wrzutu",
+        "_odswiez_panele_live",
+        "_muzyka_dobrana",
+        "_idz_do_publikacji",
+        "_reczny_haczyk_publikacji",
+        "_dopasuj_generator",
+        "_petla_dopasuj",
+        "_obsluz_sygnal_generatora",
+        "_start_generator_ekran",
+        "_build",
+        "_strona_scroll",
+        "_kolo_global",
+        "_kolo_skala",
+        "_ustaw_skale",
+        "_zmien_skale",
+        "_przerysuj_po_skali",
+        "_okno_zmienilo_rozmiar",
+        "_kolejkuj_zapis_okna",
+        "_zapisz_okno",
+        "_ustaw_widok_kal",
+        "_ustaw_typ_kal",
+        "_pozycje_kalendarza",
+        "_dzien_ma_karuzele",
+        "_przesun_tydzien",
+        "_termin_na_dysku",
+        "_odswiez_btn_cofnij",
+        "_push_cofnij",
+        "_ustaw_termin_z_cofnij",
+        "_przywroc_termin",
+        "_ctrl_z_kalendarz",
+        "_cofnij_kalendarz",
+        "_zdejmij_z_dnia",
+        "_archiwizuj_z_kalendarza",
+        "_wyczysc_dzien",
+        "_nastepny_dzien_roboczy",
+        "_rozloz_szkice_na_tydzien",
+        "_rysuj_kalendarze",
+        "_rysuj_kolumny_platform",
+        "_rysuj_tydzien",
+        "_karta_tygodnia",
+        "_karta_live_dnia",
+        "_tydzien_press",
+        "_tydzien_motion",
+        "_tydzien_release",
+        "_upusc_na_szuflade",
+        "_dzien_pod_kursorem",
+        "_upusc_na_dzien",
+        "_otworz_planer",
+        "_paczki_segmentu",
+        "_zajete_dla_dnia",
+        "_dzien_dla_slotu",
+        "_wybierz_dzien_slotu",
+        "_ustaw_slot_paczki",
+        "_szczegoly_paczki",
+        "_btn",
+        "_btn_maly",
+        "_rysuj_etapy",
+        "_pusta_karta",
+        "_odswiez_kolejke",
+        "_odswiez_weryfikacje",
+        "_po_weryfikacji_live",
+        "odswiez",
+        "_wiersz",
+        "_pokaz_karte",
+        "_panel_bledu_wrzutu",
+        "_wrzut_proces_zyje",
+        "_zwolnij_wrzut",
+        "_ustaw_stan_wrzutu",
+        "_zrzuc_opis_karty_na_dysk",
+        "_sledz_uploader",
+        "_wybierz_termin",
+        "_ai_warianty_opisu",
+        "_ai_warianty_w_tle",
+        "_pokaz_warianty_opisu",
+        "_uzyj_wariantu_opisu",
+        "_zapisz_plan",
+        "_zapisz_muzyke",
+        "_przelacz_archiwum",
+        "_przelacz_archiwum_publikacja",
+        "_wroc_z_archiwum_publikacja",
+        "_otworz_terminarz_meta",
+        "_otworz_tiktok_studio",
+        "_otworz_oficjalny_kalendarz",
+        "_po_otwarciu_kalendarza",
+        "_archiwizuj",
+        "_usun_szkic",
+        "_wroc_z_archiwum",
+        "_odswiez_stan_paczki",
+        "_wrzuc_tiktok_plus_meta",
+        "_wrzuc_tiktok_plus_instagram",
+        "_wrzuc_ponownie",
+        "_wrzuc",
+        "_start_uploader_po_prep",
+        "_klik_generator",
+        "_poll_dokuj",
+        "_dokuj",
+        "_klik_import",
+        "_klik_folder",
+        "_explorer",
+        "_tk_ex",
+        "_wstaw_studio",
+        "_dopasuj",
+        "_otworz",
+        "_skan",
+        "_region",
+        "_szer",
+        "_potwierdz_noge",
+        "_kolejka",
+        "_godzina",
+        "_rob",
+        "_open",
+        "_bind_open",
+        "_pineska_z_opisu",
+        "_zajete",
+        "_rob",
+        "_rob",
+        "_tak",
+        "_nie",
+        "_zabij",
+        "_open"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\gui\\sloty_ui.py",
+      "sha256": "eae95757644d4324f0de975741c18554ab8c1888b513c9b49e735ad8a505f122",
+      "size": 19075,
+      "classification": "GUI",
+      "imports": [
+        "__future__",
+        "datetime",
+        "math",
+        "studio.rdzen.sloty",
+        "tkinter"
+      ],
+      "functions": [
+        "wstaw_okna_publikacji",
+        "wstaw_pasek_dni",
+        "_wylacz_przeciaganie",
+        "otworz_wybor_slotu",
+        "__init__",
+        "_kolumna_cyfr",
+        "_oznacz_pisze",
+        "_z_cyfry",
+        "_z_pola_hhmm",
+        "_podczas_hhmm",
+        "get",
+        "set",
+        "_delta",
+        "_kat",
+        "_odleglosc",
+        "_chwyt",
+        "_ciagnij",
+        "_pusc",
+        "_rysuj_tarcze",
+        "_rysuj",
+        "_poniedzialek",
+        "_odswiez_pasek",
+        "_napisz_dzien",
+        "_ustaw_dzien",
+        "_aktualny_dt",
+        "_sprawdz_zajete",
+        "_klik_okna",
+        "_przerysuj_okna",
+        "_zamknij",
+        "_zapisz",
+        "_wrzut"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\gui\\wybor_terminu.py",
+      "sha256": "cf15c296d794da62b383b1083e02055204f71208b88ed0021bcbba20d14720fd",
+      "size": 4839,
+      "classification": "GUI",
+      "imports": [
+        "__future__",
+        "calendar",
+        "datetime",
+        "studio.gui.sloty_ui",
+        "studio.rdzen.sloty",
+        "tkinter"
+      ],
+      "functions": [
+        "otworz_kalendarz",
+        "_rysuj",
+        "_prev",
+        "_next",
+        "_zajete",
+        "_klik_slot",
+        "_ok",
+        "_anuluj"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\gui\\__init__.py",
+      "sha256": "7f39c22f428b86663695560e3fa2ef17dbe1a3bfacebdc545dfead1614631bd1",
+      "size": 18,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [],
+      "functions": [],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\rdzen\\drive_telefon.py",
+      "sha256": "0fd05cbfcf6dafbbaf09f3a55be8cab0c41decc4112084f59cfad4a6173129c7",
+      "size": 7208,
+      "classification": "rdzeń",
+      "imports": [
+        "__future__",
+        "datetime",
+        "json",
+        "konfiguracja",
+        "magazyn",
+        "model",
+        "pathlib",
+        "shutil",
+        "tempfile",
+        "zipfile"
+      ],
+      "functions": [
+        "_meta",
+        "_etykieta",
+        "_rozpakuj_zip",
+        "_termin",
+        "_tekst_opisu",
+        "_przygotuj_folder",
+        "synchronizuj_karty_z_drive"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\rdzen\\gestosc.py",
+      "sha256": "c9b8e4bcf3fa7e268dba2a509489c0d09fcb26a2304cd32d0dfdce5397dff279",
+      "size": 733,
+      "classification": "rdzeń",
+      "imports": [
+        "__future__"
+      ],
+      "functions": [
+        "rozmiary_gestosci",
+        "px"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\rdzen\\glos.py",
+      "sha256": "1f8a3999a42632968a78919feb318db9e2061d998b871eb1b52605969b11b5d2",
+      "size": 12956,
+      "classification": "rdzeń",
+      "imports": [
+        "__future__",
+        "datetime",
+        "hashlib",
+        "json",
+        "konfiguracja",
+        "magazyn",
+        "model",
+        "pathlib",
+        "re"
+      ],
+      "functions": [
+        "_katalog",
+        "plik_zlota",
+        "plik_zakazow",
+        "plik_szkicow",
+        "plik_profilu",
+        "plik_ocen",
+        "_dopisz",
+        "_wczytaj_jsonl",
+        "_slowa",
+        "podobienstwo",
+        "cechy_opisu",
+        "zapisz_szkic",
+        "zapisz_zloto",
+        "_frazy_linii",
+        "naucz_z_edycji",
+        "identyfikator_opisu",
+        "_ostatnie_oceny",
+        "opisy_do_oceny",
+        "zapisz_ocene_opisu",
+        "przyklady_podobne",
+        "lista_zakazow",
+        "prompt_glosu",
+        "zbuduj_profil",
+        "zbierz_paczke_do_zlota",
+        "zbierz_kolejke_do_zlota",
+        "cialo_z_podpisu"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\rdzen\\instancja.py",
+      "sha256": "93c8e816ce3f71a5784dfbf8823971950f9d076fb876b2666905682ac8095f62",
+      "size": 5892,
+      "classification": "rdzeń",
+      "imports": [
+        "__future__",
+        "faulthandler",
+        "json",
+        "konfiguracja",
+        "logging",
+        "os",
+        "pathlib",
+        "signal",
+        "subprocess",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "podpis_wersji",
+        "_pid_zyje",
+        "_zakoncz_pid",
+        "_pidy_z_wmi",
+        "podlacz_strumienie_pythonw",
+        "wczytaj_geometrie_okna",
+        "zapisz_geometrie_okna",
+        "_log_start",
+        "przejmij_instancje"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\rdzen\\kalendarz_live.py",
+      "sha256": "8d53e22d09e9165c3294c2f362da593451bd46a1c56d96888d1039e22ac22e1c",
+      "size": 20145,
+      "classification": "rdzeń",
+      "imports": [
+        "__future__",
+        "datetime",
+        "json",
+        "konfiguracja",
+        "magazyn",
+        "meta_uploader",
+        "model",
+        "niezawodnosc",
+        "patchright.sync_api",
+        "pathlib",
+        "re",
+        "threading",
+        "tiktok_uploader",
+        "time"
+      ],
+      "functions": [
+        "fragment_opisu",
+        "_norm",
+        "_alnum_spacje",
+        "plik_zrzutu",
+        "wczytaj_zrzut_live",
+        "wiek_zrzutu_godzin",
+        "zrzut_jest_stary",
+        "zapisz_zrzut_live",
+        "_minuty_z_tekstu",
+        "paczka_trafia_w_event",
+        "noga_meta_z_eventu",
+        "znajdz_live",
+        "event_to_blad_publikacji",
+        "data_z_eventu",
+        "potwierdzone_kanaly",
+        "event_dopasowany_do_kolejki",
+        "eventy_live_na_dzien",
+        "_karty_z_strony",
+        "_zrzut_tiktok",
+        "_zrzut_meta",
+        "zrzut_kalendarzy_live",
+        "zastosuj_live_do_paczki",
+        "_tiktok_stal_sie_potwierdzony",
+        "_sciagnij_tiktok_z_dzwiekiem_w_tle",
+        "naloz_live_na_kolejke",
+        "_praca"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\rdzen\\konfiguracja.py",
+      "sha256": "4c2031c59d98dd5181fea3c3d6a8a07848d930450a4047c2eaad31cc5e0d3703",
+      "size": 3041,
+      "classification": "rdzeń",
+      "imports": [
+        "__future__",
+        "json",
+        "pathlib",
+        "sys",
+        "time"
+      ],
+      "functions": [
+        "wczytaj_config_publishera",
+        "folder_kolejki_google",
+        "folder_telefon_google",
+        "sciezka_generatora",
+        "zapisz_sygnal_kolejki",
+        "odczytaj_sygnal_studio",
+        "zapewnij_foldery"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\rdzen\\magazyn.py",
+      "sha256": "319145d32b8f21cebe3e1a5f9636e2e74f770d0b7189eb25761ccda495539412",
+      "size": 36882,
+      "classification": "rdzeń",
+      "imports": [
+        "PIL",
+        "__future__",
+        "glos",
+        "hashlib",
+        "json",
+        "konfiguracja",
+        "model",
+        "os",
+        "pathlib",
+        "pineski",
+        "re",
+        "shutil",
+        "tempfile",
+        "time",
+        "walidacja"
+      ],
+      "functions": [
+        "klucz_naturalny_nazwy",
+        "sha256_plik",
+        "_sumy",
+        "_kopiuj_atomowo",
+        "_pisz_tekst_atomowo",
+        "_katalogi_dropa",
+        "_pliki_wideo",
+        "znajdz_wideo",
+        "znajdz_opis",
+        "znajdz_lokalizacje",
+        "znajdz_slowa_kluczowe",
+        "zapisz_slowa_kluczowe",
+        "znajdz_okladke",
+        "_zapisz_okladke_jako_png",
+        "rozpoznaj_drop",
+        "_folder_jest_gotowa_karuzela",
+        "folder_paczki",
+        "wczytaj_paczke",
+        "zapisz_paczke",
+        "_schowaj_w_inbox",
+        "zapisz_pliki_jako_paczke",
+        "_ext_obrazu",
+        "zapisz_slajdy_jako_paczke",
+        "importuj_folder_slajdow",
+        "importuj_folder",
+        "importuj_zrzut",
+        "lista_paczek",
+        "podsumuj_kolejke",
+        "_termin_krotko",
+        "skrot_kolejki",
+        "skanuj_inbox",
+        "juz_zaimportowane",
+        "paczka_dla_zrodla",
+        "paczka_o_etykiecie_zrodla",
+        "posprzataj_sieroty_importu",
+        "ustaw_termin",
+        "wyczysc_termin",
+        "ustaw_dodaj_muzyke",
+        "ustaw_lokalizacje",
+        "ustaw_tiktok_wideo_z_dzwiekiem",
+        "ustaw_opis",
+        "zrzuc_opis_gdy_otwarta_karta",
+        "wolno_usunac_z_listy",
+        "usun_szkic_z_listy",
+        "zostaje_na_kalendarzu",
+        "wolno_archiwizowac",
+        "archiwizuj",
+        "wroc_z_archiwum",
+        "sciezki_mediow",
+        "sciezki_slajdow",
+        "dump_diagnostyczny"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\rdzen\\model.py",
+      "sha256": "b6f1066a0a1b03156ce60e43e5d4aff12167a3ac9f50a140825ae7fa9e59ddcf",
+      "size": 23115,
+      "classification": "rdzeń",
+      "imports": [
+        "__future__",
+        "dataclasses",
+        "datetime",
+        "json",
+        "konfiguracja",
+        "os",
+        "pathlib",
+        "re"
+      ],
+      "functions": [
+        "etykieta_statusu",
+        "sparuj_crosspost_meta",
+        "kanal_wrzutu",
+        "etykieta_wrzutu",
+        "klucze_meta_crosspost",
+        "normalizuj_typ_posta",
+        "etykieta_typu_posta",
+        "brakuje_opisu",
+        "teraz_iso",
+        "parsuj_termin",
+        "bool_z_formularza",
+        "paczka_chce_muzyke",
+        "normalizuj_marke",
+        "hashtagi_domyslne",
+        "linia_hashtagow",
+        "_plik_etykiet_tagow",
+        "_etykiety_tagow",
+        "_rozbij_slug_taga",
+        "slowa_z_hashtagow",
+        "_jest_linia_hashtagow",
+        "rozdziel_opis",
+        "slowa_kluczowe",
+        "_oczysc_fraze_seo",
+        "_jest_w_tekscie",
+        "_jest_fraza_wyszukiwawcza",
+        "frazy_seo_z_tekstu",
+        "tekst_pliku_slow_kluczowych",
+        "dodaj",
+        "__post_init__",
+        "jest_karuzela",
+        "etykieta_typu",
+        "etykieta_mediow",
+        "znaczniki",
+        "podpis",
+        "termin_dt",
+        "dopisz_historie",
+        "ustaw_stan_platformy",
+        "_przelicz_status",
+        "do_json",
+        "z_json",
+        "nowe_id"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\rdzen\\most_generatora.py",
+      "sha256": "d3be7bae5af591c347886fe13053d97f4d3566cfc91ff8c4923cbde870575abe",
+      "size": 6348,
+      "classification": "rdzeń",
+      "imports": [
+        "__future__",
+        "json",
+        "konfiguracja",
+        "magazyn",
+        "model",
+        "os",
+        "osadzenie",
+        "pathlib",
+        "subprocess",
+        "sys",
+        "urllib.request"
+      ],
+      "functions": [
+        "ustaw_cel_generatora",
+        "zapisz_marke_generatora",
+        "wczytaj_marke_studio",
+        "_popen",
+        "generator_http_zywy",
+        "otworz_generator",
+        "importuj_z_inbox",
+        "generator_dziala"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\rdzen\\most_publikacji.py",
+      "sha256": "0fe640d30fe84652428d833f0d618a9c5f8636ad0a6fab0dd807845b189b5c9f",
+      "size": 32270,
+      "classification": "rdzeń",
+      "imports": [
+        "__future__",
+        "datetime",
+        "glos",
+        "json",
+        "konfiguracja",
+        "magazyn",
+        "meta_uploader",
+        "model",
+        "niezawodnosc",
+        "os",
+        "pathlib",
+        "pineski",
+        "pulpit_wrzutu",
+        "segmenty",
+        "subprocess",
+        "sys",
+        "tempo",
+        "tiktok_uploader",
+        "time",
+        "walidacja",
+        "wideo_hd"
+      ],
+      "functions": [
+        "_python",
+        "_skrypt",
+        "komenda_tiktok_karuzela",
+        "komenda_tiktok",
+        "argv_meta_uploader",
+        "meta_uzyje_tiktok_z_dzwiekiem",
+        "komenda_meta_karuzela",
+        "komenda_meta",
+        "_sciezki_z_cmd",
+        "_slajdy_z_cmd",
+        "asercja_cmd_tej_paczki",
+        "tekst_potwierdzenia_wrzutu",
+        "_pelna_sciezka",
+        "backup_rolki",
+        "przygotuj_wrzut",
+        "odczytaj_status_platformy",
+        "_klucze_platformy",
+        "oznacz_po_wrzucie",
+        "dopisz_status_jsonl",
+        "haczyk_reczny",
+        "_kanal_odhaczony_w_studio",
+        "oznacz_potwierdzenie_damiana",
+        "cofnij_potwierdzenie_damiana",
+        "uruchom_uploader",
+        "mapa_platform",
+        "url_oficjalnego_kalendarza",
+        "profil_kalendarza",
+        "otworz_oficjalny_kalendarz"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\rdzen\\nauka_wrzutu.py",
+      "sha256": "b1b99e2e574e91c67997580881a7231dc5325ace272849f760e8496829605c27",
+      "size": 12005,
+      "classification": "rdzeń",
+      "imports": [
+        "__future__",
+        "datetime",
+        "json",
+        "konfiguracja",
+        "pathlib"
+      ],
+      "functions": [
+        "dopisz_lekcje",
+        "wczytaj_lekcje",
+        "zasada",
+        "prompt_lekcji",
+        "zapewnij_ziarno"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\rdzen\\osadzenie.py",
+      "sha256": "923ee410bbee8b0795022cddfe6aceabcd71a28019752e59c106a01cf30ea3eb",
+      "size": 6917,
+      "classification": "rdzeń",
+      "imports": [
+        "__future__",
+        "ctypes",
+        "time"
+      ],
+      "functions": [
+        "_tytuly_okna",
+        "to_okno_generatora",
+        "_rozmiar_okna",
+        "wszystkie_hwnd_generatora",
+        "znajdz_hwnd_generatora",
+        "zamknij_wszystkie_okna_generatora",
+        "zamknij_nadmiar_okien_generatora",
+        "znajdz_hwnd_studio",
+        "na_wierzch_studio",
+        "czekaj_na_okno",
+        "_odczep_od_tk",
+        "_zdejmij_ramke",
+        "osadz_w_ramce",
+        "dopasuj_do_ramki",
+        "ukryj",
+        "pokaz",
+        "na_wierzch",
+        "_cb",
+        "_najwieksze",
+        "_cb",
+        "_pole"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\rdzen\\pineski.py",
+      "sha256": "bf1b67a9a67fa34781850a57b8d2cf408173867b5e140cd20a221f78957048b9",
+      "size": 3589,
+      "classification": "rdzeń",
+      "imports": [
+        "__future__",
+        "model",
+        "re",
+        "unicodedata"
+      ],
+      "functions": [
+        "_norm",
+        "dopasuj_pineske",
+        "_aliasy_do_szukania",
+        "pineska_z_tekstu",
+        "lokalizacja_z_opisu_albo"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\rdzen\\przebieg.py",
+      "sha256": "a7d455c7c099a68f5603eed77d58273037abc4eaacb5b565c4590b9846d283a9",
+      "size": 4074,
+      "classification": "rdzeń",
+      "imports": [
+        "__future__",
+        "model",
+        "pathlib",
+        "walidacja",
+        "weryfikacja_statusu"
+      ],
+      "functions": [
+        "_potwierdzenie_reczne",
+        "stan_faktyczny",
+        "skrot_stanow"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\rdzen\\pulpit_wrzutu.py",
+      "sha256": "b06091d593c66975975acdff7bd4e7fdad4f5029db0217b2da7827127dc2945d",
+      "size": 15777,
+      "classification": "rdzeń",
+      "imports": [
+        "__future__",
+        "datetime",
+        "json",
+        "kalendarz_live",
+        "konfiguracja",
+        "magazyn",
+        "meta_uploader",
+        "model",
+        "most_publikacji",
+        "niezawodnosc",
+        "os",
+        "pathlib",
+        "threading",
+        "time",
+        "urllib.request",
+        "weryfikacja_statusu",
+        "wideo_hd"
+      ],
+      "functions": [
+        "plik_muzyka_ok",
+        "daj_sygnal_muzyki",
+        "czy_sygnal_muzyki",
+        "zdejmij_sygnal_muzyki",
+        "stan_hd_pliku",
+        "stan_hd_paczki",
+        "start_hd_w_tle",
+        "zakolejkuj_hd_marki",
+        "ostatnia_klatka_nadzoru",
+        "ostatnia_ocena_nadzoru",
+        "ogon_konsoli",
+        "ostatni_krok_jsonl",
+        "czeka_na_muzyke",
+        "formularze_czekaja_na_cta",
+        "ukryj_wrzuc_po_wypelnieniu",
+        "_haczyk",
+        "pokaz_przycisk_tt_plus_meta",
+        "paski_postepu",
+        "panel_wrzutu",
+        "etykieta_wieku_zrzutu",
+        "_cdp_zyje",
+        "sondy_przegladarek",
+        "composer_post_url_dla_marki",
+        "otworz_karuzele_w_suite",
+        "_rob"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\rdzen\\segmenty.py",
+      "sha256": "16edf0767ff026f4ea87c5239e98fe1025b51d603e498874be2d4bc5ba1ffcb0",
+      "size": 1302,
+      "classification": "rdzeń",
+      "imports": [
+        "__future__",
+        "model"
+      ],
+      "functions": [
+        "segment",
+        "pasek_segmentu"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\rdzen\\sloty.py",
+      "sha256": "2d62dd8f84383d18039567febe055afd8bc7f5d4b72a602cd0f9e1bd814a7e1d",
+      "size": 5236,
+      "classification": "rdzeń",
+      "imports": [
+        "__future__",
+        "dataclasses",
+        "datetime",
+        "random"
+      ],
+      "functions": [
+        "slot_po_id",
+        "okno_tekst",
+        "godzina_domyslna_slotu",
+        "siatka_slotu",
+        "slot_dla_czasu",
+        "zajete_hhmm",
+        "losuj_w_slocie",
+        "najblizszy_dzien",
+        "nastepna_stala_na_dzien",
+        "dobierz_termin",
+        "parsuj_hhmm"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\rdzen\\tempo.py",
+      "sha256": "81ebd7642674a2d0360682bc99650a03aad0af7eb009720f76eb5daf1e281fa9",
+      "size": 624,
+      "classification": "rdzeń",
+      "imports": [
+        "__future__",
+        "json",
+        "konfiguracja",
+        "pathlib",
+        "time"
+      ],
+      "functions": [
+        "dopisz_tempo"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\rdzen\\walidacja.py",
+      "sha256": "dc31a356ad911148762a920b98f704a219a90135f7a28b348d9762cf2c52b40a",
+      "size": 7952,
+      "classification": "rdzeń",
+      "imports": [
+        "__future__",
+        "datetime",
+        "konfiguracja",
+        "model",
+        "pathlib",
+        "re"
+      ],
+      "functions": [
+        "_plik_ok",
+        "_obraz_ma_naglowek",
+        "_nazwy_zastrzezone",
+        "znajdz_pliki_slajdow",
+        "_sprawdz_slajdy",
+        "sprawdz_pliki",
+        "brama_kompletna",
+        "brama_termin",
+        "brama_do_planu",
+        "brama_do_wrzutu",
+        "wolno_oznaczyc_sukces",
+        "__init__",
+        "ok",
+        "__bool__",
+        "klucz"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\rdzen\\weryfikacja_statusu.py",
+      "sha256": "47ba1214ec8cd670eacee29739e3e29da6eefb43d0c2c11b021ec6c9bc475853",
+      "size": 12836,
+      "classification": "rdzeń",
+      "imports": [
+        "__future__",
+        "datetime",
+        "json",
+        "kalendarz_live",
+        "konfiguracja",
+        "magazyn",
+        "model",
+        "most_publikacji",
+        "niezawodnosc",
+        "pathlib"
+      ],
+      "functions": [
+        "_plik",
+        "wczytaj_linie",
+        "_ostatni_krok",
+        "_ts",
+        "_stare",
+        "_toast",
+        "werdykt_kanalu",
+        "raport_paczki",
+        "_klucze_do_zapisu",
+        "zsynchronizuj_paczke",
+        "odswiez_weryfikacje_kolejki",
+        "odswiez_weryfikacje_z_platform",
+        "odswiez_stan_paczki"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\rdzen\\wideo_hd.py",
+      "sha256": "e51c5d014c4650c1e27d65604983c9702dca372ad4bb8791e4472755024ec91b",
+      "size": 9076,
+      "classification": "rdzeń",
+      "imports": [
+        "__future__",
+        "imageio_ffmpeg",
+        "magazyn",
+        "os",
+        "pathlib",
+        "re",
+        "subprocess",
+        "time"
+      ],
+      "functions": [
+        "_ffmpeg",
+        "_run_ffmpeg",
+        "_ogon_ffmpeg",
+        "_probe",
+        "_hd_plik_gotowy",
+        "sciezka_hd",
+        "sciezka_staging_hd",
+        "_plik_zajety",
+        "hd_koduje_w_tle",
+        "czekaj_na_hd_gotowe",
+        "trzeba_konwertowac",
+        "transkoduj_do_hd",
+        "zapewnij_wideo_hd",
+        "zapewnij_wideo_hd_paczki"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\rdzen\\__init__.py",
+      "sha256": "41785b886a9096b07ed437ff26bc934958c091f26b18fe2d9a6610a2ce635f9e",
+      "size": 56,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [],
+      "functions": [],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\testy\\helpers.py",
+      "sha256": "39f5a88d7c680ffd497b41cd1cc6920a273b48841de64c9e974e04af23f83b2c",
+      "size": 1163,
+      "classification": "pomocniczy",
+      "imports": [
+        "__future__",
+        "pathlib",
+        "struct",
+        "zlib"
+      ],
+      "functions": [
+        "png_bajty",
+        "fake_wideo",
+        "chunk"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\testy\\test_drive_telefon.py",
+      "sha256": "bb5ed1308c7054f42b4f5e38bb1c582f44ca5f79607886d81719d495c3b89c44",
+      "size": 3858,
+      "classification": "test",
+      "imports": [
+        "__future__",
+        "json",
+        "pathlib",
+        "studio.rdzen.drive_telefon",
+        "studio.rdzen.magazyn",
+        "studio.testy.helpers",
+        "tempfile",
+        "unittest",
+        "zipfile"
+      ],
+      "functions": [
+        "setUp",
+        "tearDown",
+        "_meta",
+        "test_rolka_importuje_sie_tylko_raz",
+        "test_karuzela_staje_sie_jedna_karta",
+        "test_paczka_zip_z_telefonu_staje_sie_jedna_karta"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\testy\\test_przebieg.py",
+      "sha256": "293f8bb423225efceb4d261ce7ae5a16ff09c76953c7521e2869cb1dc7e3e247",
+      "size": 2415,
+      "classification": "test",
+      "imports": [
+        "__future__",
+        "json",
+        "pathlib",
+        "studio.rdzen",
+        "studio.rdzen.magazyn",
+        "studio.rdzen.przebieg",
+        "studio.testy.helpers",
+        "tempfile",
+        "unittest",
+        "unittest.mock"
+      ],
+      "functions": [
+        "setUp",
+        "tearDown",
+        "test_pokazuje_brak_terminu_jako_miejsce_zatrzymania",
+        "test_formularz_wypelniony_wymaga_klikniecia_czlowieka",
+        "test_wszystkie_recznie_potwierdzone_to_zakonczone"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\testy\\test_pulpit_wrzutu.py",
+      "sha256": "5a0f78b650215725685909e64220c74a40bf17384183f96d7c932b52f3881128",
+      "size": 10372,
+      "classification": "test",
+      "imports": [
+        "__future__",
+        "inspect",
+        "json",
+        "niezawodnosc",
+        "os",
+        "pathlib",
+        "studio.gui",
+        "studio.rdzen",
+        "studio.rdzen.gestosc",
+        "studio.rdzen.instancja",
+        "studio.rdzen.magazyn",
+        "studio.rdzen.model",
+        "studio.rdzen.pulpit_wrzutu",
+        "sys",
+        "tempfile",
+        "unittest",
+        "unittest.mock"
+      ],
+      "functions": [
+        "setUp",
+        "tearDown",
+        "test_hd_brak_i_gotowe",
+        "test_gestosc_karty_miesci_sie_w_oknie",
+        "test_hd_part_nie_wywala_time",
+        "test_hd_kolejki_i_wmi_zostaly_po_starcie",
+        "test_ukryj_wrzuc_po_gotowe_do_klikniecia",
+        "test_tt_plus_meta_gasi_gdy_haczyk_ig",
+        "test_tt_plus_meta_gasi_gdy_haczyk_tt",
+        "test_tt_plus_meta_gasi_gdy_formularz_meta_wypelniony",
+        "test_tt_plus_meta_ok_gdy_meta_jeszcze_pusta",
+        "test_paski_tt_i_meta",
+        "test_karuzela_url_to_composer_nie_reels",
+        "test_sygnal_muzyki_i_wiek_zrzutu",
+        "test_zrzuc_opis_tylko_gdy_otwarta_ta_karta",
+        "test_ogon_jsonl_i_baner_bez_modalu",
+        "test_sondy_nie_importuja_patchright",
+        "test_pythonw_strumienie_nie_sa_none",
+        "test_przejmij_instancje_zapisuje_pid"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\testy\\test_slabych_punktow.py",
+      "sha256": "48e4488aaf92fc973c6ef97bb976e4ae9c459bba9a66a100158a5478755d1cec",
+      "size": 92648,
+      "classification": "test",
+      "imports": [
+        "__future__",
+        "datetime",
+        "inspect",
+        "meta_uploader",
+        "nadzor_wrzutu",
+        "niezawodnosc",
+        "os",
+        "pathlib",
+        "studio.rdzen.glos",
+        "studio.rdzen.kalendarz_live",
+        "studio.rdzen.magazyn",
+        "studio.rdzen.model",
+        "studio.rdzen.most_generatora",
+        "studio.rdzen.most_publikacji",
+        "studio.rdzen.nauka_wrzutu",
+        "studio.rdzen.osadzenie",
+        "studio.rdzen.pineski",
+        "studio.rdzen.sloty",
+        "studio.rdzen.walidacja",
+        "studio.rdzen.weryfikacja_statusu",
+        "studio.rdzen.wideo_hd",
+        "studio.testy.helpers",
+        "sys",
+        "tempfile",
+        "tiktok_uploader",
+        "time",
+        "unittest",
+        "unittest.mock",
+        "zaslony_meta"
+      ],
+      "functions": [
+        "setUp",
+        "tearDown",
+        "_drop",
+        "test_kompletny_drop_wchodzi",
+        "test_brak_opisu_odrzuca_i_nie_zostawia_polowki",
+        "test_pusty_opis_odrzuca",
+        "test_za_krotki_opis_odrzuca",
+        "test_brak_miniaturki_odrzuca",
+        "test_falszywa_miniaturka_txt_odrzuca",
+        "test_brak_wideo_odrzuca",
+        "test_za_male_wideo_odrzuca",
+        "test_dwa_wideo_w_folderze_nie_zgadujemy",
+        "test_suma_kontrolna_wykrywa_podmiane_opisu",
+        "test_skan_inbox_tylko_kompletne",
+        "test_skan_inbox_widzi_karuzele_bez_wideo",
+        "test_importuj_z_inbox_wciaga_karuzele_wsadowo",
+        "test_drugi_import_tego_samego_zrodla_to_duplikat",
+        "test_polskie_znaki_w_sciezce",
+        "test_znaczniki_z_opisu_nie_z_osobnego_pola",
+        "test_pod_hashtagami_idzie_echo_slow_bez_kratki",
+        "test_brak_hashtagow_dopisuje_domyslne_nie_blokuje_wrzutu",
+        "test_plik_slow_kluczowych_z_tekstu_opisu",
+        "test_brama_termin_przeszlosc",
+        "test_nie_wrzucisz_szkicu_bez_zatwierdzenia",
+        "test_telegram_nie_jest_sukcesem",
+        "test_duplikat_potwierdzenia_zablokowany",
+        "test_mapa_platform_ig_fb_osobne_sciezki",
+        "test_komenda_uploadera_zawsze_z_okladka_i_opisem",
+        "test_przygotuj_wrzut_blokuje_gdy_zginie_okladka",
+        "test_status_paczki_potwierdzony_dopiero_gdy_wszystkie",
+        "test_meta_paczka_ma_obie_nogi_wrzut_osobno",
+        "test_marka_atlet_rigger_i_aliasy",
+        "test_miniaturka_bez_rozszerzenia",
+        "test_wideo_w_podfolderze_i_okladka_obok",
+        "test_zrzut_zawartosci_trzech_plikow",
+        "test_pineska_warszawa_to_plac_defilad",
+        "test_termin_z_palca_dd_mm",
+        "test_jedna_platforma_blad_wraca_do_czlowieka",
+        "test_weryfikacja_jsonl_klik_bez_listy_to_nie_pewnosc",
+        "test_weryfikacja_jsonl_lista_ok_to_potwierdzony",
+        "test_weryfikacja_jsonl_urwany_w_toku_to_nie_na_platformie",
+        "test_ustaw_stan_nie_dubluje_prob_przy_odswiezeniu",
+        "test_live_match_fragment_i_godzina",
+        "test_kalendarz_pokazuje_potwierdzone_na_platformie",
+        "test_stary_zrzut_live_jest_oznaczony",
+        "test_komenda_ponownie_doklada_flage",
+        "test_komenda_tiktok_dokleja_flage_muzyki_jak_meta",
+        "test_meta_wrzuca_plik_z_tiktoka_gdy_jest_dzwiek",
+        "test_odswiez_stan_paczki_zwraca_raport_per_platforma",
+        "test_fake_wideo_nie_idzie_w_ffmpeg_hd",
+        "test_stary_hd_lock_nie_blokuje_wrzutu",
+        "test_stary_part_nie_udaje_kodowania",
+        "test_gotowe_hd_omija_ffmpeg_probe",
+        "test_python_uploader_z_pythonw_bierze_python_exe",
+        "test_meta_szuka_wybierz_pliki_na_pustym_kompozytorze",
+        "test_hd_staging_ma_rozszerzenie_mp4",
+        "test_tiktok_atlet_osobny_profil_i_port",
+        "test_oficjalny_kalendarz_url_profil_i_nowe_okno",
+        "test_reels_composer_to_edytor_rolek_nie_tab_reels",
+        "test_wrzut_padl_przed_kalendarzem_zdejmuje_blokade",
+        "test_podpis_publikacji_trzyma_emotki_z_generatora",
+        "test_meta_max_5_znacznikow",
+        "test_znaczniki_z_echa_hashtagow_nie_z_pytan",
+        "test_blad_wrzutu_czarno_na_bialym",
+        "test_tiktok_wypelniony_czeka_na_cta_damiana",
+        "test_komenda_meta_z_panelu_to_ten_plik_opis_okladka_pineska_data",
+        "test_backup_rolki_rigger_ma_sciezki_opis_pineske_termin_i_sciage",
+        "test_backup_rolki_atlet_bez_muzyki_edge_9222",
+        "test_dwie_paczki_nie_mieszaja_wideo_okladki_opisu",
+        "test_panel_blokuje_meta_po_1390008",
+        "test_staly_lockfile_nie_blokuje_odpalenia_edge",
+        "test_hwnd_generatora_nie_bierze_gdi_plus",
+        "test_kompletny_inbox_idzie_do_kolejki",
+        "test_zapis_generatora_idzie_prosto_do_kolejki",
+        "test_checkbox_muzyki_z_generatora_zostaje_w_paczce",
+        "test_lokalizacja_z_generatora_zostaje_w_paczce",
+        "test_miejsce_w_opisie_sciaga_pineske",
+        "test_lista_paczek_najnowsze_na_gorze",
+        "test_podsumowanie_kolejki_liczy_szkice_i_terminy",
+        "test_archiwum_tylko_po_wrzucie",
+        "test_wstawione_rolki_zostaja_na_kalendarzu",
+        "test_szkic_mozna_zdjac_z_listy_wrzut_nie",
+        "test_sloty_siatka_co_5_min_i_bez_powtorek",
+        "test_parsuj_hhmm_wpis_z_zegara",
+        "test_ustaw_termin_ze_slotu_robi_zaplanowany",
+        "test_jedno_zdjecie_to_photo_bez_mp4",
+        "test_trzy_zdjecia_to_carousel_z_echem_hashtagow",
+        "test_zero_slajdow_odrzuca",
+        "test_jedenascie_slajdow_odrzuca",
+        "test_paczka_o_etykiecie_zrodla_znajduje_po_slug",
+        "test_brakuje_opisu_flaguje_placeholder_i_pusty",
+        "test_rolka_nadal_wymaga_wideo",
+        "test_przygotuj_wrzut_karuzeli_leci_przez_karuzela_uploader",
+        "test_przykladowa_karuzela_z_archiwum_avatar_9",
+        "test_dowolne_nazwy_zdjec_licza_sie_jako_slajdy",
+        "test_lokalizacja_txt_per_folder_wygrywa_z_domyslna",
+        "test_brak_lokalizacja_txt_uzywa_domyslnej",
+        "test_glos_uczy_sie_z_edycji_damiana",
+        "test_nauka_wrzutu_lokalizacja_to_modal_zapisz",
+        "test_odhacz_ig_nie_odhacz_fb",
+        "test_odhaczenie_tiktoka_odblokowuje_wrzut_gdy_meta_juz_siedzi",
+        "test_okladka_blad_nie_jest_fatal_gdy_termin_siadl",
+        "test_opis_blad_nie_jest_fatal_i_film_w_oknie_nie_resetuje",
+        "test_okladka_ranking_odrzuca_zakladke_710x52",
+        "test_nagranie_13_09_dwa_zegary_i_zmien_obraz",
+        "test_tiktok_picker_to_wybierz_film_nie_ukryty_input",
+        "test_billing_hub_to_zly_tor_nie_kompozytor",
+        "test_zaslony_nie_rusza_cta_ani_miniatury_ani_pinu",
+        "test_nadzor_ocenia_pola_filmu_opisu_lokalizacji_terminu_i_pary",
+        "test_formularz_gotowy_cel_obie_czyta_jsonl_instagramu",
+        "poll",
+        "poll"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\testy\\test_trener_opisow.py",
+      "sha256": "ff2530420ab2c9f9488af94d99e147b3507b4a454515634260949087b58d91b8",
+      "size": 2036,
+      "classification": "test",
+      "imports": [
+        "__future__",
+        "pathlib",
+        "studio.rdzen",
+        "tempfile",
+        "unittest",
+        "unittest.mock"
+      ],
+      "functions": [
+        "setUp",
+        "tearDown",
+        "test_dobry_opis_jest_potwierdzonym_przykladem",
+        "test_odrzucony_nie_wraca_do_promptu",
+        "test_poprawiony_zastepuje_stary"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\testy\\__init__.py",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "size": 0,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [],
+      "functions": [],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\zasoby\\zrob_ikone.py",
+      "sha256": "af8f5d1d435cc5783c1ead1539107a0adfdd44a8242eba648304e0c017aa3fb0",
+      "size": 1054,
+      "classification": "pomocniczy",
+      "imports": [
+        "PIL",
+        "__future__",
+        "pathlib"
+      ],
+      "functions": [
+        "zapisz_ico"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\studio\\zasoby\\__init__.py",
+      "sha256": "2f18a0878a66d0e15d51783caa551127171da5aaf48b566ac69a43facdcad91c",
+      "size": 31,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [],
+      "functions": [],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\dowody\\nagranie-20260913-002834\\_stt.py",
+      "sha256": "1b29169fc1e9238ceae4b8b99174922962781e8793da8e4ec79aa5256143420b",
+      "size": 1636,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "__future__",
+        "pathlib",
+        "speech_recognition",
+        "wave"
+      ],
+      "functions": [
+        "main"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\byku-publisher-desktop\\dowody\\nagranie-20260913-002834\\_stt2.py",
+      "sha256": "34b0f68549b3674b5f1456ff600dea9aa9f74b4763cd79eed0f9174c9933a841",
+      "size": 962,
+      "classification": "jednorazowy/historyczny — nie uruchamiać automatycznie",
+      "imports": [
+        "pathlib",
+        "speech_recognition",
+        "wave"
+      ],
+      "functions": [],
+      "top_level_calls": [
+        "w.close",
+        "Path(__file__).with_name('transkrypcja-okna.txt').write_text"
+      ]
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\generator-opisow-dropa\\aplikacja.py",
+      "sha256": "b52b350411b743b2e8a093653aeed5153306969c128976e615d8e033ae1ae709",
+      "size": 3358,
+      "classification": "generator",
+      "imports": [
+        "__future__",
+        "ctypes",
+        "inspect",
+        "os",
+        "pathlib",
+        "serwer",
+        "studio.rdzen.osadzenie",
+        "sys",
+        "time",
+        "traceback",
+        "webview"
+      ],
+      "functions": [
+        "_blad",
+        "_okno_juz_jest",
+        "_katalog_webview",
+        "main"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\generator-opisow-dropa\\edytuj_paczke.py",
+      "sha256": "5e8bebc554231eab3c6ffd21b82bd16f31e7f589d75cf53f60e604e8bfe1c134",
+      "size": 2603,
+      "classification": "generator",
+      "imports": [
+        "__future__",
+        "ctypes",
+        "inspect",
+        "os",
+        "pathlib",
+        "serwer",
+        "sys",
+        "webview"
+      ],
+      "functions": [
+        "_blad",
+        "_katalog_webview",
+        "main"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\generator-opisow-dropa\\serwer.py",
+      "sha256": "2caad79d19b79cdd48f6481ceca6758f5f7348f971f2359fc27d4f2581e04db1",
+      "size": 52064,
+      "classification": "generator",
+      "imports": [
+        "__future__",
+        "base64",
+        "http.server",
+        "json",
+        "os",
+        "pathlib",
+        "re",
+        "shutil",
+        "socket",
+        "studio.rdzen.glos",
+        "studio.rdzen.konfiguracja",
+        "studio.rdzen.magazyn",
+        "studio.rdzen.model",
+        "studio.rdzen.osadzenie",
+        "subprocess",
+        "sys",
+        "threading",
+        "time",
+        "urllib.parse",
+        "urllib.request",
+        "webbrowser"
+      ],
+      "functions": [
+        "klucz_naturalny_pliku",
+        "katalog_danych",
+        "wczytaj_webhook",
+        "folder_kolejki_studio",
+        "wczytaj_cel",
+        "zapisz_cel",
+        "wczytaj_marke",
+        "wczytaj_tagi",
+        "zapisz_tagi",
+        "wczytaj_folder_rolek",
+        "zapisz_folder_rolek",
+        "lista_rolek_w_folderze",
+        "wczytaj_szkic_obok",
+        "zapisz_szkic_obok",
+        "dopisz_szkic_generacji",
+        "opis_folderu_rolek",
+        "wczytaj_folder_karuzel",
+        "zapisz_folder_karuzel",
+        "_szkic_karuzeli",
+        "_opis_gotowy_karuzeli",
+        "_juz_w_kolejce_studio",
+        "lista_karuzel_w_folderze",
+        "opis_folderu_karuzel",
+        "plik_slajdu_karuzeli",
+        "slajdy_z_folderu_karuzeli",
+        "plik_rolki",
+        "marka_studio",
+        "przerzuc_do_kolejki_studio",
+        "_python_do_studio",
+        "sygnal_kolejki_cicho",
+        "otworz_studio_kolejka",
+        "zapisz_diag",
+        "slugify",
+        "unikalny_folder",
+        "wybierz_folder_oknem",
+        "parsuj_multipart",
+        "port_zajety",
+        "port_to_nasz",
+        "wybierz_port",
+        "url_aplikacji",
+        "poczekaj_na_serwer",
+        "_plik_wideo_lub_slajdu_paczki",
+        "paczka_kolejki_dla_edycji",
+        "plik_paczki_kolejki",
+        "zapisz_opis_do_kolejki",
+        "uruchom_serwer",
+        "main",
+        "__init__",
+        "log_message",
+        "end_headers",
+        "do_GET",
+        "do_POST",
+        "_generuj",
+        "_ustaw_folder_rolek",
+        "_ustaw_folder_karuzel",
+        "_plik_karuzeli",
+        "_szkic_rolki",
+        "_kolejka_item",
+        "_kolejka_zapisz",
+        "_kolejka_plik",
+        "_plik_rolki",
+        "_wybierz_folder",
+        "_zapisz",
+        "_zapisz_karuzele",
+        "_otworz",
+        "_json",
+        "tekst",
+        "tekst"
+      ],
+      "top_level_calls": []
+    },
+    {
+      "path": "C:\\Users\\DELL\\Desktop\\aplikacje\\05_APLIKACJE_SKRYPTY\\generator-opisow-dropa\\zbuduj_z_artefaktu.py",
+      "sha256": "1bd34dceb24dd5f7f1860051359e3d744bd5426e64130b42ef5b57a19c746363",
+      "size": 15037,
+      "classification": "generator",
+      "imports": [
+        "pathlib"
+      ],
+      "functions": [],
+      "top_level_calls": [
+        "DST.write_text",
+        "print"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#050505">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>BYKU.PUBLIKACJE MOBILE</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="shell">
+    <header><div><span class="eyebrow">BYKU.PUBLIKACJE</span><h1>MOBILE</h1></div><span id="networkBadge" class="badge">ONLINE</span></header>
+    <aside id="syncPanel" class="sync-panel" aria-live="polite">
+      <button id="refreshButton" class="refresh">↻ Odśwież i sprawdź zgodność</button>
+      <div><strong id="syncTitle">Gotowy do sprawdzenia</strong><small id="syncDetail">Wybierz markę i podłącz indeks Google Drive.</small></div>
+    </aside>
+    <nav><button class="active" data-view="packages">Paczki</button><button data-view="events">Czynności</button><button data-view="settings">Ustawienia</button></nav>
+    <main>
+      <section id="packagesView" class="view active">
+        <div class="section-head"><div><p class="kicker">TIKTOK GOTOWY</p><h2>Instagram czeka</h2></div><select id="brandSelect" aria-label="Marka"><option value="atlet">ATLET</option><option value="rigger">RIGGER</option></select></div>
+        <div id="packageList" class="package-list"><div class="empty">Brak zapisanych paczek. Użyj przycisku odświeżania.</div></div>
+      </section>
+      <section id="eventsView" class="view"><p class="kicker">TYLKO ŚWIADOME AKCJE</p><h2>Czynności telefonu</h2><p class="muted">Import paczki nigdy nie ustawia haczyka, terminu ani statusu publikacji.</p><div id="eventList" class="event-list"></div></section>
+      <section id="settingsView" class="view"><p class="kicker">TRANSPORT</p><h2>Google Drive</h2><label>Adres publicznego <code>index.json</code><input id="indexUrl" type="url" placeholder="https://…/index.json" inputmode="url"></label><p class="muted">Indeks wskazuje manifesty w folderach ATLET/RIGGER. Aplikacja nie traktuje Dysku jako bazy statusów.</p><button id="saveSettings" class="secondary">Zapisz ustawienia</button><p id="settingsStatus" class="muted"></p></section>
+    </main>
+  </div>
+  <dialog id="packageDialog"><button class="close" id="closeDialog" aria-label="Zamknij">×</button><div id="packageDetail"></div></dialog>
+  <template id="packageTemplate"><article class="card"><button class="card-open"><img class="thumb" alt=""><span><strong class="title"></strong><small class="meta"></small><em class="state"></em></span><b>›</b></button></article></template>
+  <script type="module" src="src/app.js"></script>
+</body>
+</html>

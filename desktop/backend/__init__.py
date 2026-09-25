@@ -1,0 +1,2 @@
+"""Backend BYKU.PUBLIKACJE DESKTOP."""
+
