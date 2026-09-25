@@ -1,1 +1,18 @@
-{"name":"BYKU.PUBLIKACJE MOBILE","short_name":"BYKU Mobile","description":"Paczki TikTok gotowy — Instagram czeka","start_url":"./","scope":"./","display":"standalone","background_color":"#050505","theme_color":"#050505","lang":"pl","orientation":"portrait-primary","icons":[{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]}
+{
+  "name": "BYKU.PUBLIKACJE MOBILE",
+  "short_name": "BYKU Mobile",
+  "description": "Paczki: TikTok gotowy — Instagram czeka. Pliki, opisy, hashtagi.",
+  "id": "./",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a0a0a",
+  "theme_color": "#0a0a0a",
+  "lang": "pl",
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}

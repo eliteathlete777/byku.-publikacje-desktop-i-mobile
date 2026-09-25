@@ -3,32 +3,57 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#050505">
+  <meta name="theme-color" content="#0a0a0a">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="BYKU Mobile">
+  <meta name="robots" content="noindex,nofollow">
   <title>BYKU.PUBLIKACJE MOBILE</title>
   <link rel="manifest" href="manifest.webmanifest">
-  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="icon" href="icons/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="shell">
-    <header><div><span class="eyebrow">BYKU.PUBLIKACJE</span><h1>MOBILE</h1></div><span id="networkBadge" class="badge">ONLINE</span></header>
-    <aside id="syncPanel" class="sync-panel" aria-live="polite">
-      <button id="refreshButton" class="refresh">↻ Odśwież i sprawdź zgodność</button>
-      <div><strong id="syncTitle">Gotowy do sprawdzenia</strong><small id="syncDetail">Wybierz markę i podłącz indeks Google Drive.</small></div>
-    </aside>
-    <nav><button class="active" data-view="packages">Paczki</button><button data-view="events">Czynności</button><button data-view="settings">Ustawienia</button></nav>
+  <section id="loginScreen" class="login" hidden>
+    <div class="login-box">
+      <div class="logo"><span>B</span><div><strong>BYKU</strong><small>PUBLIKACJE · MOBILE</small></div></div>
+      <h1>Zaloguj się</h1>
+      <p class="muted">Materiały są dostępne wyłącznie po zalogowaniu.</p>
+      <form id="loginForm" autocomplete="on">
+        <label>Login<input id="loginInput" name="username" autocomplete="username" autocapitalize="none" required></label>
+        <label>Hasło<input id="passwordInput" name="password" type="password" autocomplete="current-password" required></label>
+        <button class="btn primary big" type="submit" id="loginButton">Wejdź</button>
+      </form>
+      <p id="loginStatus" class="status" role="alert"></p>
+    </div>
+  </section>
+
+  <div id="app" class="shell" hidden>
+    <header class="top">
+      <div class="logo small"><span>B</span><div><strong>BYKU</strong><small id="userLabel">MOBILE</small></div></div>
+      <span id="netBadge" class="net">ONLINE</span>
+      <button id="logoutButton" class="icon-btn" type="button" aria-label="Wyloguj" title="Wyloguj">⏻</button>
+    </header>
+    <div class="sync" id="syncBar">
+      <button id="refreshButton" class="refresh" type="button">↻ Odśwież i sprawdź zgodność</button>
+      <p id="syncStatus" class="sync-status" aria-live="polite"><b>Sprawdzam…</b></p>
+    </div>
     <main>
-      <section id="packagesView" class="view active">
-        <div class="section-head"><div><p class="kicker">TIKTOK GOTOWY</p><h2>Instagram czeka</h2></div><select id="brandSelect" aria-label="Marka"><option value="atlet">ATLET</option><option value="rigger">RIGGER</option></select></div>
-        <div id="packageList" class="package-list"><div class="empty">Brak zapisanych paczek. Użyj przycisku odświeżania.</div></div>
-      </section>
-      <section id="eventsView" class="view"><p class="kicker">TYLKO ŚWIADOME AKCJE</p><h2>Czynności telefonu</h2><p class="muted">Import paczki nigdy nie ustawia haczyka, terminu ani statusu publikacji.</p><div id="eventList" class="event-list"></div></section>
-      <section id="settingsView" class="view"><p class="kicker">TRANSPORT</p><h2>Google Drive</h2><label>Adres publicznego <code>index.json</code><input id="indexUrl" type="url" placeholder="https://…/index.json" inputmode="url"></label><p class="muted">Indeks wskazuje manifesty w folderach ATLET/RIGGER. Aplikacja nie traktuje Dysku jako bazy statusów.</p><button id="saveSettings" class="secondary">Zapisz ustawienia</button><p id="settingsStatus" class="muted"></p></section>
+      <div class="head-row">
+        <div><p class="kicker">TIKTOK GOTOWY</p><h1>Instagram czeka</h1></div>
+        <div class="seg" id="brandFilter" role="group" aria-label="Marka">
+          <button type="button" data-brand="all">Wszystko</button><button type="button" data-brand="atlet">Atlet</button><button type="button" data-brand="rigger">Rigger</button>
+        </div>
+      </div>
+      <div id="problems"></div>
+      <div id="list" class="list"></div>
     </main>
   </div>
-  <dialog id="packageDialog"><button class="close" id="closeDialog" aria-label="Zamknij">×</button><div id="packageDetail"></div></dialog>
-  <template id="packageTemplate"><article class="card"><button class="card-open"><img class="thumb" alt=""><span><strong class="title"></strong><small class="meta"></small><em class="state"></em></span><b>›</b></button></article></template>
+
+  <dialog id="detail" class="detail"><div id="detailBody"></div></dialog>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
   <script type="module" src="src/app.js"></script>
 </body>
 </html>

@@ -1,0 +1,9 @@
+# API: wszystkie trasy przez index.php; biblioteki i narzędzia niedostępne z sieci.
+Options -Indexes
+RewriteEngine On
+RewriteRule ^(lib|tools)(/|$) - [F,L]
+RewriteRule ^local-config\.php$ - [F,L]
+RewriteCond %{HTTP:Authorization} ^(.+)$
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%1]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ index.php?route=$1 [QSA,L]

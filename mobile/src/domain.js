@@ -1,84 +1,96 @@
-export const SUPPORTED_SCHEMA_VERSION = 1;
-export const BRANDS = new Set(["atlet", "rigger"]);
+// Logika paczek: łączenie indeksu z ostatnim poprawnym odczytem, stany, SHA-256.
+import { validateManifest, INCOMPATIBLE } from "./contract.js";
 
-export function packageKey(manifest) {
-  return `${manifest.post_id}::${manifest.brand}`;
-}
+export const STATE_LABEL = {
+  current: "Aktualna", newer: "Nowa wersja", incomplete: "Niekompletna",
+  incompatible: "Niezgodna", offline: "Offline — ostatni odczyt"
+};
 
-export function validateManifest(manifest, expectedBrand) {
-  const errors = [];
-  if (!manifest || typeof manifest !== "object") return { ok: false, errors: ["Brak manifestu"] };
-  if (manifest.schema_version !== SUPPORTED_SCHEMA_VERSION) errors.push(`Nieobsługiwany schema_version: ${manifest.schema_version}`);
-  if (!String(manifest.post_id || "").trim()) errors.push("Brak post_id");
-  if (!BRANDS.has(manifest.brand)) errors.push(`Nieznana marka: ${manifest.brand || "brak"}`);
-  if (expectedBrand && manifest.brand !== expectedBrand) errors.push(`Niezgodna marka: ${manifest.brand || "brak"}`);
-  if (!String(manifest.content_revision || "").trim()) errors.push("Brak content_revision");
-  if (manifest.channel !== "instagram") errors.push(`Niewłaściwy kanał: ${manifest.channel || "brak"}`);
-  if (!Array.isArray(manifest.files) || !manifest.files.length) errors.push("Brak listy plików");
-  else {
-    const names = new Set();
-    for (const file of manifest.files) {
-      if (!file?.name || !/^[a-f0-9]{64}$/i.test(file.sha256 || "")) errors.push(`Nieprawidłowy wpis pliku: ${file?.name || "bez nazwy"}`);
-      if (names.has(file?.name)) errors.push(`Powtórzony plik: ${file.name}`);
-      names.add(file?.name);
-    }
-    if (!names.has("opis-do-skopiowania.txt")) errors.push("Brak opisu");
-    if (!names.has("hashtagi.txt")) errors.push("Brak hashtagów");
-    if (![...names].some(isSourceMedia)) errors.push("Brak źródłowego filmu lub slajdów");
-  }
-  return { ok: errors.length === 0, errors };
-}
+const time = v => { const t = Date.parse(v || ""); return Number.isFinite(t) ? t : 0; };
 
-export function isSourceMedia(name) {
-  return /\.(mp4|mov|webm|m4v|jpg|jpeg|png|webp)$/i.test(name) && name !== "miniaturka.png";
-}
-
-export function comparePackage(local, remote, expectedBrand) {
-  const validation = validateManifest(remote, expectedBrand);
-  if (!validation.ok) {
-    const incompatible = validation.errors.some(x => /schema_version|marka|kanał/i.test(x));
-    return { state: incompatible ? "incompatible" : "incomplete", details: validation.errors };
-  }
-  if (!local) return { state: "newer", details: ["Nowa paczka na Dysku Google"] };
-  if (local.content_revision === remote.content_revision) return { state: "current", details: [] };
-  const localTime = Date.parse(local.exported_at || 0);
-  const remoteTime = Date.parse(remote.exported_at || 0);
-  if (Number.isFinite(localTime) && Number.isFinite(remoteTime) && remoteTime <= localTime) {
-    return { state: "current", details: ["Na Dysku jest starsza rewizja; lokalna pozostaje bez zmian"] };
-  }
-  return { state: "newer", details: ["Na Dysku Google jest nowsza rewizja"] };
-}
-
-export function mergeManifests(existing = [], incoming = [], expectedBrand) {
-  const map = new Map(existing.map(x => [packageKey(x), x]));
+/**
+ * Łączy lokalne paczki (ostatni poprawny odczyt) z indeksem serwera.
+ * - klucz: package_id (marka + post_id) → brak duplikatów przy ponownym odświeżeniu,
+ * - starszy exported_at nigdy nie zastępuje nowszego,
+ * - paczka niezgodna/niekompletna nie zastępuje poprawnej lokalnej.
+ */
+export function mergeIndex(local = [], remote = []) {
+  const byId = new Map(local.map(p => [p.package_id, p]));
   const results = [];
-  for (const remote of incoming) {
-    let key;
-    try { key = packageKey(remote); } catch { key = `invalid-${results.length}`; }
-    const local = map.get(key);
-    const comparison = comparePackage(local, remote, expectedBrand);
-    if ((comparison.state === "newer" || comparison.state === "current") && validateManifest(remote, expectedBrand).ok) {
-      if (!local || comparison.state === "newer") map.set(key, remote);
+  const seen = new Set();
+  for (const incoming of remote) {
+    const errors = validateManifest(stripServerFields(incoming));
+    const id = incoming?.package_id || `nieznana-${results.length}`;
+    if (seen.has(id)) continue; // serwer podał tę samą paczkę dwa razy
+    seen.add(id);
+    const existing = byId.get(id);
+    if (errors.length) {
+      const state = errors.some(e => INCOMPATIBLE.has(e.code)) ? "incompatible" : "incomplete";
+      results.push({ package_id: id, state, details: errors.map(e => e.message) });
+      continue;
     }
-    results.push({ key, manifest: map.get(key) || remote, remote, ...comparison });
+    if (!existing) {
+      byId.set(id, { ...incoming, _state: "newer" });
+      results.push({ package_id: id, state: "newer", details: ["Nowa paczka"] });
+    } else if (existing.content_revision === incoming.content_revision) {
+      byId.set(id, { ...incoming, _state: existing._state === "newer" ? "newer" : "current", _opened: existing._opened });
+      results.push({ package_id: id, state: "current", details: [] });
+    } else if (time(incoming.exported_at) > time(existing.exported_at)) {
+      byId.set(id, { ...incoming, _state: "newer" });
+      results.push({ package_id: id, state: "newer", details: ["Na serwerze jest nowsza wersja — pobrano"] });
+    } else {
+      results.push({ package_id: id, state: "current", details: ["Serwer ma starszą wersję — zostaje nowsza lokalna"] });
+    }
   }
-  return { manifests: [...map.values()], results };
+  // Paczki, których serwer już nie wydaje, znikają (Instagram zakończony albo wycofane na desktopie).
+  const packages = [...byId.values()].filter(p => seen.has(p.package_id));
+  packages.sort((a, b) => time(b.exported_at) - time(a.exported_at));
+  return { packages, results, summary: summarize(results) };
 }
 
-export function createEvent(type, manifest, extra = {}, id = crypto.randomUUID()) {
-  return { event_id: id, type, post_id: manifest.post_id, brand: manifest.brand, channel: "instagram", occurred_at: new Date().toISOString(), ...extra };
+export function summarize(results) {
+  const states = new Set(results.map(r => r.state));
+  for (const s of ["incompatible", "incomplete", "newer"]) if (states.has(s)) return s;
+  return "current";
 }
 
-export function appendUniqueEvent(events, event) {
-  return events.some(x => x.event_id === event.event_id) ? events : [...events, event];
+export function stripServerFields(m) {
+  if (!m || typeof m !== "object") return m;
+  const { base_url, _state, _opened, ...rest } = m;
+  return rest;
 }
 
-export async function sha256Hex(blob) {
-  const bytes = new Uint8Array(await blob.arrayBuffer());
+export function markOpened(packages, id) {
+  return packages.map(p => p.package_id === id ? { ...p, _state: "current", _opened: true } : p);
+}
+
+export const filesByRole = (m, role) => (m.files || []).filter(f => f.role === role).sort((a, b) => (a.order || 0) - (b.order || 0));
+export const mediaFiles = m => [...filesByRole(m, "video"), ...filesByRole(m, "slide")];
+
+export async function sha256Hex(data) {
+  const bytes = data instanceof ArrayBuffer ? data : await data.arrayBuffer();
   const hash = await crypto.subtle.digest("SHA-256", bytes);
   return [...new Uint8Array(hash)].map(x => x.toString(16).padStart(2, "0")).join("");
 }
 
-export function resolveFileUrl(manifestUrl, name) {
-  return new URL(name.split("/").map(encodeURIComponent).join("/"), manifestUrl).href;
+export class IntegrityError extends Error {}
+
+/** Zwraca blob tylko, gdy suma SHA-256 zgadza się z manifestem. */
+export async function verifiedBlob(blob, file) {
+  const actual = await sha256Hex(blob);
+  if (actual !== String(file.sha256).toLowerCase()) {
+    throw new IntegrityError(`${file.name}: suma SHA-256 się nie zgadza — plik zablokowany`);
+  }
+  return blob;
 }
+
+export function fileUrl(m, name) {
+  const base = m.base_url || `api/file?package=${encodeURIComponent(m.package_id)}&rev=${m.content_revision}`;
+  return `${base}&name=${encodeURIComponent(name)}`;
+}
+
+export function createEvent(type, m, id = crypto.randomUUID()) {
+  return { event_id: id, type, package_id: m.package_id, post_id: m.post_id, brand: m.brand, occurred_at: new Date().toISOString() };
+}
+
+export const appendUnique = (events, e) => events.some(x => x.event_id === e.event_id) ? events : [...events, e];

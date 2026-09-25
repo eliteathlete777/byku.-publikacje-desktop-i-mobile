@@ -1,10 +1,11 @@
 {
   "name": "byku-publikacje-mobile",
-  "version": "0.1.0",
+  "version": "2.0.0",
   "private": true,
   "type": "module",
+  "engines": { "node": ">=20" },
   "scripts": {
-    "test": "node --test",
-    "start": "npx --yes serve ."
+    "test": "node --test tests/*.test.js",
+    "serve": "php -S 127.0.0.1:8903 -t . tests/router.php"
   }
 }

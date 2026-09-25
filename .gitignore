@@ -39,3 +39,9 @@ desktop/data/
 mobile/work/
 mobile/outputs/
 desktop/outputs/
+
+# lokalna konfiguracja z sekretami (nigdy w repozytorium)
+desktop/.env
+mobile/api/local-config.php
+mobile/private/
+byku-mobile-private/
