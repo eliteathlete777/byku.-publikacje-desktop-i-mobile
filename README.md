@@ -1,17 +1,43 @@
 # BYKU.PUBLIKACJE — Desktop i Mobile
 
-Wspólne repozytorium dwóch aplikacji korzystających z jednego kontraktu danych.
+Jeden system, dwie aplikacje, jeden wersjonowany kontrakt danych.
 
-## Struktura
+```
+desktop/     BYKU.PUBLIKACJE DESKTOP — kolejka, treść, marki, kalendarz, kanały, paczki na telefon (Python, lokalnie)
+mobile/      BYKU.PUBLIKACJE MOBILE — PWA na telefon + serwer PHP (Hostinger) z obowiązkowym logowaniem
+contract/    wspólny kontrakt v2 + przypadki testowe używane przez obie strony
+e2e/         test całego łańcucha TikTok → paczka → serwer → telefon → zgłoszenie
+docs/        audyt, plan dalszy
+```
 
-- `desktop/` — aplikacja BYKU.PUBLIKACJE DESKTOP: generator treści, kolejka, harmonogram, uczenie i przygotowanie paczek mobilnych.
-- `mobile/` — instalowalna aplikacja mobilna PWA do pobierania materiałów, opisów i hashtagów oraz kontroli zgodności paczek.
+## Przepływ
+
+```
+studio-kolejka ──► DESKTOP ──► paczka (manifest v2, SHA-256) ──► Google Drive (folder synchronizowany)
+                     ▲                                      └──► serwer telefonu (HTTPS, token) ──► MOBILE (logowanie)
+                     └──────────── zgłoszenia z telefonu (osobno od dowodów i haczyków) ◄───────────────┘
+```
+
+## Szybki start
+
+| Co | Polecenie |
+|---|---|
+| Desktop (Windows) | skrót **BYKU.PUBLIKACJE DESKTOP** na pulpicie albo `desktop\start.cmd` |
+| Utworzenie skrótu | `powershell -ExecutionPolicy Bypass -File desktop\tools\install_shortcut.ps1` |
+| Wszystkie testy | `cd desktop && python -m unittest discover -s tests -t .` · `cd mobile && npm test` · `python e2e/test_transfer.py` |
+| Wdrożenie mobile | `mobile/DEPLOY.md` |
 
 ## Bezpieczeństwo
 
-Repozytorium nie zawiera tokenów, haseł, lokalnej bazy uczenia, plików PID ani produkcyjnych materiałów z kolejki. Publikacja i zapis produkcyjny są domyślnie zablokowane w konfiguracji desktopowej.
+- W repozytorium nie ma tokenów, haseł, baz SQLite, PID-ów ani materiałów. Sekrety: `desktop/.env` (lokalnie) i katalog prywatny na serwerze (poza `public_html`).
+- Desktop: `allow_publication=false`, `allow_production_writes=false` domyślnie. Końcowe kliknięcie publikacji zawsze ręczne.
+- Mobile: każde żądanie danych wymaga sesji po stronie serwera; offline tylko przy ważnej sesji; wylogowanie czyści dane z telefonu.
+- CI (`.github/workflows/testy.yml`) uruchamia wszystkie testy i skan plików zakazanych przy każdym pushu.
 
-## Uruchomienie
+## Dokumentacja
 
-Szczegóły znajdują się w plikach README/REALIZACJA w katalogach obu aplikacji. Wspólny kontrakt danych znajduje się w `desktop/docs/WSPOLNY_KONTRAKT_MOBILE_DESKTOP.md`.
-
+- Audyt i znalezione błędy: `docs/AUDYT.md`
+- Kontrakt: `contract/KONTRAKT.md`
+- Desktop: `desktop/README.md`, zadania: `desktop/REALIZACJA.md`
+- Mobile: `mobile/README.md`, zadania: `mobile/REALIZACJA.md`, wdrożenie: `mobile/DEPLOY.md`
+- Plan dalszy: `docs/PLAN_DALSZY.md`

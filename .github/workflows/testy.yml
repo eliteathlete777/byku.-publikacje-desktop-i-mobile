@@ -1,0 +1,35 @@
+name: Testy desktop + mobile + kontrakt
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  testy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - uses: actions/setup-node@v4
+        with: { node-version: "22" }
+      - uses: shivammathur/setup-php@v2
+        with: { php-version: "8.2" }
+      - name: Zależności testów przeglądarkowych
+        run: |
+          pip install playwright==1.63.0
+          python -m playwright install --with-deps chromium
+      - name: Desktop — testy jednostkowe i API
+        working-directory: desktop
+        run: python -m unittest discover -s tests -t . -v
+      - name: Desktop — test przeglądarkowy wszystkich paneli
+        working-directory: desktop
+        run: python tools/ui_smoke.py
+      - name: Mobile — kontrakt, sesja, domena, serwer PHP
+        working-directory: mobile
+        run: npm test
+      - name: E2E — TikTok → paczka → serwer → telefon
+        run: python e2e/test_transfer.py
+      - name: Brak sekretów i danych w repozytorium
+        run: |
+          ! git ls-files | grep -E '\.(sqlite3?|db|pid|log|mp4|mov|pem|key)$|(^|/)\.env$|local-config\.php$|token.*\.json$|credentials.*\.json$'
