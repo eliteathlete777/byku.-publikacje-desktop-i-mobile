@@ -41,7 +41,9 @@ class MobilePackages:
         for p in files: shutil.copy2(p,package_dir/p.name)
         (package_dir/"opis-do-skopiowania.txt").write_text(card["content"]["description"].strip()+"\n",encoding="utf-8")
         (package_dir/"hashtagi.txt").write_text(card["content"]["hashtags"].strip()+"\n",encoding="utf-8")
-        manifest = {"schema_version": 1, "post_id": post_id, "brand": card["brand"], "content_revision": card["content"]["revision"], "exported_at": datetime.now(timezone.utc).isoformat(timespec="milliseconds").replace("+00:00", "Z"), "channel": channel, "source_state":{"tiktok":card["channels"]["tiktok"]["platform_evidence"],"instagram":card["channels"]["instagram"]["platform_evidence"]}, "files": [{"name": p.name, "sha256": self.digest(p)} for p in package_dir.iterdir() if p.is_file() and p.name!="manifest.json"]}
+        caption = "\n\n".join(x for x in (card["content"]["description"].strip(), card["content"]["hashtags"].strip()) if x)
+        (package_dir/"podpis.txt").write_text(caption+"\n",encoding="utf-8")
+        manifest = {"schema_version": 1, "post_id": post_id, "brand": card["brand"], "content_revision": card["content"]["revision"], "exported_at": datetime.now(timezone.utc).isoformat(timespec="milliseconds").replace("+00:00", "Z"), "channel": channel, "title": card.get("name") or post_id, "target_at": card.get("local_target_at") or "", "source_state":{"tiktok":card["channels"]["tiktok"]["platform_evidence"],"instagram":card["channels"]["instagram"]["platform_evidence"]}, "files": [{"name": p.name, "sha256": self.digest(p)} for p in package_dir.iterdir() if p.is_file() and p.name!="manifest.json"]}
         (package_dir/"manifest.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding="utf-8")
         if not target.exists():
             with zipfile.ZipFile(target, "w", zipfile.ZIP_DEFLATED) as z:
