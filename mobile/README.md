@@ -2,9 +2,9 @@
 
 Osobne, instalowalne PWA do paczek „TikTok gotowy — Instagram czeka”. Nie zawiera generatora ani pełnego panelu desktopowego.
 
-## Źródło Google Drive
+## Źródło paczek
 
-Aplikacja przyjmuje publiczny URL do `index.json`. Minimalny indeks:
+Domyślnie `paczki/index.json` względem adresu appki — na Hostingerze to `https://<domena>/publikacje/paczki/index.json`, gdzie desktop wysyła paczki (zob. `DEPLOY_HOSTINGER.md`). Można podać dowolny inny URL z CORS. Minimalny indeks:
 
 ```json
 {"packages":[{"brand":"atlet","manifest_url":"atlet/do-instagrama/post-1/manifest.json"}]}

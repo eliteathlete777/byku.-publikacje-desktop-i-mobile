@@ -1,0 +1,55 @@
+name: Mobile → Hostinger
+
+on:
+  push:
+    branches: [main]
+    paths: ["mobile/**", ".github/workflows/deploy-mobile-hostinger.yml"]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-mobile-hostinger
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm test
+        working-directory: mobile
+      - name: Kontrakt Desktop ↔ Mobile (end-to-end)
+        run: python3 -m unittest tests.test_mobile_contract -v
+        working-directory: desktop
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+    env:
+      FTP_SERVER: ${{ secrets.HOSTINGER_FTP_SERVER }}
+    steps:
+      - name: Sprawdź sekrety
+        if: env.FTP_SERVER == ''
+        run: echo "::warning::Brak sekretu HOSTINGER_FTP_SERVER — wdrożenie pominięte. Dodaj sekrety w Settings → Secrets and variables → Actions."
+      - uses: actions/checkout@v4
+        if: env.FTP_SERVER != ''
+      - uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        if: env.FTP_SERVER != ''
+        with:
+          server: ${{ secrets.HOSTINGER_FTP_SERVER }}
+          username: ${{ secrets.HOSTINGER_FTP_USERNAME }}
+          password: ${{ secrets.HOSTINGER_FTP_PASSWORD }}
+          protocol: ftps
+          port: 21
+          local-dir: ./mobile/
+          server-dir: ${{ vars.HOSTINGER_MOBILE_DIR || 'public_html/publikacje/' }}
+          # paczki/ wgrywa desktop — akcja nigdy ich nie dotyka ani nie usuwa.
+          exclude: |
+            **/.git*
+            **/.git*/**
+            tests/**
+            package.json
+            README.md
+            REALIZACJA.md
+            paczki/**

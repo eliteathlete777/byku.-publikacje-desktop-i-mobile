@@ -11,6 +11,10 @@ Wspólne repozytorium dwóch aplikacji korzystających z jednego kontraktu danyc
 
 Repozytorium nie zawiera tokenów, haseł, lokalnej bazy uczenia, plików PID ani produkcyjnych materiałów z kolejki. Publikacja i zapis produkcyjny są domyślnie zablokowane w konfiguracji desktopowej.
 
+## Wdrożenie
+
+Telefon na Hostingerze + wysyłka paczek z desktopu: `DEPLOY_HOSTINGER.md`.
+
 ## Uruchomienie
 
 Szczegóły znajdują się w plikach README/REALIZACJA w katalogach obu aplikacji. Wspólny kontrakt danych znajduje się w `desktop/docs/WSPOLNY_KONTRAKT_MOBILE_DESKTOP.md`.

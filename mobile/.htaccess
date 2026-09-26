@@ -1,0 +1,40 @@
+# BYKU.PUBLIKACJE MOBILE — Hostinger (Apache/LiteSpeed)
+Options -Indexes
+DirectoryIndex index.html
+
+<IfModule mod_mime.c>
+  AddType application/manifest+json .webmanifest
+  AddType font/woff2 .woff2
+  AddType image/svg+xml .svg
+  AddType text/javascript .js
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header always set X-Robots-Tag "noindex, nofollow"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "same-origin"
+  # Szkielet aplikacji i indeks paczek zawsze świeże — telefon nie może trzymać starej wersji.
+  <FilesMatch "^(index\.html|sw\.js|manifest\.webmanifest|index\.json|manifest\.json)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+  <FilesMatch "\.(woff2|svg)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+</IfModule>
+
+# Wymuś HTTPS (PWA i service worker działają tylko po HTTPS).
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# OPCJONALNIE: hasło na całą appkę i paczki (niepublikowane materiały).
+# 1) hPanel → Zaawansowane → Katalogi chronione hasłem → wskaż folder publikacje
+#    (Hostinger sam utworzy .htpasswd i dopisze reguły) — zalecane.
+# 2) albo ręcznie odkomentuj i podaj pełną ścieżkę do .htpasswd poza public_html:
+# AuthType Basic
+# AuthName "BYKU"
+# AuthUserFile /home/UZYTKOWNIK/.htpasswd
+# Require valid-user

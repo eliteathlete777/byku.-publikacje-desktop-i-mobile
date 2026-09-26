@@ -18,6 +18,7 @@ mimetypes.add_type("font/woff2", ".woff2")
 sys.path.insert(0, str(ROOT))
 
 from backend.config import load_settings
+from backend.hostinger_sync import HostingerSync
 from backend.content_service import ContentService, RevisionConflict
 from backend.job_service import JobService
 from backend.legacy_bridge import LegacyBridge
@@ -36,6 +37,7 @@ SCHEDULE = ScheduleService(ADAPTER)
 MOBILE = MobilePackages(ADAPTER)
 LEGACY = LegacyBridge(ADAPTER)
 LESSONS = LessonService(LEARNING)
+HOSTINGER = HostingerSync(SETTINGS, MOBILE.root)
 
 
 class Handler(SimpleHTTPRequestHandler):
@@ -54,7 +56,7 @@ class Handler(SimpleHTTPRequestHandler):
     def do_GET(self):
         url = urllib.parse.urlparse(self.path); path = url.path.rstrip("/")
         try:
-            if path == "/api/health": return self.json(200, {"ok": True, "mode": SETTINGS.mode, "writes": SETTINGS.allow_production_writes, "publication": SETTINGS.allow_publication})
+            if path == "/api/health": return self.json(200, {"ok": True, "mode": SETTINGS.mode, "writes": SETTINGS.allow_production_writes, "publication": SETTINGS.allow_publication, "hostinger": HOSTINGER.status()})
             if path == "/api/publications":
                 q = urllib.parse.parse_qs(url.query); brand=(q.get("brand") or ["atlet"])[0]; channel=(q.get("channel") or ["instagram"])[0]; archive=(q.get("archive") or ["false"])[0] == "true"
                 return self.json(200, ADAPTER.list_cards(brand=brand, include_archive=archive, selected_channel=channel))
@@ -71,6 +73,7 @@ class Handler(SimpleHTTPRequestHandler):
                 q=urllib.parse.parse_qs(url.query); return self.json(200, {"variants": SCHEDULE.propose((q.get("brand") or ["atlet"])[0], (q.get("start") or [None])[0])})
             if path.startswith("/api/jobs/"): return self.json(200, JOBS.get(path.split("/")[-1]))
             if path == "/api/learning": return self.json(200, {"events": LEARNING.recent_events(), "lessons": LEARNING.lessons()})
+            if path == "/api/hostinger/status": return self.json(200, HOSTINGER.status())
             if path == "/api/mobile-candidates":
                 q=urllib.parse.parse_qs(url.query); return self.json(200,{"items":MOBILE.candidates((q.get("brand") or ["all"])[0])})
             if path.startswith("/api/mobile-packages/"):
@@ -84,6 +87,7 @@ class Handler(SimpleHTTPRequestHandler):
         path=urllib.parse.urlparse(self.path).path.rstrip("/")
         try:
             data=self.body()
+            if path == "/api/mobile-packages/publish": return self.json(200,HOSTINGER.publish())
             if path.endswith("/content"):
                 post_id=urllib.parse.unquote(path.split("/")[3]); result=CONTENT.save(post_id, expected_revision=data["expected_revision"], description=data.get("description", ""), hashtags=data.get("hashtags", ""), location=data.get("location", ""), approve=bool(data.get("approve"))); return self.json(200,result)
             if path.endswith("/phone-package"):
