@@ -66,7 +66,7 @@ export function mergeManifests(existing = [], incoming = [], expectedBrand) {
 }
 
 export function createEvent(type, manifest, extra = {}, id = crypto.randomUUID()) {
-  return { event_id: id, type, post_id: manifest.post_id, brand: manifest.brand, channel: "instagram", occurred_at: new Date().toISOString(), ...extra };
+  return { event_id: id, type, post_id: manifest.post_id, brand: manifest.brand, channel: "instagram", content_revision: manifest.content_revision, occurred_at: new Date().toISOString(), ...extra };
 }
 
 export function appendUniqueEvent(events, event) {
@@ -81,4 +81,32 @@ export async function sha256Hex(blob) {
 
 export function resolveFileUrl(manifestUrl, name) {
   return new URL(name.split("/").map(encodeURIComponent).join("/"), manifestUrl).href;
+}
+
+// ── Panel telefonu: podpis, postęp, kolejność, Instagram ──
+export function composeCaption(description = "", hashtags = "") {
+  return [description.trim(), hashtags.trim()].filter(Boolean).join("\n\n");
+}
+
+const STEP_EVENTS = { caption: ["description_copied", "hashtags_copied"], media: ["sent", "downloaded"], published: ["manual_hook"] };
+export function packageProgress(events, manifest) {
+  const own = events.filter(e => e.post_id === manifest.post_id && e.brand === manifest.brand && (!e.content_revision || e.content_revision === manifest.content_revision));
+  const has = types => own.some(e => types.includes(e.type) && e.value !== false);
+  return { caption: has(STEP_EVENTS.caption), media: has(STEP_EVENTS.media), published: has(STEP_EVENTS.published) };
+}
+
+export function parseTarget(value) {
+  const d = new Date(String(value || "").replace(" ", "T"));
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+
+export function sortPackages(list) {
+  const t = m => parseTarget(m.target_at)?.getTime() ?? Infinity;
+  return list.slice().sort((a, b) => t(a) - t(b) || String(b.exported_at).localeCompare(String(a.exported_at)));
+}
+
+export function instagramUrl(userAgent = "") {
+  return /Android/i.test(userAgent)
+    ? "intent://instagram.com/#Intent;package=com.instagram.android;scheme=https;S.browser_fallback_url=https%3A%2F%2Fwww.instagram.com%2F;end"
+    : "https://www.instagram.com/";
 }

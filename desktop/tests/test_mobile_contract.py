@@ -38,7 +38,7 @@ class FakeAdapter:
         return self.queue / post_id
 
     def get(self, post_id: str, channel: str = "instagram") -> dict:
-        return {"brand": self.brand, "phone_ready": True,
+        return {"brand": self.brand, "phone_ready": True, "name": "Pompki na poręczach", "local_target_at": "2026-09-27 19:07",
                 "content": {"revision": self.revision, "description": "Nikt cię nie uratuje. Byku 💪", "hashtags": "#bykurigger #system"},
                 "channels": {"tiktok": {"platform_evidence": "published"}, "instagram": {"platform_evidence": "unknown"}}}
 
@@ -78,7 +78,11 @@ class MobileContractTests(unittest.TestCase):
         entry = index["packages"][0]
         manifest = json.loads((self.mobile.root / entry["manifest_url"]).read_text(encoding="utf-8"))
         self.assertEqual(manifest["content_revision"], "b" * 64)
-        self.assertEqual(set(manifest), {"schema_version", "post_id", "brand", "content_revision", "exported_at", "channel", "source_state", "files"})
+        self.assertEqual(set(manifest), {"schema_version", "post_id", "brand", "content_revision", "exported_at", "channel", "title", "target_at", "source_state", "files"})
+        self.assertEqual((manifest["title"], manifest["target_at"]), ("Pompki na poręczach", "2026-09-27 19:07"))
+        caption = (self.mobile.root / entry["manifest_url"]).parent / "podpis.txt"
+        self.assertEqual(caption.read_text(encoding="utf-8"), "Nikt cię nie uratuje. Byku 💪\n\n#bykurigger #system\n")
+        self.assertIn("podpis.txt", {f["name"] for f in manifest["files"]})
 
     def test_import_accepts_mobile_event_names_and_aliases(self):
         events = [{"event_id": "e1", "type": "description_copied", "post_id": "p", "brand": "atlet"},
@@ -139,7 +143,7 @@ console.log(JSON.stringify({{ ok: v.ok, errors: v.errors, state: r.results[0].st
             result = json.loads(out.stdout.strip().splitlines()[-1])
             self.assertTrue(result["ok"], result["errors"])
             self.assertEqual(result["state"], "newer")
-            self.assertGreaterEqual(result["checked"], 4)
+            self.assertGreaterEqual(result["checked"], 5)
             self.assertEqual(result["media"], 1)
         finally:
             server.shutdown()

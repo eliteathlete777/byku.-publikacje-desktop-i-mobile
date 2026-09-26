@@ -18,6 +18,8 @@ Klucz paczki: `post_id + marka`. Wersja treści: SHA-256 zawartości `post.json`
 
 Obowiązkowe pola manifestu: `schema_version`, `post_id`, `brand`, `content_revision`, `exported_at`, `channel`, `source_state`, `files[{name,sha256}]`.
 
+Pola opcjonalne (desktop wysyła, telefon używa, gdy są): `title` — nazwa materiału na karcie, `target_at` — lokalny termin publikacji `RRRR-MM-DD GG:MM`. Plik `podpis.txt` (opis + pusta linia + hashtagi) jest gotowym podpisem do wklejenia; gdy go brak, telefon skleja podpis z `opis-do-skopiowania.txt` i `hashtagi.txt`. Starsze paczki bez tych pól działają dalej.
+
 `exported_at` ma precyzję milisekund (ISO 8601, UTC, `Z`) — rozstrzyga, która rewizja jest nowsza.
 
 ## Indeks paczek
