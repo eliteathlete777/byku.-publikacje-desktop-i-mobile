@@ -1,7 +1,14 @@
 import { mergeManifests } from "./domain.js";
 
+export const DEFAULT_INDEX_URL = "paczki/index.json";
+
+export function absoluteIndexUrl(indexUrl, base = globalThis.location?.href) {
+  return new URL(indexUrl || DEFAULT_INDEX_URL, base).href;
+}
+
 export async function fetchIndexAndManifests(indexUrl, brand, fetcher = fetch) {
-  if (!indexUrl) throw new Error("Ustaw adres index.json z Google Drive");
+  if (!indexUrl) throw new Error("Ustaw adres index.json z paczkami");
+  indexUrl = absoluteIndexUrl(indexUrl);
   const indexResponse = await fetcher(indexUrl, { cache: "no-store" });
   if (!indexResponse.ok) throw new Error(`Indeks: HTTP ${indexResponse.status}`);
   const index = await indexResponse.json();

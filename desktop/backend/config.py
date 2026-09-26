@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -19,6 +19,7 @@ class Settings:
     allow_publication: bool
     allow_production_writes: bool
     timezone: str
+    hostinger: dict = field(default_factory=dict)
 
     @property
     def queue(self) -> Path:
@@ -38,6 +39,7 @@ def load_settings() -> Settings:
         allow_publication=bool(raw.get("allow_publication", False)),
         allow_production_writes=bool(raw.get("allow_production_writes", False)),
         timezone=str(raw.get("timezone", "Europe/Warsaw")),
+        hostinger=dict(raw.get("hostinger") or {}),
     )
     cfg.sandbox_queue.mkdir(parents=True, exist_ok=True)
     cfg.data_dir.mkdir(parents=True, exist_ok=True)

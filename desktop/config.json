@@ -16,5 +16,14 @@
       "atlet": "1Ln2SdkFZWY784sJn73Gv6VTIX7g-tZ6G",
       "rigger": "1MozqWoI71Cg2R_n9PHEOdlEVpVTIO2si"
     }
+  },
+  "hostinger": {
+    "enabled": false,
+    "host": "",
+    "port": 21,
+    "user": "",
+    "tls": true,
+    "remote_dir": "public_html/publikacje/paczki",
+    "public_url": "https://TWOJA-DOMENA/publikacje/"
   }
 }

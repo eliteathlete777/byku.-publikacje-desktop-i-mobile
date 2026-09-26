@@ -9,7 +9,7 @@ export function createStore(storage = localStorage) {
     saveManifests: value => write(KEYS.manifests, value),
     events: () => read(KEYS.events, []),
     saveEvents: value => write(KEYS.events, value),
-    settings: () => read(KEYS.settings, { brand: "atlet", indexUrl: "" }),
+    settings: () => { const saved = read(KEYS.settings, {}); return { brand: saved.brand || "atlet", indexUrl: saved.indexUrl || "paczki/index.json" }; },
     saveSettings: value => write(KEYS.settings, value),
     lastSync: () => read(KEYS.lastSync, null),
     saveLastSync: value => write(KEYS.lastSync, value)
