@@ -1,7 +1,75 @@
-<!doctype html><html lang="pl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>BYKU.PUBLIKACJE</title><link rel="stylesheet" href="styles.css"></head>
-<body><div class="shell">
-<aside><div class="brand"><span class="brand-mark">B</span><div><strong>BYKU</strong><small>Publikacje desktop</small></div></div><nav id="nav"></nav><div class="system"><span id="healthDot"></span><div><strong id="mode">Łączenie…</strong><small id="queue">Stan lokalny</small></div></div></aside>
-<main><header><div><p id="sectionKicker">Praca na dziś</p><h1 id="sectionTitle">Stół publikacji</h1></div><div class="toolbar"><label>Marka<select id="brand"><option value="atlet">ATLET</option><option value="rigger">RIGGER</option><option value="all">Obie</option></select></label><label>Znajdź<input id="search" type="search" placeholder="Nazwa lub identyfikator"></label><button id="refresh" class="icon" title="Odśwież" aria-label="Odśwież">↻</button></div></header>
-<section class="summary" id="summary"></section><section class="filters" id="filters"></section>
-<section class="workspace"><div class="table-wrap"><div class="table-head"><span>Materiał i termin</span><span>TikTok</span><span>Instagram</span><span>Facebook</span><span>Następny krok</span></div><div id="rows" class="rows"><div class="loading">Odczytuję prawdziwą kolejkę…</div></div></div><aside class="detail" id="detail"><div class="empty"><b>Wybierz publikację</b><span>Zobaczysz materiał, treść, kanały i historię.</span></div></aside></section>
-</main></div><div id="toast" role="status" aria-live="polite"></div><script src="app.js"></script></body></html>
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>BYKU.PUBLIKACJE</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23ed161f'/%3E%3Ctext x='16' y='25' font-family='Impact,Arial Narrow,sans-serif' font-size='24' text-anchor='middle' fill='white'%3EB%3C/text%3E%3C/svg%3E">
+<link rel="preload" href="fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/barlow-condensed-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="shell">
+  <aside class="rail">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true">B</span>
+      <div class="brand-copy"><strong>BYKU</strong><small>Publikacje // OPS</small></div>
+    </div>
+    <div class="hazard" aria-hidden="true"></div>
+    <nav id="nav" aria-label="Sekcje"></nav>
+    <div class="system">
+      <div class="system-head"><span class="led" id="healthDot"></span><span class="mono">SYSTEM</span><span class="mono clock" id="clock">--:--:--</span></div>
+      <strong id="mode">Łączenie…</strong>
+      <small id="queue">Stan lokalny</small>
+    </div>
+  </aside>
+
+  <main>
+    <header class="topbar">
+      <div class="title-block">
+        <p class="kicker"><span class="slash">//</span> <span id="sectionKicker">Praca na dziś</span> <span class="kicker-date" id="today"></span></p>
+        <h1 id="sectionTitle">Stół publikacji</h1>
+      </div>
+      <div class="toolbar">
+        <div class="segmented" id="brandSeg" role="radiogroup" aria-label="Marka">
+          <button role="radio" data-brand="atlet" aria-checked="true">Atlet</button>
+          <button role="radio" data-brand="rigger" aria-checked="false">Rigger</button>
+          <button role="radio" data-brand="all" aria-checked="false">Obie</button>
+        </div>
+        <label class="search">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg>
+          <input id="search" type="search" placeholder="Szukaj nazwy lub ID" aria-label="Znajdź publikację">
+          <kbd>/</kbd>
+        </label>
+        <button id="refresh" class="icon" title="Odśwież (R)" aria-label="Odśwież">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <section class="deck">
+      <div class="tminus" id="tminus" aria-live="off">
+        <span class="tminus-label">Następny start</span>
+        <strong class="tminus-value" id="tminusValue">T−--:--:--</strong>
+        <small class="tminus-name" id="tminusName">Brak terminów w kolejce</small>
+      </div>
+      <div class="summary" id="summary"></div>
+    </section>
+    <section class="filters" id="filters"></section>
+
+    <section class="workspace">
+      <div class="table-wrap">
+        <div class="table-head"><span>Materiał i termin</span><span>TikTok</span><span>Instagram</span><span>Facebook</span><span>Następny krok</span></div>
+        <div id="rows" class="rows"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
+      </div>
+      <aside class="detail" id="detail"><div class="empty"><b>Wybierz publikację</b><span>Zobaczysz materiał, treść, kanały i historię.</span></div></aside>
+    </section>
+  </main>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+<script src="app.js"></script>
+</body>
+</html>

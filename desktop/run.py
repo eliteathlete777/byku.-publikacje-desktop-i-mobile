@@ -14,6 +14,7 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
+mimetypes.add_type("font/woff2", ".woff2")
 sys.path.insert(0, str(ROOT))
 
 from backend.config import load_settings
