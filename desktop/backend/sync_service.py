@@ -130,8 +130,13 @@ class SyncService:
                     if writes:
                         live = self.persist_live(snap, root)
                         detail += f" · dopasowane {live.get('live_ok', 0)}"
+                    empty = [k for k in ("tiktok", "meta") if not snap.get(k) and not snap.get(f"blad_{k}")]
                     if errors:
                         failed.append(sid); self._step(steps, sid, "error", detail + " · " + " · ".join(errors))
+                    elif empty:
+                        # Studio nie zgłasza błędu, gdy strona wróci pusta (np. wylogowany profil) — nie udajemy sukcesu.
+                        names = " i ".join({"tiktok": "TikTok Studio", "meta": "Meta Business"}[k] for k in empty)
+                        self._step(steps, sid, "warn", f"{detail} · pusto w {names} — sprawdź logowanie w tej przeglądarce")
                     else:
                         self._step(steps, sid, "ok", detail)
                 except Exception as exc:
@@ -143,7 +148,8 @@ class SyncService:
             except Exception as exc:
                 failed.append("phone"); self._step(steps, "phone", "error", str(exc)[:200])
         finally:
-            self._save(running=False, finished_at=_now(), ok=not failed, error=", ".join(failed))
+            warned = [s["id"] for s in steps if s["state"] == "warn"]
+            self._save(running=False, finished_at=_now(), ok=not failed, warn=", ".join(warned), error=", ".join(failed))
 
 
 def _now() -> str:

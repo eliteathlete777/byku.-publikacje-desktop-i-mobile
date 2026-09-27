@@ -79,6 +79,14 @@ class SyncTests(unittest.TestCase):
         sync.start_full()
         self.assertEqual(self.calls, [])
 
+    def test_empty_calendar_without_error_is_a_warning_not_success(self):
+        sync = self.service()
+        sync.live_snapshot = lambda b: {"tiktok": [{}], "meta": [], "blad_tiktok": "", "blad_meta": ""}
+        st = self.run_full(sync)
+        self.assertEqual({s["id"]: s["state"] for s in st["steps"]}["live-atlet"], "warn")
+        self.assertIn("Meta Business", st["steps"][1]["detail"])
+        self.assertTrue(st["ok"]); self.assertEqual(st["warn"], "live-atlet, live-rigger")
+
     def test_overview_reports_live_calendar_age(self):
         ov = self.service().overview()
         self.assertEqual(ov["live"], {"atlet": "2026-09-27T20:00:00", "rigger": "2026-09-27T20:00:00"})
