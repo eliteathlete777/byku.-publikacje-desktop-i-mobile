@@ -33,6 +33,20 @@ export function isSourceMedia(name) {
   return /\.(mp4|mov|webm|m4v|jpg|jpeg|png|webp)$/i.test(name) && name !== "miniaturka.png";
 }
 
+export const isVideo = name => /\.(mp4|mov|webm|m4v)$/i.test(name || "");
+
+// Materiał do Instagrama: rolka = dokładnie jeden film (wersja *-hd, jeśli jest), karuzela = slajdy po kolei.
+export function pickMedia(files = []) {
+  const media = files.filter(f => isSourceMedia(f.name));
+  const videos = media.filter(f => isVideo(f.name)).sort((a, b) => Number(!/-hd\.[^.]+$/i.test(a.name)) - Number(!/-hd\.[^.]+$/i.test(b.name)) || a.name.localeCompare(b.name));
+  if (videos.length) return videos.slice(0, 1);
+  return media.slice().sort((a, b) => a.name.localeCompare(b.name, "pl", { numeric: true }));
+}
+
+export function displayTitle(manifest) {
+  return String(manifest?.headline || manifest?.title || manifest?.post_id || "Bez nazwy").trim();
+}
+
 export function comparePackage(local, remote, expectedBrand) {
   const validation = validateManifest(remote, expectedBrand);
   if (!validation.ok) {
@@ -103,6 +117,22 @@ export function parseTarget(value) {
 export function sortPackages(list) {
   const t = m => parseTarget(m.target_at)?.getTime() ?? Infinity;
   return list.slice().sort((a, b) => t(a) - t(b) || String(b.exported_at).localeCompare(String(a.exported_at)));
+}
+
+// Czas względny do terminu: „za 40 min”, „2 h temu” — ton decyduje o kolorze na karcie.
+export function relativeTarget(target, now = Date.now()) {
+  if (!target) return { rel: "", tone: "none" };
+  const min = Math.round((target - now) / 60000), abs = Math.abs(min);
+  const span = abs < 60 ? `${abs} min` : abs < 1440 ? `${Math.floor(abs / 60)} h${abs % 60 && abs < 180 ? ` ${abs % 60} min` : ""}` : `${Math.round(abs / 1440)} d`;
+  if (min < 0) return { rel: `${span} temu`, tone: "late" };
+  if (min <= 15) return { rel: `za ${span}`, tone: "hot" };
+  if (min < 180) return { rel: `za ${span}`, tone: "soon" };
+  return { rel: `za ${span}`, tone: "" };
+}
+
+export function unsyncedEvents(events = [], syncedIds = []) {
+  const done = new Set(syncedIds);
+  return events.filter(e => !done.has(e.event_id));
 }
 
 export function instagramUrl(userAgent = "") {

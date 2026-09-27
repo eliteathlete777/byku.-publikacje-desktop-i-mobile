@@ -25,5 +25,10 @@
     "tls": true,
     "remote_dir": "public_html/publikacje/paczki",
     "public_url": "https://TWOJA-DOMENA/publikacje/"
+  },
+  "phone": {
+    "enabled": true,
+    "port": 8903,
+    "public_url": ""
   }
 }

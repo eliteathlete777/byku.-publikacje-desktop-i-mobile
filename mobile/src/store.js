@@ -1,4 +1,4 @@
-const KEYS = { manifests: "byku.mobile.manifests.v1", events: "byku.mobile.events.v1", settings: "byku.mobile.settings.v1", lastSync: "byku.mobile.last-sync.v1" };
+const KEYS = { manifests: "byku.mobile.manifests.v1", events: "byku.mobile.events.v1", settings: "byku.mobile.settings.v1", lastSync: "byku.mobile.last-sync.v1", synced: "byku.mobile.events-synced.v1" };
 const parse = (value, fallback) => { try { return JSON.parse(value) ?? fallback; } catch { return fallback; } };
 
 export function createStore(storage = (() => { try { return localStorage; } catch { return null; } })()) {
@@ -13,6 +13,8 @@ export function createStore(storage = (() => { try { return localStorage; } catc
     settings: () => { const saved = read(KEYS.settings, {}); return { brand: saved.brand || "atlet", indexUrl: saved.indexUrl || "paczki/index.json" }; },
     saveSettings: value => write(KEYS.settings, value),
     lastSync: () => read(KEYS.lastSync, null),
-    saveLastSync: value => write(KEYS.lastSync, value)
+    saveLastSync: value => write(KEYS.lastSync, value),
+    syncedIds: () => read(KEYS.synced, []),
+    saveSyncedIds: value => write(KEYS.synced, value)
   };
 }

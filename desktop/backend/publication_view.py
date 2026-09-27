@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from datetime import datetime
 from typing import Any
 
@@ -7,6 +8,34 @@ CHANNELS = ("tiktok", "instagram", "facebook")
 DONE = {"opublikowany", "published"}
 RUNNING = {"running", "w_toku", "przygotowuje", "wysylanie"}
 WAITING = {"awaiting_user", "gotowe_do_klikniecia", "czeka_na_muzyke"}
+
+
+_EDGE_START = re.compile(r"^[^\w„\"'(]+")
+_EDGE_END = re.compile(r"[^\w?!.…)\"'”]+$")
+_SENTENCE = re.compile(r"(?<=[.!?…])\s+")
+
+
+def headline(description: str, fallback: str = "", limit: int = 72) -> str:
+    """Tytuł karty zamiast nazwy pliku: pierwszy akapit opisu (opisy są łamane co ~25 znaków),
+    bez ozdobników na brzegach, przycięty do pierwszego pełnego zdania, gdy jest za długi."""
+    paragraph: list[str] = []
+    for line in str(description or "").splitlines():
+        line = line.strip()
+        if line.startswith("#"): continue
+        if not line or not _EDGE_START.sub("", line):
+            if paragraph and not line: break
+            continue
+        paragraph.append(line)
+    text = _EDGE_END.sub("", _EDGE_START.sub("", " ".join(paragraph))).strip()
+    if len(text) < 3: return fallback
+    text = text[0].upper() + text[1:]
+    if len(text) <= limit: return text
+    head = ""
+    for part in _SENTENCE.split(text):
+        head = f"{head} {part}".strip()
+        if len(head) >= 16 and not head.lower().endswith((" vs.", " np.", " tj.", " itp.")): break
+    if 16 <= len(head) <= limit: return _EDGE_END.sub("", head) if head[-1] not in "?!.…" else head
+    return text[:limit - 1].rsplit(" ", 1)[0].rstrip(",;:-–—") + "…"
 
 
 def channel_view(raw: dict[str, Any] | None, *, manual_checked: bool = False) -> dict[str, Any]:
@@ -66,7 +95,7 @@ def counts(cards: list[dict[str, Any]]) -> dict[str, int]:
     return {
         "all": len(active),
         "action": sum(1 for x in active if x.get("next_action", {}).get("code") not in {"done", "show_history"}),
-        "phone": sum(1 for x in active if x.get("next_action", {}).get("code") == "phone_package"),
+        "phone": sum(1 for x in active if x.get("phone_ready")),
         "running": sum(1 for x in active if any(c.get("delivery") in {"running", "awaiting_user"} for c in x.get("channels", {}).values())),
         "review": sum(1 for x in active if any(c.get("platform_evidence") != "unknown" and not c.get("manual_checked") for c in x.get("channels", {}).values())),
         "completed": sum(1 for x in active if all(c.get("manual_checked") for c in x.get("channels", {}).values() if c)),

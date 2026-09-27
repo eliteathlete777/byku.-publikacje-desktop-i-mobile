@@ -14,6 +14,16 @@ from .studio_adapter import StudioAdapter
 # Wspólny słownik zdarzeń telefonu (kontrakt v1). Stare nazwy desktopu są aliasami.
 EVENT_TYPES = {"downloaded", "description_copied", "hashtags_copied", "instagram_opened", "sent", "manual_hook"}
 EVENT_ALIASES = {"caption_copied": "description_copied", "manual_check": "manual_hook"}
+VIDEO = {".mp4", ".mov", ".webm", ".m4v"}
+GENERATED = {"opis-do-skopiowania.txt", "hashtagi.txt", "podpis.txt", "manifest.json"}
+
+
+def phone_files(folder: Path) -> list[Path]:
+    """Pliki paczki telefonu. Rolka dostaje dokładnie jeden film: wersję *-hd.mp4, jeśli Studio ją
+    wygenerowało (lżejsza, pod Meta), inaczej oryginał. Niedokończone *.part.* i post.json odpadają."""
+    files = [p for p in folder.iterdir() if p.is_file() and p.name != "post.json" and ".part." not in p.name.lower()]
+    videos = sorted((p for p in files if p.suffix.lower() in VIDEO), key=lambda p: (not p.stem.lower().endswith("-hd"), p.name))
+    return [p for p in files if p.suffix.lower() not in VIDEO] + videos[:1]
 
 
 class MobilePackages:
@@ -37,13 +47,16 @@ class MobilePackages:
         package_dir = self.root / card["brand"] / "do-instagrama" / f"{post_id}-{version}"
         package_dir.mkdir(parents=True, exist_ok=True)
         target = self.root / f"{post_id}-{version}.zip"
-        files = [p for p in source.iterdir() if p.is_file() and p.name not in {"post.json"}]
+        files = phone_files(source)
+        keep = {p.name for p in files} | GENERATED
+        for stale in package_dir.iterdir():
+            if stale.is_file() and stale.name not in keep: stale.unlink()
         for p in files: shutil.copy2(p,package_dir/p.name)
         (package_dir/"opis-do-skopiowania.txt").write_text(card["content"]["description"].strip()+"\n",encoding="utf-8")
         (package_dir/"hashtagi.txt").write_text(card["content"]["hashtags"].strip()+"\n",encoding="utf-8")
         caption = "\n\n".join(x for x in (card["content"]["description"].strip(), card["content"]["hashtags"].strip()) if x)
         (package_dir/"podpis.txt").write_text(caption+"\n",encoding="utf-8")
-        manifest = {"schema_version": 1, "post_id": post_id, "brand": card["brand"], "content_revision": card["content"]["revision"], "exported_at": datetime.now(timezone.utc).isoformat(timespec="milliseconds").replace("+00:00", "Z"), "channel": channel, "title": card.get("name") or post_id, "target_at": card.get("local_target_at") or "", "source_state":{"tiktok":card["channels"]["tiktok"]["platform_evidence"],"instagram":card["channels"]["instagram"]["platform_evidence"]}, "files": [{"name": p.name, "sha256": self.digest(p)} for p in package_dir.iterdir() if p.is_file() and p.name!="manifest.json"]}
+        manifest = {"schema_version": 1, "post_id": post_id, "brand": card["brand"], "content_revision": card["content"]["revision"], "exported_at": datetime.now(timezone.utc).isoformat(timespec="milliseconds").replace("+00:00", "Z"), "channel": channel, "title": card.get("name") or post_id, "headline": card.get("headline") or "", "media_type": card.get("assets", {}).get("type") or ("reel" if any(p.suffix.lower() in VIDEO for p in files) else "carousel"), "target_at": card.get("local_target_at") or "", "source_state":{"tiktok":card["channels"]["tiktok"]["platform_evidence"],"instagram":card["channels"]["instagram"]["platform_evidence"]}, "files": [{"name": p.name, "sha256": self.digest(p)} for p in package_dir.iterdir() if p.is_file() and p.name!="manifest.json"]}
         (package_dir/"manifest.json").write_text(json.dumps(manifest,ensure_ascii=False,indent=2),encoding="utf-8")
         if not target.exists():
             with zipfile.ZipFile(target, "w", zipfile.ZIP_DEFLATED) as z:
@@ -72,6 +85,17 @@ class MobilePackages:
     def candidates(self, brand: str = "all") -> list[dict]:
         cards = self.adapter.list_cards(brand=brand, include_archive=False, selected_channel="instagram")["items"]
         return [card for card in cards if card.get("phone_ready")]
+
+    def events(self, post_id: str | None = None, limit: int = 500) -> list[dict]:
+        """Czynności z telefonu (najnowsze na końcu) — tylko do podglądu na desktopie."""
+        out = self.root / "mobile-events.jsonl"
+        if not out.exists(): return []
+        rows = []
+        for line in out.read_text(encoding="utf-8", errors="replace").splitlines():
+            try: row = json.loads(line)
+            except ValueError: continue
+            if not post_id or row.get("post_id") == post_id: rows.append(row)
+        return rows[-limit:]
 
     def import_events(self, payload: dict) -> dict:
         """Importuje wyłącznie zdarzenia transportowe; nie zmienia paczki ani haczyków."""

@@ -4,13 +4,13 @@ Osobne, instalowalne PWA do paczek „TikTok gotowy — Instagram czeka”. Nie 
 
 ## Źródło paczek
 
-Domyślnie `paczki/index.json` względem adresu appki — na Hostingerze to `https://<domena>/publikacje/paczki/index.json`, gdzie desktop wysyła paczki (zob. `DEPLOY_HOSTINGER.md`). Można podać dowolny inny URL z CORS. Minimalny indeks:
+Appkę i paczki serwuje sam desktop (serwer telefonu, domyślnie `127.0.0.1:8903`), a telefon łączy się z nim przez Tailscale — zob. `../TELEFON_TAILSCALE.md`. Dlatego domyślny adres to względne `paczki/index.json`, a czynności telefonu lecą automatycznie `POST api/events` do tego samego komputera (plik JSON zostaje jako zapas). Można podać dowolny inny URL indeksu z CORS. Minimalny indeks:
 
 ```json
 {"packages":[{"brand":"atlet","manifest_url":"atlet/do-instagrama/post-1/manifest.json"}]}
 ```
 
-Adresy względne są rozwiązywane względem indeksu. Folder z manifestem zawiera pliki wymienione w `files`. Serwer musi zezwalać na CORS. Manifest jest zgodny z `WSPOLNY_KONTRAKT_MOBILE_DESKTOP.md`.
+Adresy względne są rozwiązywane względem indeksu. Folder z manifestem zawiera pliki wymienione w `files`. Manifest jest zgodny z `WSPOLNY_KONTRAKT_MOBILE_DESKTOP.md`. Rolka dostaje dokładnie jeden film (wersja `*-hd`, jeśli jest), karuzela — wszystkie slajdy.
 
 ## Uruchomienie i testy
 

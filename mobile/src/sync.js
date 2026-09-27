@@ -28,3 +28,18 @@ export async function refreshPackages({ indexUrl, brand, existing, fetcher = fet
   const incoming = await fetchIndexAndManifests(indexUrl, brand, fetcher);
   return mergeManifests(existing, incoming, brand);
 }
+
+// Komputer (serwer telefonu desktopu) — ten sam adres co appka, więc ścieżki względne.
+export async function pingDesktop(fetcher = fetch, base = globalThis.location?.href) {
+  const response = await fetcher(new URL("api/ping", base).href, { cache: "no-store" });
+  if (!response.ok) throw new Error(`Komputer: HTTP ${response.status}`);
+  return response.json();
+}
+
+export async function sendEvents(events, fetcher = fetch, base = globalThis.location?.href) {
+  const body = JSON.stringify({ schema_version: 1, source: "mobile", exported_at: new Date().toISOString(), events });
+  const response = await fetcher(new URL("api/events", base).href, { method: "POST", headers: { "Content-Type": "application/json" }, body });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.error || `Komputer: HTTP ${response.status}`);
+  return data;
+}

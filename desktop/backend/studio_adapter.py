@@ -7,7 +7,7 @@ from pathlib import Path
 from typing import Any
 
 from .config import Settings
-from .publication_view import CHANNELS, channel_view, counts, next_action
+from .publication_view import CHANNELS, channel_view, counts, headline, next_action
 
 
 class StudioAdapter:
@@ -66,6 +66,7 @@ class StudioAdapter:
         card = {
             "post_id": paczka.post_id, "brand": getattr(paczka, "marka", "atlet"),
             "name": getattr(paczka, "etykieta_mediow", "") or getattr(paczka, "nazwa_wideo", "") or paczka.post_id,
+            "headline": headline(content["description"]),
             "revision": content_revision, "legacy_status": getattr(paczka, "status", ""),
             "archived": getattr(paczka, "status", "") == "archiwum",
             "local_target_at": getattr(paczka, "termin", "") or "", "content": content,

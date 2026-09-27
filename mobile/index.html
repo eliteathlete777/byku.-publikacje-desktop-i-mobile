@@ -8,55 +8,67 @@
   <meta name="robots" content="noindex,nofollow">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>BYKU.PUBLIKACJE MOBILE</title>
+  <title>BYKU.PUBLIKACJE Telefon</title>
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="preload" href="fonts/anton-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/barlow-condensed-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="fonts.css">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <div class="shell">
-    <header>
-      <div class="brand"><span class="brand-mark" aria-hidden="true">B</span><div><span class="eyebrow">BYKU.PUBLIKACJE</span><h1>Mobile</h1></div></div>
-      <span id="networkBadge" class="badge">ONLINE</span>
+    <header class="top">
+      <div class="brand"><span class="brand-mark" aria-hidden="true">B</span><div><span class="eyebrow">BYKU.PUBLIKACJE</span><h1>Telefon</h1></div></div>
+      <button id="linkBadge" class="link" data-state="checking" aria-live="polite" title="Połączenie z komputerem"><i aria-hidden="true"></i><span class="link-k">PC</span><b id="linkText">Łączę…</b></button>
     </header>
     <div class="hazard" aria-hidden="true"></div>
-    <aside id="syncPanel" class="sync-panel" aria-live="polite">
-      <button id="refreshButton" class="refresh">↻ Odśwież i sprawdź zgodność</button>
-      <div><strong id="syncTitle">Gotowy do sprawdzenia</strong><small id="syncDetail">Wybierz markę i odśwież paczki.</small></div>
+    <aside id="syncPanel" class="sync-bar" aria-live="polite">
+      <div class="sync-copy"><strong id="syncTitle">Gotowy</strong><small id="syncDetail">Paczki odświeżą się same.</small></div>
+      <button id="refreshButton" class="refresh" aria-label="Odśwież paczki" title="Odśwież paczki"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg></button>
     </aside>
     <main>
-      <section id="packagesView" class="view active">
-        <div class="section-head"><div><p class="kicker">// TikTok gotowy</p><h2>Instagram czeka</h2></div>
+      <section id="packagesView" class="view active" aria-labelledby="packagesTitle">
+        <div class="section-head">
+          <div><p class="kicker">// Instagram czeka</p><h2 id="packagesTitle">Do wrzucenia<span id="packCount" class="count">0</span></h2></div>
           <div class="segmented" id="brandSeg" role="radiogroup" aria-label="Marka"><button role="radio" data-brand="atlet">Atlet</button><button role="radio" data-brand="rigger">Rigger</button></div>
-          <select id="brandSelect" aria-label="Marka" hidden><option value="atlet">ATLET</option><option value="rigger">RIGGER</option></select>
         </div>
-        <div id="packageList" class="package-list"><div class="empty">Brak zapisanych paczek. Użyj przycisku odświeżania.</div></div>
+        <div id="packageList" class="package-list"></div>
       </section>
-      <section id="eventsView" class="view">
-        <p class="kicker">// Tylko świadome akcje</p><h2>Czynności telefonu</h2>
-        <p class="muted">Import paczki nigdy nie ustawia haczyka, terminu ani statusu publikacji. Eksport przekazuje te czynności do desktopu (zakładka Uczenie → Import z telefonu).</p>
-        <div class="actions"><button id="exportEvents" class="action wide">Eksportuj czynności do desktopu</button></div>
-        <p id="exportStatus" class="status-line"></p>
+      <section id="eventsView" class="view" aria-labelledby="eventsTitle">
+        <p class="kicker">// Wracają do komputera same</p><h2 id="eventsTitle">Czynności</h2>
+        <div id="eventsCard" class="panel-card">
+          <div class="panel-copy"><strong id="eventsSyncTitle">Wszystko w komputerze</strong><small id="eventsSyncDetail">Każda czynność leci do desktopu od razu po wykonaniu.</small></div>
+          <div class="row"><button id="sendEvents" class="action grow">Wyślij teraz</button><button id="exportEvents" class="action" title="Zapisz plik JSON do ręcznego importu">Plik</button></div>
+        </div>
+        <p id="exportStatus" class="status-line" aria-live="polite"></p>
         <div id="eventList" class="event-list"></div>
       </section>
-      <section id="settingsView" class="view">
-        <p class="kicker">// Transport</p><h2>Źródło paczek</h2>
-        <label>Adres <code>index.json</code><input id="indexUrl" type="text" placeholder="paczki/index.json" inputmode="url" autocomplete="off" spellcheck="false"></label>
-        <p class="muted">Domyślnie <code>paczki/index.json</code> — ten sam serwer Hostinger, na który desktop wysyła paczki. Indeks wskazuje manifesty w folderach ATLET/RIGGER. Aplikacja nie traktuje serwera jako bazy statusów.</p>
+      <section id="settingsView" class="view" aria-labelledby="settingsTitle">
+        <p class="kicker">// Połączenie</p><h2 id="settingsTitle">Ustawienia</h2>
+        <div class="panel-card info">
+          <strong>Telefon ↔ komputer przez Tailscale</strong>
+          <p>Appka i paczki przychodzą prosto z Twojego komputera — prywatnym, szyfrowanym łączem. Działa w domu i na danych komórkowych, pod warunkiem że komputer jest włączony, a desktop uruchomiony.</p>
+          <dl id="linkFacts" class="facts"></dl>
+        </div>
+        <label><span>Adres <code>index.json</code></span><input id="indexUrl" type="text" placeholder="paczki/index.json" inputmode="url" autocomplete="off" spellcheck="false"></label>
+        <p class="muted">Zostaw <code>paczki/index.json</code> — to ten sam komputer, z którego otworzyłeś appkę. Zmieniaj tylko, jeśli paczki leżą gdzie indziej.</p>
         <button id="saveSettings" class="secondary">Zapisz ustawienia</button>
-        <p id="settingsStatus" class="muted"></p>
+        <p id="settingsStatus" class="status-line" aria-live="polite"></p>
       </section>
     </main>
-    <nav>
-      <button class="active" data-view="packages"><b>01</b>Paczki</button>
-      <button data-view="events"><b>02</b>Czynności</button>
-      <button data-view="settings"><b>03</b>Ustawienia</button>
+    <nav aria-label="Sekcje">
+      <button class="active" data-view="packages"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h7v7H4zM13 4h7v7h-7zM4 13h7v7H4zM13 13h7v7h-7z"/></svg>Paczki</button>
+      <button data-view="events"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Czynności<em id="pendingBadge" hidden>0</em></button>
+      <button data-view="settings"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg>Ustawienia</button>
     </nav>
   </div>
-  <dialog id="packageDialog"><button class="close" id="closeDialog" aria-label="Zamknij">×</button><div id="packageDetail"></div></dialog>
-  <template id="packageTemplate"><article class="card"><button class="card-open"><span class="frame"><img class="thumb" alt=""></span><span><strong class="title"></strong><small class="meta"></small><em class="state"></em><span class="progress"></span></span><b>→</b></button></article></template>
+  <dialog id="packageDialog" aria-labelledby="detailTitle">
+    <div class="sheet-bar"><span class="grab" aria-hidden="true"></span><button class="close" id="closeDialog" aria-label="Zamknij"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+    <div id="packageDetail"></div>
+  </dialog>
+  <template id="packageTemplate"><article class="card"><button class="card-open"><span class="frame"><img class="thumb" alt="" loading="lazy" decoding="async"><span class="kind"></span></span><span class="card-body"><span class="tag"></span><strong class="title"></strong><span class="meta"></span><span class="progress"></span></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5 7 7-7 7"/></svg></button></article></template>
   <script type="module" src="src/app.js"></script>
 </body>
 </html>

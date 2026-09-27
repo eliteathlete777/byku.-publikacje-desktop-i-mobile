@@ -1,0 +1,25 @@
+name: Testy desktop + telefon
+
+# Wdrożenie na Hostinger jest wstrzymane (telefon łączy się z desktopem przez Tailscale — TELEFON_TAILSCALE.md).
+# Poprzedni workflow FTP jest w historii Gita, gdyby trzeba było wrócić.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - name: Telefon (node --test)
+        run: npm test
+        working-directory: mobile
+      - name: Kontrakt Desktop ↔ Telefon + serwer telefonu
+        run: python -m unittest tests.test_mobile_contract tests.test_phone_server -v
+        working-directory: desktop

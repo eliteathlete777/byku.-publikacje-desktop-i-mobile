@@ -78,7 +78,7 @@ class MobileContractTests(unittest.TestCase):
         entry = index["packages"][0]
         manifest = json.loads((self.mobile.root / entry["manifest_url"]).read_text(encoding="utf-8"))
         self.assertEqual(manifest["content_revision"], "b" * 64)
-        self.assertEqual(set(manifest), {"schema_version", "post_id", "brand", "content_revision", "exported_at", "channel", "title", "target_at", "source_state", "files"})
+        self.assertEqual(set(manifest), {"schema_version", "post_id", "brand", "content_revision", "exported_at", "channel", "title", "headline", "media_type", "target_at", "source_state", "files"})
         self.assertEqual((manifest["title"], manifest["target_at"]), ("Pompki na poręczach", "2026-09-27 19:07"))
         caption = (self.mobile.root / entry["manifest_url"]).parent / "podpis.txt"
         self.assertEqual(caption.read_text(encoding="utf-8"), "Nikt cię nie uratuje. Byku 💪\n\n#bykurigger #system\n")

@@ -1,5 +1,7 @@
 # Wdrożenie na Hostinger — BYKU.PUBLIKACJE
 
+> **Wstrzymane (2026-09-27).** Telefon łączy się bezpośrednio z desktopem przez Tailscale — zob. `TELEFON_TAILSCALE.md`. Ta instrukcja zostaje na wypadek powrotu do Hostingera; workflow FTP usunięto z `.github/workflows` (jest w historii Gita), moduł `hostinger_sync.py` jest nadal w kodzie, wyłączony w `config.json`.
+
 Docelowo: appka telefonu pod `https://<domena>/publikacje/`, paczki pod `https://<domena>/publikacje/paczki/`. Jeden serwer, zero CORS.
 
 ```

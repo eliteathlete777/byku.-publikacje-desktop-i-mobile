@@ -20,6 +20,7 @@ class Settings:
     allow_production_writes: bool
     timezone: str
     hostinger: dict = field(default_factory=dict)
+    phone: dict = field(default_factory=dict)
 
     @property
     def queue(self) -> Path:
@@ -40,6 +41,7 @@ def load_settings() -> Settings:
         allow_production_writes=bool(raw.get("allow_production_writes", False)),
         timezone=str(raw.get("timezone", "Europe/Warsaw")),
         hostinger=dict(raw.get("hostinger") or {}),
+        phone=dict(raw.get("phone") or {}),
     )
     cfg.sandbox_queue.mkdir(parents=True, exist_ok=True)
     cfg.data_dir.mkdir(parents=True, exist_ok=True)

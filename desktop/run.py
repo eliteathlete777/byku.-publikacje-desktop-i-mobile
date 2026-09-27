@@ -23,6 +23,7 @@ from backend.content_service import ContentService, RevisionConflict
 from backend.job_service import JobService
 from backend.legacy_bridge import LegacyBridge
 from backend.mobile_packages import MobilePackages
+from backend.phone_server import PhoneServer
 from backend.schedule_service import ScheduleService
 from backend.studio_adapter import StudioAdapter
 from learning.store import LearningStore
@@ -38,6 +39,9 @@ MOBILE = MobilePackages(ADAPTER)
 LEGACY = LegacyBridge(ADAPTER)
 LESSONS = LessonService(LEARNING)
 HOSTINGER = HostingerSync(SETTINGS, MOBILE.root)
+# Telefon łączy się z tym komputerem przez Tailscale (prywatne HTTPS) — bez Hostingera.
+PHONE_APP = next((p for p in (ROOT / "mobile", ROOT.parent / "mobile") if (p / "index.html").is_file()), ROOT / "mobile")
+PHONE = PhoneServer(PHONE_APP, MOBILE.root, MOBILE.import_events, port=int(SETTINGS.phone.get("port", 8903)), public_url=str(SETTINGS.phone.get("public_url", "")))
 
 
 class Handler(SimpleHTTPRequestHandler):
@@ -56,7 +60,7 @@ class Handler(SimpleHTTPRequestHandler):
     def do_GET(self):
         url = urllib.parse.urlparse(self.path); path = url.path.rstrip("/")
         try:
-            if path == "/api/health": return self.json(200, {"ok": True, "mode": SETTINGS.mode, "writes": SETTINGS.allow_production_writes, "publication": SETTINGS.allow_publication, "hostinger": HOSTINGER.status()})
+            if path == "/api/health": return self.json(200, {"ok": True, "mode": SETTINGS.mode, "writes": SETTINGS.allow_production_writes, "publication": SETTINGS.allow_publication, "hostinger": HOSTINGER.status(), "phone": PHONE.status()})
             if path == "/api/publications":
                 q = urllib.parse.parse_qs(url.query); brand=(q.get("brand") or ["atlet"])[0]; channel=(q.get("channel") or ["instagram"])[0]; archive=(q.get("archive") or ["false"])[0] == "true"
                 return self.json(200, ADAPTER.list_cards(brand=brand, include_archive=archive, selected_channel=channel))
@@ -74,6 +78,9 @@ class Handler(SimpleHTTPRequestHandler):
             if path.startswith("/api/jobs/"): return self.json(200, JOBS.get(path.split("/")[-1]))
             if path == "/api/learning": return self.json(200, {"events": LEARNING.recent_events(), "lessons": LEARNING.lessons()})
             if path == "/api/hostinger/status": return self.json(200, HOSTINGER.status())
+            if path == "/api/phone/status": return self.json(200, PHONE.status())
+            if path == "/api/mobile-events":
+                q=urllib.parse.parse_qs(url.query); return self.json(200, {"events": MOBILE.events((q.get("post_id") or [None])[0])})
             if path == "/api/mobile-candidates":
                 q=urllib.parse.parse_qs(url.query); return self.json(200,{"items":MOBILE.candidates((q.get("brand") or ["all"])[0])})
             if path.startswith("/api/mobile-packages/"):
@@ -125,6 +132,9 @@ def main():
         except Exception: pass
     lock.write_text(str(os.getpid()))
     server=ThreadingHTTPServer((SETTINGS.host,SETTINGS.port),Handler)
+    if SETTINGS.phone.get("enabled", True):
+        try: PHONE.start()
+        except OSError as exc: print(f"Serwer telefonu nie wystartował na porcie {PHONE.port}: {exc}", file=sys.stderr)
     threading.Timer(.6,lambda:webbrowser.open(f"http://{SETTINGS.host}:{SETTINGS.port}")).start()
     try: server.serve_forever()
     finally:
