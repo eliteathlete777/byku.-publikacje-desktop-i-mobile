@@ -30,9 +30,10 @@ class PhoneServer:
     """
 
     def __init__(self, app_dir: Path, packages_root: Path, import_events: Callable[[dict], dict], *, host: str = "127.0.0.1",
-                 port: int = 8903, public_url: str = ""):
+                 port: int = 8903, public_url: str = "", sync_status: Callable[[], dict] | None = None):
         self.app_dir, self.packages_root, self.import_events = app_dir, packages_root, import_events
         self.host, self.port, self.public_url = host, port, public_url
+        self.sync_status = sync_status
         self.server: ThreadingHTTPServer | None = None
         self._tailscale: tuple[float, dict] = (0.0, {})
 
@@ -105,7 +106,7 @@ class PhoneServer:
 
             def do_GET(self):
                 if urllib.parse.urlparse(self.path).path.rstrip("/") == "/api/ping":
-                    return self.json(200, {"ok": True, "app": "BYKU.PUBLIKACJE", "packages": phone._package_count(), "time": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())})
+                    return self.json(200, {"ok": True, "app": "BYKU.PUBLIKACJE", "packages": phone._package_count(), "time": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "sync": phone._sync_summary()})
                 file, cache = self.resolve()
                 if not file or not file.is_file(): return self.json(404, {"error": "Nie ma takiego pliku"})
                 size = file.stat().st_size
@@ -146,6 +147,12 @@ class PhoneServer:
                     return self.json(400, {"error": str(exc)})
 
         return Handler
+
+    def _sync_summary(self) -> dict:
+        """Dla telefonu tylko skrót: kiedy komputer ostatnio czytał kalendarze i czy trwa aktualizacja."""
+        try: st = self.sync_status() if self.sync_status else {}
+        except Exception: st = {}
+        return {"running": bool(st.get("running")), "finished_at": st.get("finished_at") or "", "ok": st.get("ok")}
 
     @staticmethod
     def _inside(root: Path, rel: str) -> Path | None:

@@ -62,18 +62,22 @@ class MobilePackages:
             with zipfile.ZipFile(target, "w", zipfile.ZIP_DEFLATED) as z:
                 for p in files: z.write(p, p.name)
                 z.writestr("manifest.json", json.dumps(manifest, ensure_ascii=False, indent=2))
+        hidden = self._hidden()
+        if f"{post_id}::{card['brand']}" in hidden:
+            hidden.discard(f"{post_id}::{card['brand']}"); self._save_hidden(hidden)
         index = self.write_index()
         return {"path": str(target), "name": target.name, "manifest": manifest, "url": f"/api/mobile-packages/{target.name}", "index_packages": len(index["packages"])}
 
     def write_index(self) -> dict:
         """Buduje index.json czytany przez Mobile: najnowsza rewizja na post_id + marka, adresy względne."""
         newest: dict[tuple[str, str], tuple[dict, Path]] = {}
+        hidden = self._hidden()
         order = lambda m, f: (str(m.get("exported_at", "")), f.stat().st_mtime_ns)
         for file in sorted(self.root.glob("*/do-instagrama/*/manifest.json")):
             try: manifest = json.loads(file.read_text(encoding="utf-8"))
             except (OSError, ValueError): continue
             key = (str(manifest.get("post_id", "")), str(manifest.get("brand", "")))
-            if not all(key): continue
+            if not all(key) or "::".join(key) in hidden: continue
             if key not in newest or order(manifest, file) > order(*newest[key]):
                 newest[key] = (manifest, file)
         packages = [{"post_id": m["post_id"], "brand": m["brand"], "content_revision": m.get("content_revision", ""), "exported_at": m.get("exported_at", ""), "manifest_url": f.relative_to(self.root).as_posix()} for m, f in newest.values()]
@@ -81,6 +85,30 @@ class MobilePackages:
         index = {"schema_version": 1, "generated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "packages": packages}
         (self.root / "index.json").write_text(json.dumps(index, ensure_ascii=False, indent=2), encoding="utf-8")
         return index
+
+    # ── synchronizacja z kolejką: zmieniona treść → nowa paczka, Instagram zrobiony → znika z telefonu ──
+    def _hidden(self) -> set[str]:
+        try: return set(json.loads((self.root / "ukryte.json").read_text(encoding="utf-8")))
+        except (OSError, ValueError): return set()
+
+    def _save_hidden(self, hidden: set[str]):
+        (self.root / "ukryte.json").write_text(json.dumps(sorted(hidden), ensure_ascii=False, indent=2), encoding="utf-8")
+
+    def sync(self, cards: list[dict]) -> dict:
+        """Nie eksportuje nowych paczek (to świadoma akcja „Paczka na telefon”). Odświeża już wysłane,
+        gdy zmieniła się treść, i zdejmuje z telefonu te, które nie czekają już na Instagram."""
+        by_key = {(c["post_id"], c["brand"]): c for c in cards}
+        hidden, refreshed, newly_hidden = self._hidden(), [], []
+        for entry in self.write_index()["packages"]:
+            key = (entry["post_id"], entry["brand"]); card = by_key.get(key)
+            if card is None or not card.get("phone_ready"):
+                hidden.add("::".join(key)); newly_hidden.append(entry["post_id"]); continue
+            if card["content"]["revision"] != entry["content_revision"]:
+                try: self.export(entry["post_id"]); refreshed.append(entry["post_id"])
+                except (ValueError, FileNotFoundError, OSError): pass
+        if newly_hidden: self._save_hidden(hidden)
+        index = self.write_index()
+        return {"refreshed": len(refreshed), "hidden": len(newly_hidden), "packages": len(index["packages"]), "events": len(self.events())}
 
     def candidates(self, brand: str = "all") -> list[dict]:
         cards = self.adapter.list_cards(brand=brand, include_archive=False, selected_channel="instagram")["items"]

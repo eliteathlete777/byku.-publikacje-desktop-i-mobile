@@ -102,6 +102,34 @@ kbd{margin-right:9px;padding:2px 7px;border:1px solid var(--line-2);border-botto
 .icon svg{width:19px;height:19px}
 .icon:hover{color:var(--text);border-color:var(--line-3)}
 .icon.spin svg{animation:spin .8s linear infinite}
+.sync-btn{display:inline-flex;align-items:center;gap:9px;height:44px;padding:0 16px;border:1px solid var(--red);background:var(--red-core);color:#fff;font:700 15px/1 var(--f-ui);letter-spacing:.08em;text-transform:uppercase;clip-path:var(--cut-sm);box-shadow:0 10px 26px -14px var(--red-glow);transition:background .15s}
+.sync-btn svg{width:18px;height:18px;stroke-width:2}
+.sync-btn:hover{background:var(--red)}
+.sync-btn.busy,.sync-btn:disabled{background:var(--raised);border-color:var(--line-2);color:var(--muted);box-shadow:none;cursor:progress}
+.sync-btn.busy svg{animation:spin 1.1s linear infinite;color:var(--amber)}
+
+/* ── PASEK AKTUALIZACJI ───────────────────────────── */
+.syncbar{margin:16px 0 0;background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--line-3)}
+.syncbar:empty{display:none}
+.syncbar:has(.st.ok){border-left-color:var(--green)}.syncbar:has(.st.bad){border-left-color:var(--red)}.syncbar:has(.st.run){border-left-color:var(--amber)}
+.sync-head{display:flex;align-items:center;flex-wrap:wrap;gap:6px 16px;min-height:48px;padding:8px 14px}
+.sync-head .st{font:700 15px/1 var(--f-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--text)}
+.sync-head .st.ok{color:var(--green)}.sync-head .st.bad{color:#ff8a90}.sync-head .st.run{color:var(--amber)}
+.sync-head .meta{flex:1;min-width:0;margin:0;font:400 12px/1.3 var(--f-mono);color:var(--dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lives{display:flex;gap:8px}
+.live{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 8px;border:1px solid var(--line-2);font:400 11px/1 var(--f-mono);color:var(--muted);white-space:nowrap}
+.live b{font-weight:600;color:var(--text)}
+.live:before{content:"";width:6px;height:6px;background:var(--green);transform:rotate(45deg)}
+.live.stale{border-color:rgba(255,178,36,.45);color:var(--amber)}.live.stale:before{background:var(--amber)}
+.ghost.tiny{min-height:28px;padding:0 10px;font-size:12.5px}
+.syncbar .steps{list-style:none;margin:0;padding:4px 14px 12px;display:grid;gap:4px;border-top:1px solid var(--line)}
+.syncbar .steps li{display:grid;grid-template-columns:18px minmax(180px,auto) 1fr;align-items:baseline;gap:10px;padding:5px 0;font:600 14px/1.25 var(--f-ui);color:var(--muted)}
+.syncbar .steps i{font:600 12px/1 var(--f-mono);font-style:normal;text-align:center}
+.syncbar .steps small{font:400 11.5px/1.35 var(--f-mono);color:var(--dim);overflow-wrap:anywhere}
+.syncbar .steps li.ok{color:var(--text)}.syncbar .steps li.ok i{color:var(--green)}
+.syncbar .steps li.running{color:var(--amber)}.syncbar .steps li.running i{display:inline-block;animation:spin 1s linear infinite}
+.syncbar .steps li.error i,.syncbar .steps li.error{color:#ff8a90}
+.syncbar .steps li.skipped{opacity:.6}
 
 /* ── METRYKI ──────────────────────────────────────── */
 .summary{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
@@ -353,6 +381,7 @@ button.metric:hover{border-color:var(--line-3);transform:translateY(-2px)}
   nav button{flex:1 0 56px;min-height:52px}
   nav button.active:before{left:10px;right:10px;top:auto;bottom:0;width:auto;height:3px}
   main{padding:0 14px 90px}
+  .sync-btn span{display:none}.sync-head .meta{flex-basis:100%;white-space:normal}.lives{flex-wrap:wrap}.sync-btn{padding:0 12px}.lives{margin-left:0}.syncbar .steps li{grid-template-columns:18px 1fr}.syncbar .steps small{grid-column:2}
   h1{font-size:38px}
   .toolbar{width:100%}.search{flex:1;width:auto}
   .tminus{flex-wrap:wrap;gap:4px 14px}

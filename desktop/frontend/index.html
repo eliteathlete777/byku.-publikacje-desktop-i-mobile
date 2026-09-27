@@ -44,12 +44,17 @@
           <input id="search" type="search" placeholder="Szukaj nazwy lub ID" aria-label="Znajdź publikację">
           <kbd>/</kbd>
         </label>
+        <button id="syncAll" class="sync-btn" title="Kalendarze LIVE TikTok i Meta, wysyłki, telefon (U)">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 0 1 13.66-5.66L20 8.7"/><path d="M20 4v4.7h-4.7"/><path d="M20 12a8 8 0 0 1-13.66 5.66L4 15.3"/><path d="M4 20v-4.7h4.7"/></svg>
+          <span>Aktualizuj wszystko</span>
+        </button>
         <button id="refresh" class="icon" title="Odśwież (R)" aria-label="Odśwież">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg>
         </button>
       </div>
     </header>
 
+    <section class="syncbar" id="syncBar" aria-live="polite"></section>
     <section class="deck">
       <div class="tminus" id="tminus" aria-live="off">
         <span class="tminus-label">Następny start</span>

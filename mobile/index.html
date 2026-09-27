@@ -26,7 +26,7 @@
     <div class="hazard" aria-hidden="true"></div>
     <aside id="syncPanel" class="sync-bar" aria-live="polite">
       <div class="sync-copy"><strong id="syncTitle">Gotowy</strong><small id="syncDetail">Paczki odświeżą się same.</small></div>
-      <button id="refreshButton" class="refresh" aria-label="Odśwież paczki" title="Odśwież paczki"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg></button>
+      <button id="refreshButton" class="refresh" aria-label="Odśwież wszystko" title="Odśwież wszystko: paczki, komputer, czynności, wersja appki"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66"/><path d="M20 4v5h-5"/></svg></button>
     </aside>
     <main>
       <section id="packagesView" class="view active" aria-labelledby="packagesTitle">
@@ -56,6 +56,12 @@
         <p class="muted">Zostaw <code>paczki/index.json</code> — to ten sam komputer, z którego otworzyłeś appkę. Zmieniaj tylko, jeśli paczki leżą gdzie indziej.</p>
         <button id="saveSettings" class="secondary">Zapisz ustawienia</button>
         <p id="settingsStatus" class="status-line" aria-live="polite"></p>
+        <div class="panel-card info">
+          <strong>Aktualizacja</strong>
+          <p>Przy każdym otwarciu appka sama odświeża paczki, łączy się z komputerem i wysyła zaległe czynności. Przycisk ↻ u góry robi to samo na żądanie. Kalendarze TikTok i Meta czyta komputer — przy starcie desktopu albo przyciskiem „Aktualizuj wszystko”.</p>
+          <button id="checkUpdate" class="action">Sprawdź aktualizację appki</button>
+          <p id="updateStatus" class="status-line" aria-live="polite"></p>
+        </div>
       </section>
     </main>
     <nav aria-label="Sekcje">

@@ -30,5 +30,8 @@
     "enabled": true,
     "port": 8903,
     "public_url": ""
+  },
+  "sync": {
+    "on_start": "full"
   }
 }

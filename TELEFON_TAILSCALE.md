@@ -31,6 +31,12 @@ Reszta API desktopu (zapis treści, haczyki, kalendarz, port 8902) **nie jest** 
 
 Warunek: komputer włączony, desktop uruchomiony, Tailscale włączony na telefonie. Gdy komputer jest wyłączony, telefon pokazuje „PC Niedostępny”, trzyma ostatnio pobraną listę i wyśle zaległe czynności, gdy połączenie wróci.
 
+## Aktualizacja danych
+
+- **Start desktopu** = pełna aktualizacja w tle: kalendarze TikTok i Meta obu marek (otworzą się Edge/Chrome, tylko odczyt), wysyłki i paczki telefonu. Wyłączenie: `desktop/config.json` → `"sync": {"on_start": "quick"}` albo `"off"`.
+- **Przycisk „Aktualizuj wszystko”** (u góry desktopu, skrót `U`) robi to samo na żądanie; pasek pod nagłówkiem pokazuje postęp i wiek kalendarzy każdej marki.
+- **Telefon**: przy każdym otwarciu odświeża paczki, połączenie i zaległe czynności; ↻ robi to ręcznie i sprawdza nową wersję appki. W Ustawieniach: „Sprawdź aktualizację appki” i „Komputer: kalendarze … temu”.
+
 ## Kontrola
 
 | Co | Gdzie | Oczekiwany wynik |

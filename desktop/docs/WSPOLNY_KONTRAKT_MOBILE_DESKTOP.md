@@ -57,6 +57,20 @@ Eksport z telefonu: `{"schema_version":1,"source":"mobile","exported_at":"…","
 
 Testy end-to-end: `desktop/tests/test_mobile_contract.py` i `desktop/tests/test_phone_server.py` (uruchamiane w GitHub Actions przy każdym pushu i PR).
 
+## Aktualizacja („Aktualizuj wszystko”)
+
+| Kiedy | Co | Przeglądarki |
+|---|---|---|
+| Start desktopu (`sync.on_start`: `full` — domyślnie, `quick`, `off`) | pełna: wysyłki `status/*.jsonl`, kalendarze LIVE TikTok Studio + Meta Terminarz obu marek, paczki telefonu | tak, Edge/Chrome tylko do odczytu |
+| Otwarcie okna desktopu | szybka: paczki telefonu + czynności (`POST /api/sync {"mode":"quick"}`) | nie |
+| Przycisk **Aktualizuj wszystko** / klawisz `U` | pełna (`POST /api/sync {"mode":"full"}`, postęp: `GET /api/sync`) | tak |
+| Telefon: otwarcie appki / ↻ | paczki, połączenie z PC, zaległe czynności, nowa wersja appki | nie |
+
+- Kalendarze czyta Studio (`zrzut_kalendarzy_live`) do `status/kalendarz-live-<marka>.json`. Do `post.json` wynik trafia tylko przy `allow_production_writes`; w trybie podglądu desktop nakłada zrzut (≤ 12 h) i `status/*.jsonl` w pamięci przy każdym odczycie kolejki.
+- Marka, której profil przeglądarki jest zajęty przez wysyłkę (`data/locks`), jest pomijana.
+- Synchronizacja paczek telefonu nie eksportuje nowych paczek. Odświeża paczki już wysłane, gdy zmieniła się treść, i zdejmuje z indeksu te, które nie czekają już na Instagram (`mobile-packages/ukryte.json`; ponowne „Paczka na telefon” przywraca).
+- Telefon widzi w `api/ping` pole `sync` (`running`, `finished_at`) i odświeża paczki, gdy komputer skończy.
+
 ## Foldery Google Drive
 
 - Root: `1O2DJuWIarEjfObcvDnNgiLgjj6L085CD`

@@ -21,6 +21,7 @@ class Settings:
     timezone: str
     hostinger: dict = field(default_factory=dict)
     phone: dict = field(default_factory=dict)
+    sync: dict = field(default_factory=dict)
 
     @property
     def queue(self) -> Path:
@@ -42,6 +43,7 @@ def load_settings() -> Settings:
         timezone=str(raw.get("timezone", "Europe/Warsaw")),
         hostinger=dict(raw.get("hostinger") or {}),
         phone=dict(raw.get("phone") or {}),
+        sync=dict(raw.get("sync") or {}),
     )
     cfg.sandbox_queue.mkdir(parents=True, exist_ok=True)
     cfg.data_dir.mkdir(parents=True, exist_ok=True)

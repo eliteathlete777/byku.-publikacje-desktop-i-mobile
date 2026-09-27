@@ -26,6 +26,7 @@ from backend.mobile_packages import MobilePackages
 from backend.phone_server import PhoneServer
 from backend.schedule_service import ScheduleService
 from backend.studio_adapter import StudioAdapter
+from backend.sync_service import SyncService
 from learning.store import LearningStore
 from learning.lesson_service import LessonService
 
@@ -39,9 +40,10 @@ MOBILE = MobilePackages(ADAPTER)
 LEGACY = LegacyBridge(ADAPTER)
 LESSONS = LessonService(LEARNING)
 HOSTINGER = HostingerSync(SETTINGS, MOBILE.root)
+SYNC = SyncService(ADAPTER, MOBILE)
 # Telefon łączy się z tym komputerem przez Tailscale (prywatne HTTPS) — bez Hostingera.
 PHONE_APP = next((p for p in (ROOT / "mobile", ROOT.parent / "mobile") if (p / "index.html").is_file()), ROOT / "mobile")
-PHONE = PhoneServer(PHONE_APP, MOBILE.root, MOBILE.import_events, port=int(SETTINGS.phone.get("port", 8903)), public_url=str(SETTINGS.phone.get("public_url", "")))
+PHONE = PhoneServer(PHONE_APP, MOBILE.root, MOBILE.import_events, port=int(SETTINGS.phone.get("port", 8903)), public_url=str(SETTINGS.phone.get("public_url", "")), sync_status=SYNC.status)
 
 
 class Handler(SimpleHTTPRequestHandler):
@@ -79,6 +81,7 @@ class Handler(SimpleHTTPRequestHandler):
             if path == "/api/learning": return self.json(200, {"events": LEARNING.recent_events(), "lessons": LEARNING.lessons()})
             if path == "/api/hostinger/status": return self.json(200, HOSTINGER.status())
             if path == "/api/phone/status": return self.json(200, PHONE.status())
+            if path == "/api/sync": return self.json(200, SYNC.overview())
             if path == "/api/mobile-events":
                 q=urllib.parse.parse_qs(url.query); return self.json(200, {"events": MOBILE.events((q.get("post_id") or [None])[0])})
             if path == "/api/mobile-candidates":
@@ -95,6 +98,9 @@ class Handler(SimpleHTTPRequestHandler):
         try:
             data=self.body()
             if path == "/api/mobile-packages/publish": return self.json(200,HOSTINGER.publish())
+            if path == "/api/sync":
+                if data.get("mode") == "full": return self.json(202,SYNC.start_full(trigger=str(data.get("trigger") or "manual")))
+                return self.json(200,SYNC.quick(trigger=str(data.get("trigger") or "open")))
             if path.endswith("/content"):
                 post_id=urllib.parse.unquote(path.split("/")[3]); result=CONTENT.save(post_id, expected_revision=data["expected_revision"], description=data.get("description", ""), hashtags=data.get("hashtags", ""), location=data.get("location", ""), approve=bool(data.get("approve"))); return self.json(200,result)
             if path.endswith("/phone-package"):
@@ -135,6 +141,10 @@ def main():
     if SETTINGS.phone.get("enabled", True):
         try: PHONE.start()
         except OSError as exc: print(f"Serwer telefonu nie wystartował na porcie {PHONE.port}: {exc}", file=sys.stderr)
+    # Każde uruchomienie appki = pełna aktualizacja w tle (kalendarze LIVE, wysyłki, telefon). "sync": {"on_start": "full" | "quick" | "off"}.
+    on_start=str(SETTINGS.sync.get("on_start","full"))
+    if on_start=="full": threading.Timer(2.0,lambda:SYNC.start_full(trigger="start")).start()
+    elif on_start=="quick": threading.Timer(1.0,lambda:SYNC.quick(trigger="start")).start()
     threading.Timer(.6,lambda:webbrowser.open(f"http://{SETTINGS.host}:{SETTINGS.port}")).start()
     try: server.serve_forever()
     finally:
