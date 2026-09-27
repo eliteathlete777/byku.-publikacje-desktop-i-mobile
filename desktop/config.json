@@ -12,7 +12,7 @@
   "allow_production_writes": false,
   "timezone": "Europe/Warsaw",
   "google_drive": {
-    "local_sync_dir": "",
+    "local_sync_dir": "C:\\Users\\DELL\\Documents\\Codex\\BYKU-PUBLIKACJE-EXPORT",
     "root_folder_id": "1O2DJuWIarEjfObcvDnNgiLgjj6L085CD",
     "brand_folder_ids": {
       "atlet": "1Ln2SdkFZWY784sJn73Gv6VTIX7g-tZ6G",

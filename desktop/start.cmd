@@ -11,6 +11,11 @@ if %errorlevel%==0 (
   start "BYKU.PUBLIKACJE DESKTOP" pyw.exe -3 "%~dp0run.py"
   exit /b 0
 )
-echo Nie znaleziono Pythona 3 (pythonw.exe / pyw.exe). Zainstaluj Python 3.11+ z python.org.
+where python.exe >nul 2>nul
+if %errorlevel%==0 (
+  start "BYKU.PUBLIKACJE DESKTOP" /min python.exe "%~dp0run.py"
+  exit /b 0
+)
+echo Nie znaleziono Pythona 3 (pythonw.exe / pyw.exe / python.exe). Zainstaluj Python 3.11+ z python.org.
 pause
 exit /b 1

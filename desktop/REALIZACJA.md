@@ -1,6 +1,6 @@
 # BYKU.PUBLIKACJE DESKTOP — zadania
 
-Aktualizacja: 25.09.2026. Status `verified` = potwierdzone testem automatycznym w tym repozytorium.
+Aktualizacja: 27.09.2026. Status `verified` = potwierdzone testem automatycznym w tym repozytorium.
 Tryb domyślny: bezpieczny podgląd produkcji (`allow_production_writes=false`, `allow_publication=false`).
 
 | Zadanie | Status | Dowód |
@@ -29,7 +29,7 @@ Tryb domyślny: bezpieczny podgląd produkcji (`allow_production_writes=false`, 
 
 ## Otwarte (kolejność)
 
-- **D1** — Na komputerze właściciela: `tools\install_shortcut.ps1`, start ze skrótu, otwarcie prawdziwej kolejki w trybie podglądu, sprawdzenie panelu System (rdzeń: `studio`).
-- **D2** — Ustawić `google_drive.local_sync_dir` na folder Dysku Google synchronizowany lokalnie.
+- **D1 — verified 27.09.2026** — Skrót zainstalowany i uruchomiony na komputerze właściciela. Prawdziwa kolejka: 20 kart, 7 kandydatów TikTok → Instagram; panel System: rdzeń `studio`, zapis i publikowanie zablokowane.
+- **D2 — lokalny eksport verified 27.09.2026** — Do czasu ponownego podłączenia Google Drive paczki trafiają do lokalnego `C:\Users\DELL\Documents\Codex\BYKU-PUBLIKACJE-EXPORT`; sprawdzono paczkę z manifestem v2. Synchronizacja Google Drive pozostaje odłożona.
 - **D3** — Po wdrożeniu mobile: `mobile_server.url` + token w `.env`.
 - **D4** — Decyzja właściciela: T10 (`allow_production_writes=true`), potem T06.
