@@ -1,9 +1,79 @@
 from __future__ import annotations
 
+import json
+import re
 from datetime import datetime
 from pathlib import Path
 
 from .studio_adapter import StudioAdapter
+
+
+# Etapy wrzutu w kolejności, jak raportują je uploadery (krok w BYQ_STATUS -> nazwa dla Damiana).
+UPLOAD_STEPS = [
+    ("start", "Przeglądarka otwarta", ("start", "nawigacja")),
+    ("konto", "Właściwe konto", ("konto",)),
+    ("plik", "Film wgrany", ("wgranie_pliku", "tryb_zdjec", "wgranie_zdjec")),
+    ("opis", "Opis wklejony", ("opis",)),
+    ("okladka", "Okładka", ("okladka",)),
+    ("muzyka", "Muzyka", ("muzyka", "dzwiek")),
+    ("lokalizacja", "Lokalizacja", ("lokalizacja",)),
+    ("znaczniki", "Znaczniki FB", ("znaczniki",)),
+    ("termin", "Termin ustawiony", ("harmonogram_dzien", "harmonogram_godzina")),
+    ("gotowe", "Gotowe — kliknij Zaplanuj", ("gotowe_do_klikniecia",)),
+]
+_RANK = {"ok": 1, "w_toku": 2, "blad": 3}
+
+
+def _human_problem(text: str) -> str:
+    """Pierwsze zdanie komunikatu uploadera, bez technicznych nazw wyjątków."""
+    if "has been closed" in text or "TargetClosed" in text:
+        return "Okno przeglądarki zostało zamknięte w trakcie wrzutu."
+    text = re.sub(r"^próba \d+/\d+:\s*", "", text.strip())
+    first = re.split(r"(?<=[.!?])\s", text, maxsplit=1)[0]
+    return first if not re.search(r"[A-Z][a-z]+Error|\(\'|Locator\.", first) else "Uploader zatrzymał się na tym etapie."
+
+
+def upload_steps(log_text: str, channel: str) -> tuple[list[dict], str]:
+    """Log konsoli -> [{id, label, state: todo|running|ok|error}] + czytelny opis problemu (albo "")."""
+    platforms = {"obie": {"instagram", "facebook", "meta"}}.get(channel, {channel})
+    per_platform: dict[tuple[str, str], str] = {}   # (platforma, krok) -> ostatni status
+    problem = ""
+    for line in log_text.splitlines():
+        if not line.startswith("BYQ_STATUS:"):
+            continue
+        try:
+            entry = json.loads(line[len("BYQ_STATUS:"):])
+        except ValueError:
+            continue
+        if entry.get("platforma") not in platforms:
+            continue
+        per_platform[(entry["platforma"], entry.get("krok", ""))] = entry.get("status", "")
+        if entry.get("status") == "blad" and entry.get("szczegoly"):
+            problem = _human_problem(str(entry["szczegoly"]))
+    latest: dict[str, str] = {}   # krok -> najgorszy z ostatnich statusów platform (IG i FB razem)
+    for (_, krok), status in per_platform.items():
+        if _RANK.get(status, 0) > _RANK.get(latest.get(krok, ""), 0):
+            latest[krok] = status
+    steps = []
+    for sid, label, keys in UPLOAD_STEPS:
+        if sid == "znaczniki" and channel != "obie":
+            continue
+        states = [latest[k] for k in keys if k in latest]
+        if "blad" in states:
+            state = "error"
+        elif "w_toku" in states:
+            state = "running"
+        elif states:
+            state = "ok"
+        else:
+            state = "todo"
+        steps.append({"id": sid, "label": label, "state": state})
+    if "nieoczekiwany_blad" in latest and not any(s["state"] == "error" for s in steps):
+        for s in steps:
+            if s["state"] in ("running", "todo"):
+                s["state"] = "error"
+                break
+    return steps, problem
 
 
 class LegacyBridge:
@@ -13,8 +83,11 @@ class LegacyBridge:
         self.adapter = adapter
         self.runs: dict[tuple[str, str], dict] = {}  # (post_id, kanał) -> uruchomiony uploader tej sesji panelu
 
-    def uploads(self, tail: int = 25) -> list[dict]:
-        """Uploadery odpalone z panelu: żyje / skończył (kod wyjścia) + końcówka logu konsoli."""
+    def uploads(self) -> list[dict]:
+        """Uploadery odpalone z panelu jako lista etapów (checkboxy dla Damiana).
+
+        Etapy czytamy z linii BYQ_STATUS w logu konsoli; surowy log zostaje na dysku (pole log) do diagnozy.
+        """
         out = []
         for (post_id, channel), run in self.runs.items():
             proc = run["proc"]
@@ -22,14 +95,18 @@ class LegacyBridge:
             if code is not None and run.get("fh"):
                 run["fh"].close()
                 run["fh"] = None
-            lines: list[str] = []
+            text = ""
             if run["log"] and Path(run["log"]).is_file():
                 try:
-                    lines = Path(run["log"]).read_text(encoding="utf-8", errors="replace").splitlines()[-tail:]
+                    text = Path(run["log"]).read_text(encoding="utf-8", errors="replace")
                 except OSError:
-                    lines = []
+                    text = ""
+            steps, problem = upload_steps(text, channel)
+            if code not in (None, 0) and not problem:
+                problem = "Uploader zakończył się błędem, zanim zgłosił etap. Okna przeglądarki nie zamykaj, sprawdzę przyczynę."
             out.append({"post_id": post_id, "channel": channel, "pid": proc.pid, "running": code is None,
-                        "exit_code": code, "started": run["started"], "log": run["log"], "tail": lines})
+                        "exit_code": code, "started": run["started"], "log": run["log"],
+                        "steps": steps, "problem": problem})
         return sorted(out, key=lambda r: r["started"], reverse=True)
 
     def available(self) -> bool:

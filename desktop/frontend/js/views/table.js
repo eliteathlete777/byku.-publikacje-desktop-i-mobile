@@ -34,13 +34,18 @@ function drawRuns(uploads) {
   const box = $("#uploadRuns");
   if (!box) return false;
   const name = id => state.cards.find(c => c.post_id === id)?.name || id;
-  box.innerHTML = uploads.length ? `<h3>Uruchomione w tej sesji</h3>${uploads.map(u => `<article class="upload-run ${u.running ? "live" : u.exit_code === 0 ? "ok" : "bad"}">
+  const ICON = { ok: "✓", running: "…", error: "✗", todo: "" };
+  box.innerHTML = uploads.length ? `<h3>Uruchomione w tej sesji</h3>${uploads.map(u => {
+    const failed = !u.running && (u.exit_code !== 0 || u.steps.some(s => s.state === "error"));
+    const ready = u.steps.some(s => s.id === "gotowe" && s.state === "ok");
+    return `<article class="upload-run ${u.running ? "live" : failed ? "bad" : "ok"}">
       <header><b>${esc(name(u.post_id))} · ${esc(LEG_NAME[u.channel] || u.channel)}</b>
-        <span class="pill ${u.running ? "running" : u.exit_code === 0 ? "published" : "failed"}">${u.running ? "Pracuje…" : u.exit_code === 0 ? "Skończył — sprawdź i kliknij Zaplanuj" : `Błąd (kod ${u.exit_code})`}</span>
+        <span class="pill ${u.running ? "running" : failed ? "failed" : "published"}">${u.running ? "Pracuje…" : failed ? "Zatrzymał się" : ready ? "Gotowe — kliknij Zaplanuj" : "Zakończony"}</span>
         ${u.running ? `<button type="button" class="btn ghost small" data-music="${esc(u.post_id)}">Muzyka dobrana</button>` : ""}
         <button type="button" class="btn ghost small" data-open-run="${esc(u.post_id)}">Karta</button></header>
-      <pre class="report">${esc(u.tail.join("\n") || "Czekam na pierwsze linie logu…")}</pre>
-    </article>`).join("")}` : "";
+      <ul class="steps">${u.steps.map(s => `<li class="${s.state}"><span class="box">${ICON[s.state]}</span>${esc(s.label)}</li>`).join("")}</ul>
+      ${failed && u.problem ? `<p class="step-problem">${esc(u.problem)}</p>` : ""}
+    </article>`; }).join("")}` : "";
   $$("[data-music]", box).forEach(b => b.onclick = e => run(e.currentTarget, () => post(`${pub(b.dataset.music)}/music-ready`), "Sygnał muzyki wysłany, Python jedzie dalej."));
   $$("[data-open-run]", box).forEach(b => b.onclick = () => openCard(b.dataset.openRun, "channels"));
   return true;

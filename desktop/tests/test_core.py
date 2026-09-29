@@ -522,7 +522,10 @@ class UploadTrackerTests(Sandbox):
         from types import SimpleNamespace as NS
         app = run.App(self.settings, core=FallbackCore())
         log = self.root / "x-tiktok-konsola.log"
-        log.write_text("\n".join(f"krok {i}" for i in range(40)), encoding="utf-8")
+        st = lambda plat, krok, status, sz="": "BYQ_STATUS:" + json.dumps({"post_id": "a", "platforma": plat, "krok": krok, "status": status, "szczegoly": sz})
+        log.write_text("\n".join(["TikTok: log techniczny", st("tiktok", "start", "ok"), st("tiktok", "konto", "ok"),
+                                  st("tiktok", "wgranie_pliku", "w_toku"),
+                                  st("tiktok", "wgranie_pliku", "blad", "nie wgrałem filmu X.mp4. 13.09: ukryty input wisi.")]), encoding="utf-8")
         codes = {"a": None, "b": 0}
         for key in codes:
             app.legacy.runs[(key, "tiktok")] = {"proc": NS(pid=1, poll=lambda k=key: codes[k]), "log": str(log), "fh": None,
@@ -530,10 +533,22 @@ class UploadTrackerTests(Sandbox):
         ups = {u["post_id"]: u for u in app.legacy.uploads()}
         self.assertTrue(ups["a"]["running"])
         self.assertEqual((ups["b"]["running"], ups["b"]["exit_code"]), (False, 0))
-        self.assertEqual(ups["a"]["tail"][-1], "krok 39")
-        self.assertEqual(len(ups["a"]["tail"]), 25)
+        states = {s["id"]: s["state"] for s in ups["a"]["steps"]}
+        self.assertEqual((states["start"], states["konto"], states["plik"], states["opis"]), ("ok", "ok", "error", "todo"))
+        self.assertNotIn("znaczniki", states)
+        self.assertEqual(ups["a"]["problem"], "nie wgrałem filmu X.mp4.")
+        self.assertNotIn("tail", ups["a"])
         with self.assertRaisesRegex(PermissionError, "allow_publication"):
             app.legacy.prepare_publication("a", "tiktok")
+
+    def test_meta_steps_merge_instagram_and_facebook(self):
+        from backend.legacy_bridge import upload_steps
+        st = lambda plat, krok, status, sz="": "BYQ_STATUS:" + json.dumps({"platforma": plat, "krok": krok, "status": status, "szczegoly": sz})
+        steps, problem = upload_steps("\n".join([st("instagram", "opis", "ok"), st("facebook", "opis", "ok"),
+                                                 st("instagram", "znaczniki", "ok"), st("facebook", "znaczniki", "blad", "Locator.count TimeoutError('x')")]), "obie")
+        states = {s["id"]: s["state"] for s in steps}
+        self.assertEqual((states["opis"], states["znaczniki"]), ("ok", "error"))
+        self.assertEqual(problem, "Uploader zatrzymał się na tym etapie.")
 
 
 class HttpTests(Sandbox):

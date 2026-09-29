@@ -114,6 +114,16 @@ main { min-width: 0; padding: 0 24px 40px; }
 .upload-run.bad { border-color: var(--red); }
 .upload-run header { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 6px; }
 .upload-run header b { margin-right: auto; }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 6px 14px; }
+.steps li { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--muted); }
+.steps .box { width: 18px; height: 18px; flex: none; display: grid; place-items: center; border: 1px solid var(--line-strong); font-size: 12px; font-weight: 800; line-height: 1; }
+.steps li.ok { color: var(--text); }
+.steps li.ok .box { background: var(--green); border-color: var(--green); color: #000; }
+.steps li.running { color: var(--blue); }
+.steps li.running .box { border-color: var(--blue); color: var(--blue); }
+.steps li.error { color: var(--red); font-weight: 700; }
+.steps li.error .box { background: var(--red); border-color: var(--red); color: #fff; }
+.step-problem { margin: 8px 0 0; color: var(--red); font-size: 13px; }
 @media (max-width: 640px) { .upload-item { grid-template-columns: 44px 1fr; } .upload-btns { grid-column: 1 / -1; justify-content: flex-start; } }
 .focus { border: 1px solid var(--red); background: linear-gradient(90deg, #2a0f11, var(--surface) 55%); padding: 14px 16px; margin-bottom: 16px; }
 .focus h2 { font-size: 20px; margin: 3px 0 10px; }
