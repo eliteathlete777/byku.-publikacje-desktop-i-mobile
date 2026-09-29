@@ -105,7 +105,7 @@ Na czym polega: dwie, trzy porządne serie pompek, codziennie, przed prysznicem.
 [Słowa kluczowe naturalnie w ostatniej linii, bez #]
 ```
 
-- **Długość: 500–1200 znaków** ze spacjami, razem z linią słów kluczowych.
+- **Długość: 250–1200 znaków** ze spacjami, razem z linią słów kluczowych.
 - **Emoji haka:** 💣 💪 🔥 ⚡, to samo na obu końcach. Przy pytaniu do komentarzy wolno 👇. Innych emoji nie używamy.
 - **Słowa kluczowe zamiast hashtagów.** Zero „#". Ostatnia linia wplata naturalnie frazy: gumy oporowe, kalistenika, street workout, no gym, forma bez siłowni (plus fraza z tematu posta, np. trening w hotelu, pompki).
 - **E-book:** co 3–4 posty, na końcu: „Więcej w e-booku, link w bio."
@@ -207,7 +207,7 @@ Język jak wyżej, a do tego: 6×9 cala, Lato 11 pt, jeden krój. Hasło pada ma
 - [ ] Jest scena albo konkretna liczba, zero zmyśleń
 - [ ] Pełne zdania, pełne nazwy („codzienne minimum pompek"), każdy wątek domknięty
 - [ ] Nowy akapit co 2–3 zdania
-- [ ] 500–1200 znaków
+- [ ] 250–1200 znaków
 - [ ] Zero „—", max jeden „-", max 1–2 wykrzykniki
 - [ ] Zero słów z listy zakazanych, zero wulgaryzmów, zero „byku" w opisie
 - [ ] Słowa kluczowe w ostatniej linii, zero #

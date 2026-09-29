@@ -6,6 +6,7 @@ Model zwraca 3 warianty w ustalonym JSON-ie; kontrolę zgodności robi potem Bra
 from __future__ import annotations
 
 import json
+import re
 from pathlib import Path
 from typing import Callable
 
@@ -40,9 +41,13 @@ SCHEMA = {
 
 TASK = """Piszesz opisy postów dla marki {name} ({handle}). Poniższe kompendium to jedyne źródło zasad: struktura, ton, długość, emoji haka, słowa kluczowe, zakazane słowa, zwrot do widza, liczba myślników i wykrzykników. Stosuj je dosłownie.
 
-Treść opisu bierzesz wyłącznie z „podstawy opisu” podanej przez Damiana oraz z faktów zapisanych w kompendium. Podstawa to jego surowy, często dyktowany materiał: ułóż go w tym stylu, zachowaj jego sposób mówienia i popraw tylko oczywiste przekłamania z dyktowania. Nie dopisuj miejsc, liczb, nazw, ćwiczeń ani zdarzeń, których nie ma w podstawie ani w kompendium. Jeśli czegoś brakuje, napisz ogólniej i wymień w polu brakujace_konkrety, jaki konkret podniósłby tekst (puste pole, gdy niczego nie brakuje).
+Treść opisu opierasz bezwzględnie i wyłącznie na „podstawie opisu” podanej przez Damiana. Kompendium mówi JAK pisać (forma, ton, struktura), a nie CO: nie przenoś z niego do opisu żadnych historii, miejsc, liczb, ćwiczeń, porównań ani wątków, także z przykładów i banków tekstów. Każde zdanie merytoryczne musi wynikać wprost z podstawy; niczego nie zmyślasz i nie rozwijasz wątków, o których podstawa nie mówi. Od siebie dokładasz tylko elementy formy wymagane przez kompendium (hak z emoji, pytanie albo CTA, linia słów kluczowych) i to wyłącznie na temat tego, co jest w podstawie.
 
-Zwróć dokładnie {count} warianty. Każdy to kompletny opis gotowy do wklejenia, od haka do linii słów kluczowych, {min}–{max} znaków ze spacjami. Warianty mają się różnić mechanizmem haka i typem pytania albo CTA; w polu mechanizm_haka nazwij mechanizm z kompendium. Akapity oddzielaj pustą linią.
+Nazwy ćwiczeń, miejsc i lokalizacji przepisuj dokładnie tak, jak są w podstawie: pompki zostają pompkami, miejsce zostaje tym miejscem. Nie zamieniaj ich na synonimy ani inne ćwiczenia i nie dodawaj innych miejsc. Popraw tylko oczywiste literówki z dyktowania, bez zmiany sensu.
+
+Długość {min}–{max} znaków ze spacjami, ale wierność podstawie jest ważniejsza niż długość: przy krótkiej podstawie pisz krótko, zamiast dopisywać treść. Jeśli czegoś brakuje, wymień w polu brakujace_konkrety, jaki konkret podniósłby tekst (puste pole, gdy niczego nie brakuje).
+
+Zwróć dokładnie {count} warianty. Każdy to kompletny opis gotowy do wklejenia, od haka do linii słów kluczowych. Warianty mają się różnić mechanizmem haka i typem pytania albo CTA; w polu mechanizm_haka nazwij mechanizm z kompendium. Akapity oddzielaj pustą linią.
 
 === KOMPENDIUM STYLU ===
 {compendium}"""
@@ -120,7 +125,8 @@ def compose(profile: dict, compendium: str, basis: str, *, post_name: str, post_
     system = TASK.format(name=profile.get("name", ""), handle=profile.get("handle", ""), count=count,
                          min=profile.get("caption_min", 500), max=profile.get("caption_max", 1200), compendium=compendium)
     kind = "karuzela" if post_type == "carousel" else "rolka"
-    user = f"Materiał: {post_name} ({kind}){f', lokalizacja: {location}' if location else ''}.\n\nPODSTAWA OPISU:\n{basis.strip()}"
+    # lokalizacja karty to tylko tag miejsca na IG (bywa nieaktualna); miejsce w tekście bierzemy wyłącznie z podstawy
+    user = f"Materiał: {post_name} ({kind}).\n\nPODSTAWA OPISU:\n{basis.strip()}"
 
     client = client_factory(api_key, provider)
     try:
@@ -142,7 +148,19 @@ def compose(profile: dict, compendium: str, basis: str, *, post_name: str, post_
              "missing": v.get("brakujace_konkrety", "").strip()} for v in variants if v.get("opis", "").strip()]
 
 
-REFUSED = "Model odmówił ułożenia tego opisu. Zmień sformułowanie podstawy i spróbuj ponownie."
+def fidelity(text: str, basis: str, card_location: str = "") -> list[dict]:
+    """Twarda kontrola wierności podstawie: liczby i stara lokalizacja karty, których w podstawie nie ma."""
+    notes, low_basis = [], basis.lower()
+    numbers = sorted(set(re.findall(r"\d+(?:[.,:]\d+)?", text)) - set(re.findall(r"\d+(?:[.,:]\d+)?", basis)))
+    if numbers:
+        notes.append({"level": "error", "text": f"Liczby spoza podstawy: {', '.join(numbers)}. Usuń albo dopisz je do podstawy."})
+    loc = card_location.strip()
+    if loc and loc.lower() in text.lower() and loc.lower() not in low_basis:
+        notes.append({"level": "error", "text": f"W tekście jest „{loc}” z pola Lokalizacja, a nie z podstawy."})
+    return notes
+
+
+REFUSED ="Model odmówił ułożenia tego opisu. Zmień sformułowanie podstawy i spróbuj ponownie."
 TRUNCATED = "Odpowiedź została ucięta (limit długości). Spróbuj ponownie albo skróć podstawę."
 
 

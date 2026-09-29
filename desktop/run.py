@@ -64,7 +64,9 @@ class App:
                                      location=card["content"].get("location", ""),
                                      provider=ai["provider"], model=ai["model"], api_key=self._ai_key(ai["provider"]), **extra)
         return {"model": ai["model"], "drafts": [
-            {**v, "variant": i + 1, "hashtags": "", "lint": self.brands.lint(brand, v["description"], "")}
+            {**v, "variant": i + 1, "hashtags": "",
+             "lint": ai_writer.fidelity(v["description"], basis, card["content"].get("location", ""))
+             + self.brands.lint(brand, v["description"], "")}
             for i, v in enumerate(variants)]}
 
     def _ai_key(self, provider: str) -> str:

@@ -341,7 +341,7 @@ class BrandTests(Sandbox):
             for pid in ("a", "b", "c", "d"):
                 for topic in ("", "Warszawa, WK Gym"):
                     for d in brands.draft(brand, pid, topic):
-                        self.assertGreaterEqual(len(d["description"]), 500, d["description"])
+                        self.assertGreaterEqual(len(d["description"]), 250, d["description"])
                         self.assertLessEqual(len(d["description"]), 1200)
                         self.assertEqual([n for n in d["lint"] if n["level"] != "info"], [], d["description"])
         self.assertTrue(all("byku" in d["description"] for d in brands.draft("rigger", "x", "")))
@@ -467,6 +467,18 @@ class ComposeTests(Sandbox):
             self.make_openai_app(status="incomplete").compose("atlet-pompki-porecze", "coś")
         with self.assertRaisesRegex(AIWriterError, "OPENAI_API_KEY"):
             self.make_openai_app(key="", provider="openai").compose("atlet-pompki-porecze", "coś")
+
+    def test_prompt_is_basis_only_and_fidelity_flags_invented_facts(self):
+        from backend.ai_writer import fidelity
+        app = self.make_app()
+        app.compose("atlet-pompki-porecze", "Warszawa, WK Gym, pompki z gumą oporową")
+        call = self.calls[0]
+        self.assertNotIn("lokalizacja", call["messages"][0]["content"])
+        self.assertIn("nie przenoś z niego", call["system"][0]["text"])
+        self.assertEqual(fidelity("Pompki w WK Gym.", "WK Gym, pompki", "Plac Defilad"), [])
+        notes = fidelity("3 serie pompek na Placu Defilad, Plac Defilad.", "WK Gym, pompki", "Plac Defilad")
+        self.assertEqual([n["level"] for n in notes], ["error", "error"])
+        self.assertIn("3", notes[0]["text"])
 
     def test_provider_choice(self):
         from backend.ai_writer import pick_provider

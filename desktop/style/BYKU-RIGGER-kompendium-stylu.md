@@ -61,7 +61,7 @@ Motyw przewodni: **zamiast biurka codziennie nowe miejsce, nowa scena, nowy wido
 [Słowa kluczowe naturalnie w ostatniej linii, bez #]
 ```
 
-- **Długość: 500–1200 znaków** ze spacjami, razem z linią słów kluczowych. Licz skryptem.
+- **Długość: 250–1200 znaków** ze spacjami, razem z linią słów kluczowych. Licz skryptem.
 - Hak, ciekawostka i pytanie to **niezależne klocki**: Damian miesza je krzyżowo między wariantami.
 - 24 zatwierdzone wzorce (sekcja 16) nadal wyznaczają hak, ciekawostkę i pytanie. Nowa, dłuższa forma rozbudowuje scenę i ciekawostkę faktami, a **nie** dopisuje morałów.
 
@@ -182,7 +182,7 @@ Rigging, demontaż sceny, praca na wysokości, technik sceny, backstage.
 - [ ] Scena i ciekawostka zgodne z kadrem, zero zmyślonych liczb
 - [ ] Pełne zdania, wątki domknięte, nowy akapit co 2–3 zdania
 - [ ] Pytanie z „byku", inny typ niż w poprzednim poście
-- [ ] 500–1200 znaków
+- [ ] 250–1200 znaków
 - [ ] Zero morałów (max jedno zdanie charakteru, i to rzadko)
 - [ ] Zero „—", zero słów zakazanych, zero wulgaryzmów
 - [ ] Słowa kluczowe w ostatniej linii, zero #
