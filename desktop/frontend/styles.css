@@ -407,3 +407,26 @@ body.tour-active { scroll-behavior: smooth; }
   .grid-2, .two, .three, .sys-grid, .transfer-flow { grid-template-columns: 1fr; }
   .cal-grid.week, .cal-grid.month { grid-template-columns: 1fr; } .cal-dow { display: none; }
 }
+
+/* ---------- Dodaj ---------- */
+.add-form { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 12px; }
+.add-form label { display: grid; gap: 4px; font-size: 12px; color: var(--muted); }
+.add-form select, .add-form input { height: 36px; min-width: 220px; border: 1px solid var(--line-strong); background: var(--raised); padding: 0 10px; }
+.add-drop { border: 2px dashed var(--line-strong); padding: 26px 16px; display: grid; gap: 6px; justify-items: center; text-align: center; }
+.add-drop.drag { border-color: var(--red); background: var(--red-dim); }
+.add-pick { display: flex; gap: 8px; margin-top: 6px; flex-wrap: wrap; justify-content: center; }
+.add-list { display: grid; gap: 6px; margin: 12px 0; }
+.add-item { display: grid; grid-template-columns: 22px minmax(0, 1fr) auto auto; gap: 10px; align-items: center; padding: 8px; border: 1px solid var(--line); background: #0d0d0d; }
+.add-item.off { opacity: .55; }
+.add-item input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--red); }
+.add-item > span { min-width: 0; }
+.add-title { width: 100%; border: 1px solid transparent; background: transparent; font-weight: 700; padding: 2px 4px; }
+.add-title:hover:not(:disabled), .add-title:focus { border-color: var(--line-strong); background: var(--raised); }
+.add-item small { display: block; color: var(--muted); font-size: 12px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-left: 4px; }
+.add-bar { height: 4px; background: var(--line); margin-top: 5px; }
+.add-bar i { display: block; height: 100%; background: var(--blue); transition: width .2s; }
+.upload-run header .thumb { width: 36px; height: 36px; object-fit: cover; }
+.step-link { all: unset; display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.step-link:hover { text-decoration: underline; }
+.step-link:focus-visible { outline: 2px solid var(--red); }
+@media (max-width: 640px) { .add-item { grid-template-columns: 22px minmax(0, 1fr); } .add-item > .pill, .add-item > .btn { grid-column: 2; justify-self: start; } .add-form select, .add-form input { min-width: 0; width: 100%; } .add-form label { flex: 1 1 100%; } }

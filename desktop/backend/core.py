@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import os
 import sys
+import time
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -37,6 +38,10 @@ class StudioCore:
 
     def save_content(self, folder: Path, package: Any) -> None:
         hashtags = package.hashtagi
+        # Rdzeń sprawdza opis.txt na dysku PRZED zapisem — szkic z zakładki Dodaj ma pusty plik,
+        # więc nowa treść ląduje na dysku najpierw (transakcja ContentService cofa ją przy błędzie).
+        text = package.podpis
+        _atomic_text(folder / "opis.txt", text if text.endswith("\n") else text + "\n")
         self.save(folder, package, recompute=True)
         if not hashtags.strip():
             # Rdzeń historyczny przy pustej wartości dopisuje domyślne hashtagi.
@@ -47,6 +52,20 @@ class StudioCore:
 
     def list(self, root: Path) -> Iterable[tuple[Path, Any, str | None]]:
         return self._magazyn.lista_paczek(root=root)
+
+    def create_draft(self, folder: Path, *, brand: str, video_name: str, location: str, source: str) -> str:
+        """Szkic z gołego filmu (zakładka Dodaj). Opis dopisuje Damian w karcie — do tego czasu
+        bramka wrzutu paczki nie przepuści, więc zapis z `wymus=True` jest bezpieczny."""
+        package = self._magazyn.Paczka(post_id=self._magazyn.Paczka.nowe_id(), marka=brand, status="szkic",
+                                       nazwa_wideo=video_name, lokalizacja=location, zrodlo=source)
+        package.dopisz_historie("import", source)
+        self._magazyn.zapisz_paczke(folder, package, wymus=True)
+        package.hashtagi = ""  # bez domyślnych hashtagów — słowa kluczowe przyjdą z opisem
+        _atomic_text(folder / "opis.txt", "")
+        for stale in folder.glob("znaczniki*.txt"):  # domyślne frazy bez opisu — powstaną z opisem
+            stale.unlink(missing_ok=True)
+        _atomic_text(folder / "post.json", package.do_json())
+        return package.post_id
 
     def set_term(self, folder: Path, value: str) -> None:
         self._magazyn.ustaw_termin(folder, value)
@@ -81,6 +100,13 @@ class FallbackCore:
 
     def list(self, root: Path) -> Iterable[tuple[Path, Any, str | None]]:
         return fallback_core.list_packages(root)
+
+    def create_draft(self, folder: Path, *, brand: str, video_name: str, location: str, source: str) -> str:
+        package = fallback_core.Package(post_id=f"byq-{time.strftime('%Y%m%d-%H%M%S')}-{time.time_ns() % 100000:05d}",
+                                        marka=brand, nazwa_wideo=video_name, lokalizacja=location)
+        package.dopisz_historie("import", source)
+        fallback_core.save(folder, package)
+        return package.post_id
 
     def set_term(self, folder: Path, value: str) -> None:
         package = fallback_core.read(folder); package.termin = value; fallback_core.save(folder, package)

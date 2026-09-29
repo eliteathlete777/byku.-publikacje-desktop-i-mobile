@@ -21,6 +21,7 @@ from backend.brand_service import BrandService
 from backend.config import Settings, load_settings
 from backend.content_service import ContentService, RevisionConflict
 from backend.core import CoreUnavailable
+from backend.import_service import ImportService
 from backend.job_service import JobService
 from backend.legacy_bridge import LegacyBridge
 from backend.mobile_packages import MobilePackages, TransferError
@@ -47,6 +48,7 @@ class App:
         self.schedule = ScheduleService(self.adapter)
         self.mobile = MobilePackages(self.adapter, opener=opener)
         self.legacy = LegacyBridge(self.adapter)
+        self.imports = ImportService(self.adapter)
         self.lessons = LessonService(self.learning)
         self.brands = BrandService(settings.data_dir, self.learning, settings.style_source_dir)
         self.basis = ai_writer.BasisStore(settings.data_dir / "podstawy.json")
@@ -304,7 +306,16 @@ def make_handler(app: App):
                         return self.json(200, app.legacy.verify(post_id))
                     if action == "open-folder":
                         return self.json(200, open_folder(app.adapter.folder_for(post_id)))
+                if path == "/api/import/reel":
+                    # Film idzie strumieniem prosto na dysk (setki MB) — bez wczytywania do pamięci.
+                    q = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+                    arg = lambda k: (q.get(k) or [""])[0]
+                    return self.json(200, app.imports.add_reel(brand=arg("brand"), title=arg("title"), filename=arg("name"),
+                                                               location=arg("location"), stream=self.rfile,
+                                                               length=int(self.headers.get("Content-Length") or 0)))
                 data = self.body()
+                if path == "/api/import/check":
+                    return self.json(200, app.imports.check(str(data.get("brand", "")), [str(t) for t in data.get("titles", [])]))
                 if path == "/api/schedule/apply":
                     return self.json(200, app.schedule.apply(data.get("changes", [])))
                 if path == "/api/schedule/undo":

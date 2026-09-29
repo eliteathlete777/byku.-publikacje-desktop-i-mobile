@@ -643,5 +643,47 @@ class HttpTests(Sandbox):
         self.assertEqual(code, 403)
 
 
+class ImportTests(Sandbox):
+    """Zakładka Dodaj: goły film → szkic paczki (nazwa folderu = nazwa rolki)."""
+
+    def add(self, svc, title="DALJ WALE", name="DALJ WALE.mp4", brand="rigger", size=20_000):
+        import io
+        return svc.add_reel(brand=brand, title=title, filename=name, stream=io.BytesIO(b"x" * size), length=size)
+
+    def test_bare_video_becomes_draft_without_caption(self):
+        from backend.import_service import ImportService, SOURCE_TAG
+        svc = ImportService(self.adapter)
+        r = self.add(svc, title="TYLKO DWÓJKI!", name="TYLKO DWÓJKI!.mp4")
+        self.assertEqual(r["status"], "added")
+        card = self.adapter.get(r["post_id"])
+        self.assertEqual((card["brand"], card["name"], card["content"]["description"]), ("rigger", "TYLKO DWÓJKI!.mp4", ""))
+        self.assertTrue(any(h["co"] == "import" and h["szczegol"].startswith(SOURCE_TAG) for h in card["history"]))
+        self.assertEqual(card["next_action"]["code"], "finish")
+        self.assertFalse(any(p.name.startswith(".import-") for p in self.settings.queue.iterdir()))
+
+    def test_same_title_is_not_added_twice(self):
+        from backend.import_service import ImportService
+        svc = ImportService(self.adapter)
+        first = self.add(svc)
+        again = self.add(svc, title="dalj wale ")
+        self.assertEqual((again["status"], again["post_id"]), ("exists", first["post_id"]))
+        self.assertEqual(svc.check("rigger", ["DALJ WALE", "inne"])["existing"], {"DALJ WALE": first["post_id"]})
+
+    def test_rejects_non_video_small_file_and_missing_brand(self):
+        from backend.import_service import ImportService, ImportProblem
+        svc = ImportService(self.adapter)
+        with self.assertRaises(ImportProblem):
+            self.add(svc, name="DALJ WALE.MP3")
+        with self.assertRaises(ImportProblem):
+            self.add(svc, size=500)
+        with self.assertRaises(ImportProblem):
+            self.add(svc, brand="all")
+
+    def test_title_cleanup(self):
+        from backend.import_service import clean_title
+        self.assertEqual(clean_title('  WISLOSTRADA  PRZEBITKA  '), "WISLOSTRADA PRZEBITKA")
+        self.assertEqual(clean_title('a/b:c?.'), "a b c")
+
+
 if __name__ == "__main__":
     unittest.main()

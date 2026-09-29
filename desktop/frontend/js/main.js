@@ -7,9 +7,11 @@ import { renderTransfer } from "./views/transfer.js";
 import { renderBrands } from "./views/brands.js";
 import { renderLearning } from "./views/learning.js";
 import { renderSystem } from "./views/system.js";
+import { renderAdd } from "./views/add.js";
 import { initTour, startTour } from "./tour.js";
 
 const VIEWS = {
+  add: ["Dodaj", "Nowe rolki: foldery z filmem → opis → okładka → wrzut", "＋", renderAdd],
   today: ["Stół publikacji", "Praca na dziś", "◉", () => renderTable("today")],
   finish: ["Do dokończenia", "Braki, opisy, akceptacja", "✎", () => renderTable("finish")],
   transfer: ["TikTok → Instagram", "Paczki na telefon", "⇄", renderTransfer],
@@ -84,8 +86,9 @@ initCalendar(load);
 initTour(go);
 $("#tourStart").onclick = startTour;
 document.addEventListener("byku:select", () => { if (["today", "finish", "archive", "library"].includes(state.view)) VIEWS[state.view][3](); });
-document.addEventListener("byku:changed", () => { renderNav(); if (!["transfer", "learning", "brands", "system"].includes(state.view)) VIEWS[state.view][3](); api("/api/health").then(h => { state.health = h; renderHealth(); }).catch(() => {}); });
+document.addEventListener("byku:changed", () => { renderNav(); if (!["transfer", "learning", "brands", "system", "add"].includes(state.view)) VIEWS[state.view][3](); api("/api/health").then(h => { state.health = h; renderHealth(); }).catch(() => {}); });
 document.addEventListener("byku:goto", e => go(e.detail));
+document.addEventListener("byku:reload", () => load());
 document.addEventListener("byku:brand", () => { savePref("brand", state.brand); render(); });
 $$("#brandSwitch button").forEach(b => b.onclick = () => { state.brand = b.dataset.brand; savePref("brand", state.brand); render(); });
 let searchTimer;
