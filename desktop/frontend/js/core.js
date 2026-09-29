@@ -27,6 +27,8 @@ export async function api(path, opt = {}) {
 }
 export const post = (path, body = {}) => api(path, { method: "POST", body: JSON.stringify(body) });
 export const pub = id => `/api/publications/${encodeURIComponent(id)}`;
+// Film do obejrzenia: HEVC z telefonu panel podmienia na kopię H.264 (pierwsze otwarcie chwilę trwa).
+export const playUrl = c => c.assets.type === "reel" && c.assets.files?.length ? `${pub(c.post_id)}/preview` : "";
 
 export function toast(text, kind = "info") {
   const t = $("#toast");

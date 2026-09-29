@@ -1,7 +1,7 @@
 // Panel szczegółów publikacji: podgląd, treść, kanały, telefon, historia.
 import { $, $$, api, post, pub, esc, state, toast, run, pill, thumb, fmtTerm, guarded, blockReason, confirmDialog, modal, CHANNELS } from "./core.js";
 import { openThumbStudio } from "./thumbstudio.js";
-import { markWatched } from "./core.js";
+import { markWatched, playUrl } from "./core.js";
 
 let reload = async () => {};
 export function initDrawer(onReload) { reload = onReload; }
@@ -51,7 +51,8 @@ function preview(c, p) {
   const hasThumb = !!c.assets.thumbnail_url;
   const player = c.assets.type === "carousel"
     ? `<div class="slides">${media.map((u, i) => `<figure><img src="${esc(u)}" alt="Slajd ${i + 1}"><figcaption>${i + 1}</figcaption></figure>`).join("")}</div>`
-    : media[0] ? `<video class="player" controls preload="metadata" src="${esc(media[0])}" poster="${esc(c.assets.thumbnail_url)}"></video>` : `<div class="player missing">Brak pliku wideo</div>`;
+    : media[0] ? `<video class="player" controls preload="metadata" src="${esc(playUrl(c))}" poster="${esc(c.assets.thumbnail_url)}"></video>
+      <p class="muted small">Film z telefonu (HEVC) przy pierwszym otwarciu panel przygotowuje do odtwarzania — to może chwilę potrwać.</p>` : `<div class="player missing">Brak pliku wideo</div>`;
   p.innerHTML = `${player}
     <dl class="facts">
       <div><dt>Termin lokalny</dt><dd>${esc(fmtTerm(c.local_target_at))}</dd></div>

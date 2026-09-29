@@ -3,7 +3,7 @@
 // (tekst, pozycja, wielkość, obrót, kolor, efekt, przeciąganie po kadrze),
 // „1 góra + 2 dół”, reset pozycji, pobranie PNG i zapis do paczki.
 // Ustawienia każdej karty zostają w przeglądarce — po ponownym otwarciu wracasz do tego samego.
-import { $, $$, esc, pub, modal, run, toast, markWatched } from "./core.js";
+import { $, $$, esc, pub, modal, run, toast, markWatched, playUrl } from "./core.js";
 
 // Jedna czcionka na wszystkich miniaturach (Damian 29.09): Anton — ta z poprzednich miniatur Generatora.
 export const FONT = "'Anton',sans-serif";
@@ -40,7 +40,7 @@ function wrapText(ctx, text, maxW) {
 
 /** Otwiera studio. `c` = karta; `opts.file` = obraz z dysku jako źródło (opcjonalnie). */
 export function openThumbStudio(c, opts = {}, onSaved = async () => {}) {
-  const video = c.assets.type === "carousel" ? "" : (c.assets.media_urls || [])[0] || "";
+  const video = playUrl(c);
   const slide = c.assets.type === "carousel" ? (c.assets.media_urls || [])[0] || "" : "";
   const saved = loadPrefs(c.post_id);
   const s = {

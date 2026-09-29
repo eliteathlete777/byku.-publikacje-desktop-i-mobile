@@ -8,9 +8,11 @@ Szkic bez opisu nie przejdzie bramki wrzutu (rdzeń wymaga opisu).
 """
 from __future__ import annotations
 
+import hashlib
 import re
 import shutil
 import subprocess
+import threading
 import time
 from pathlib import Path
 from typing import BinaryIO
@@ -76,6 +78,57 @@ def frame_at(video: Path, t: float) -> bytes:
     if not r.stdout:
         raise ImportProblem("Nie udało się wyciąć klatki z filmu.")
     return r.stdout
+
+
+_preview_locks: dict[str, threading.Lock] = {}
+_preview_guard = threading.Lock()
+
+
+def video_codec(video: Path) -> str:
+    exe = _ffmpeg()
+    if not exe:
+        return ""
+    flags = getattr(subprocess, "CREATE_NO_WINDOW", 0)
+    r = subprocess.run([exe, "-hide_banner", "-i", str(video)], capture_output=True, timeout=30, creationflags=flags)
+    m = re.search(r"Video: (\w+)", r.stderr.decode("utf-8", "replace"))
+    return m.group(1).lower() if m else ""
+
+
+def preview_video(video: Path, cache_dir: Path) -> Path:
+    """Film do obejrzenia w panelu. H.264 idzie wprost; HEVC z telefonu (przeglądarka go nie
+    odtworzy) dostaje kopię podglądową H.264 720p w data/podglady — paczka zostaje nietknięta."""
+    if video_codec(video) in {"h264", ""}:
+        return video
+    st = video.stat()
+    key = hashlib.sha1(f"{video.resolve()}|{st.st_size}|{st.st_mtime_ns}".encode()).hexdigest()[:16]
+    dest = cache_dir / f"{key}.mp4"
+    with _preview_guard:
+        lock = _preview_locks.setdefault(key, threading.Lock())
+    with lock:  # dwa odtwarzacze naraz = jedno kodowanie
+        if dest.is_file() and dest.stat().st_size > 0:
+            return dest
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        tmp = dest.with_suffix(".part.mp4")
+        flags = getattr(subprocess, "CREATE_NO_WINDOW", 0)
+        r = subprocess.run([_ffmpeg(), "-v", "error", "-y", "-i", str(video), "-vf", "scale=-2:'min(1280,ih)'",
+                            "-c:v", "libx264", "-preset", "veryfast", "-crf", "24", "-pix_fmt", "yuv420p",
+                            "-c:a", "aac", "-b:a", "128k", "-movflags", "+faststart", str(tmp)],
+                           capture_output=True, timeout=900, creationflags=flags)
+        if r.returncode != 0 or not tmp.is_file():
+            tmp.unlink(missing_ok=True)
+            raise ImportProblem("Nie udało się przygotować podglądu filmu: " + r.stderr.decode("utf-8", "replace")[-200:])
+        tmp.replace(dest)
+        return dest
+
+
+def warm_preview(video: Path, cache_dir: Path) -> None:
+    """Po dodaniu rolki: podgląd koduje się w tle, żeby przy pierwszym obejrzeniu nie czekać."""
+    def work():
+        try:
+            preview_video(video, cache_dir)
+        except Exception:
+            pass
+    threading.Thread(target=work, daemon=True).start()
 
 
 class ImportService:
@@ -154,6 +207,7 @@ class ImportService:
         except Exception:
             shutil.rmtree(tmp, ignore_errors=True)
             raise
+        warm_preview(dest / video.name, Path(self.adapter.settings.data_dir) / "podglady")
         return {"status": "added", "post_id": post_id, "title": title, "thumbnail": thumb}
 
 

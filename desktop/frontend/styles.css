@@ -454,3 +454,4 @@ body.tour-active { scroll-behavior: smooth; }
 .swatch.on { border-color: #fff; box-shadow: 0 0 0 2px var(--red); }
 @media (max-width: 1100px) { .ts { grid-template-columns: 1fr 1fr; } .ts-stage { grid-row: 1 / span 2; grid-column: 2; } }
 @media (max-width: 700px) { .ts { grid-template-columns: 1fr; } .ts-stage { grid-row: auto; grid-column: auto; } .ts-grid { grid-template-columns: 1fr; } }
+.watch-player { display: block; width: 100%; max-height: 72vh; background: #000; margin: 10px 0; }

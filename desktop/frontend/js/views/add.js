@@ -1,7 +1,7 @@
 // Dodaj — nowe rolki z gołego filmu. Folder = jedna rolka (nazwa folderu = nazwa rolki),
 // z folderu idzie największy film (mniejszy plik to odpad produkcji). Potem ta sama rolka
 // przechodzi przez panel: opis z podstawy → okładka → lokalizacja → akceptacja → termin → wrzut.
-import { $, $$, esc, state, api, post, toast, thumb, fmtTerm, guarded, blockReason, isWatched } from "../core.js";
+import { $, $$, esc, state, api, post, toast, thumb, fmtTerm, guarded, blockReason, isWatched, markWatched, playUrl, modal } from "../core.js";
 import { openCard, openStudio } from "../drawer.js";
 
 const VIDEO = /\.(mp4|mov|m4v|avi|mkv)$/i;
@@ -144,6 +144,22 @@ function drawProgress(g) {
   if (bar) bar.style.width = `${Math.round((g.progress || 0) * 100)}%`;
 }
 
+// Obejrzenie filmu na świeżo — duży odtwarzacz z dźwiękiem, potem prosto do okładki albo opisu.
+function watch(c) {
+  const dlg = modal(`<h2>${esc(c.name.replace(/\.[^.]+$/, ""))}</h2>
+    <video class="watch-player" id="watchVideo" controls autoplay playsinline preload="auto" src="${esc(playUrl(c))}" poster="${esc(c.assets.thumbnail_url)}"></video>
+    <p class="muted small" id="watchHint">Przygotowuję film do odtwarzania (film z telefonu w HEVC koduje się przy pierwszym otwarciu)…</p>
+    <div class="actions end"><button type="button" class="btn ghost" id="watchCover">Okładka →</button>
+      <button type="button" class="btn primary" id="watchCaption">Opis z podstawy →</button></div>`);
+  const v = $("#watchVideo", dlg);
+  v.addEventListener("canplay", () => { $("#watchHint", dlg).textContent = "Obejrzyj na świeżo: o co chodzi, co widać, co pada. Potem okładka i opis."; }, { once: true });
+  v.addEventListener("play", () => markWatched(c.post_id), { once: true });
+  v.addEventListener("error", () => { $("#watchHint", dlg).textContent = "Nie udało się odtworzyć filmu. Otwórz folder paczki z karty i obejrzyj go w odtwarzaczu Windows."; });
+  dlg.addEventListener("close", () => { v.pause(); v.removeAttribute("src"); v.load(); }, { once: true });
+  $("#watchCover", dlg).onclick = () => { dlg.close(); openCard(c.post_id, "preview"); openStudio(c); };
+  $("#watchCaption", dlg).onclick = () => { dlg.close(); openCard(c.post_id, "content"); };
+}
+
 // Etapy rolki od dodania do Zaplanuj — ta sama kolejność, w jakiej idzie praca.
 const legDone = ch => !ch || ch.enabled === false || ["scheduled", "published"].includes(ch.platform_evidence) || ch.manual_checked;
 function stages(c) {
@@ -230,7 +246,7 @@ function draw() {
     openCard(b.dataset.card, ["cover", "watch"].includes(tab) ? "preview" : tab || "content");
     const card = state.cards.find(x => x.post_id === b.dataset.card);
     if (tab === "cover" && card) openStudio(card);
-    if (tab === "watch") $("#drawer video.player")?.play().catch(() => {});
+    if (tab === "watch" && card) watch(card);
   });
   if ($("#addClear")) $("#addClear").onclick = () => { groups = []; draw(); };
   if ($("#addGo")) $("#addGo").onclick = e => addAll(e.currentTarget);
