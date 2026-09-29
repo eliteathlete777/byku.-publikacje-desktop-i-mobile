@@ -25,6 +25,8 @@ class Settings:
     drive_folder_ids: dict = field(default_factory=dict)
     mobile_server_url: str = ""
     mobile_upload_token: str = ""
+    style_source_dir: Path | None = None
+    anthropic_api_key: str = field(default="", repr=False)
 
     @property
     def queue(self) -> Path:
@@ -74,6 +76,8 @@ def load_settings(config_path: Path | None = None) -> Settings:
         drive_folder_ids={"root": drive.get("root_folder_id", ""), **(drive.get("brand_folder_ids") or {})},
         mobile_server_url=str(mobile.get("url", "")).rstrip("/"),
         mobile_upload_token=str(env.get("BYKU_MOBILE_UPLOAD_TOKEN", "")),
+        style_source_dir=path(raw["style_source_dir"]) if raw.get("style_source_dir") else None,
+        anthropic_api_key=str(env.get("ANTHROPIC_API_KEY", "")).strip(),
     )
     if cfg.mode not in {"sandbox", "production"}:
         raise ValueError("mode musi być sandbox albo production")

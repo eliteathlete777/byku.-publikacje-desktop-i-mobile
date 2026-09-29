@@ -7,6 +7,7 @@ import { renderTransfer } from "./views/transfer.js";
 import { renderBrands } from "./views/brands.js";
 import { renderLearning } from "./views/learning.js";
 import { renderSystem } from "./views/system.js";
+import { initTour, startTour } from "./tour.js";
 
 const VIEWS = {
   today: ["Stół publikacji", "Praca na dziś", "◉", () => renderTable("today")],
@@ -15,7 +16,7 @@ const VIEWS = {
   calendar: ["Kalendarz", "Plan dnia, tygodnia i miesiąca", "▣", renderCalendar],
   board: ["Kanały", "Status każdej platformy osobno", "▥", renderBoard],
   library: ["Biblioteka", "Rolki i karuzele", "▦", renderLibrary],
-  brands: ["Marki i styl", "Ton, hashtagi, lokalizacje", "Aa", renderBrands],
+  brands: ["Marki i styl", "Styl pisania, słowa kluczowe, podgląd na żywo", "Aa", renderBrands],
   learning: ["Uczenie", "Lekcje stylu i procesu", "◇", renderLearning],
   archive: ["Archiwum", "Zakończone i odłożone", "□", () => renderTable("archive")],
   system: ["System", "Bezpieczeństwo i integracje", "⚙", renderSystem]
@@ -80,6 +81,8 @@ export async function load() {
 
 initDrawer(load);
 initCalendar(load);
+initTour(go);
+$("#tourStart").onclick = startTour;
 document.addEventListener("byku:select", () => { if (["today", "finish", "archive", "library"].includes(state.view)) VIEWS[state.view][3](); });
 document.addEventListener("byku:changed", () => { renderNav(); if (!["transfer", "learning", "brands", "system"].includes(state.view)) VIEWS[state.view][3](); api("/api/health").then(h => { state.health = h; renderHealth(); }).catch(() => {}); });
 document.addEventListener("byku:goto", e => go(e.detail));
@@ -87,7 +90,7 @@ document.addEventListener("byku:brand", () => { savePref("brand", state.brand); 
 $$("#brandSwitch button").forEach(b => b.onclick = () => { state.brand = b.dataset.brand; savePref("brand", state.brand); render(); });
 let searchTimer;
 $("#search").oninput = e => { clearTimeout(searchTimer); searchTimer = setTimeout(() => { state.query = e.target.value; if (!["brands", "learning", "system", "transfer"].includes(state.view)) VIEWS[state.view][3](); }, 120); };
-$("#refresh").onclick = async e => { e.currentTarget.classList.add("spin"); await load(); e.currentTarget.classList.remove("spin"); toast("Odświeżono z kolejki.", "ok"); };
+$("#refresh").onclick = async e => { const btn = e.currentTarget; btn.classList.add("spin"); await load(); btn.classList.remove("spin"); toast("Odświeżono z kolejki.", "ok"); };
 $("#systemCard").onclick = () => go("system");
 document.addEventListener("keydown", e => { if (e.key === "Escape" && state.selected && !$("#modal").open) { state.selected = null; render(); } });
 load();

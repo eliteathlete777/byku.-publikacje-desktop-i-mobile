@@ -16,6 +16,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
+from backend import ai_writer
 from backend.brand_service import BrandService
 from backend.config import Settings, load_settings
 from backend.content_service import ContentService, RevisionConflict
@@ -36,8 +37,9 @@ VERSION = "2.0.0"
 class App:
     """Wszystkie serwisy jednej instancji (osobna instancja w testach)."""
 
-    def __init__(self, settings: Settings, core=None, opener=None):
+    def __init__(self, settings: Settings, core=None, opener=None, ai_client_factory=None):
         self.settings = settings
+        self.ai_client_factory = ai_client_factory
         self.adapter = StudioAdapter(settings, core=core)
         self.learning = LearningStore(settings.data_dir / "learning.sqlite3")
         self.content = ContentService(self.adapter, self.learning)
@@ -46,7 +48,23 @@ class App:
         self.mobile = MobilePackages(self.adapter, opener=opener)
         self.legacy = LegacyBridge(self.adapter)
         self.lessons = LessonService(self.learning)
-        self.brands = BrandService(settings.data_dir, self.learning)
+        self.brands = BrandService(settings.data_dir, self.learning, settings.style_source_dir)
+        self.basis = ai_writer.BasisStore(settings.data_dir / "podstawy.json")
+
+    def compose(self, post_id: str, basis: str) -> dict:
+        """Opis z podstawy: zapis podstawy, 3 warianty od Claude według kompendium, kontrola każdego wariantu."""
+        card = self.adapter.get(post_id)
+        self.basis.set(post_id, basis)
+        brand = card["brand"]
+        profile = self.brands.get(brand)
+        extra = {"client_factory": self.ai_client_factory} if self.ai_client_factory else {}
+        variants = ai_writer.compose(profile, self.brands.compendium(brand)["markdown"], basis,
+                                     post_name=card["name"], post_type=card["assets"]["type"],
+                                     location=card["content"].get("location", ""),
+                                     api_key=self.settings.anthropic_api_key, **extra)
+        return {"model": ai_writer.MODEL, "drafts": [
+            {**v, "variant": i + 1, "hashtags": "", "lint": self.brands.lint(brand, v["description"], "")}
+            for i, v in enumerate(variants)]}
 
     def health(self) -> dict:
         s = self.settings
@@ -55,7 +73,8 @@ class App:
                 "publication": s.allow_publication, "queue": str(s.queue),
                 "core": getattr(self.adapter.core, "name", None), "core_error": self.adapter.core_error,
                 "legacy": self.legacy.available(), "drive": self.mobile.drive_status(),
-                "mobile_server": self.mobile.server_status(), "can_undo": self.schedule.can_undo()}
+                "mobile_server": self.mobile.server_status(), "can_undo": self.schedule.can_undo(),
+                "ai": {"key": bool(s.anthropic_api_key), "sdk": ai_writer.sdk_available(), "model": ai_writer.MODEL}}
 
 
 def make_handler(app: App):
@@ -184,6 +203,8 @@ def make_handler(app: App):
                         return self.file(app.adapter.file_for(post_id, parts[5]))
                     if parts[4] == "capabilities":
                         return self.json(200, app.legacy.publication_capabilities(post_id))
+                    if parts[4] == "basis":
+                        return self.json(200, {"basis": app.basis.get(post_id)})
                     if parts[4] == "lint":
                         card = app.adapter.get(post_id)
                         return self.json(200, {"notes": app.brands.lint(card["brand"], arg("description", ""), arg("hashtags", ""))})
@@ -199,6 +220,8 @@ def make_handler(app: App):
                     return self.json(200, {"brands": app.brands.all()})
                 if path.startswith("/api/brands/") and path.endswith("/style"):
                     return self.json(200, {"examples": app.brands.style_examples(parts[3])})
+                if path.startswith("/api/brands/") and path.endswith("/compendium"):
+                    return self.json(200, app.brands.compendium(parts[3]))
                 if path == "/api/mobile-candidates":
                     return self.json(200, {"items": app.mobile.candidates(arg("brand", "all")),
                                            "drive": app.mobile.drive_status(), "server": app.mobile.server_status()})
@@ -234,9 +257,14 @@ def make_handler(app: App):
                         return self.json(200, app.content.save(post_id, expected_revision=data["expected_revision"],
                                                                description=data.get("description", ""), hashtags=data.get("hashtags", ""),
                                                                location=data.get("location", ""), approve=bool(data.get("approve"))))
+                    if action == "basis":
+                        app.adapter.get(post_id)
+                        return self.json(200, {"basis": app.basis.set(post_id, str(data.get("basis", "")))})
+                    if action == "compose":
+                        return self.json(200, app.compose(post_id, str(data.get("basis", ""))))
                     if action == "drafts":
                         card = app.adapter.get(post_id)
-                        return self.json(200, {"drafts": app.brands.draft(card["brand"], post_id, data.get("topic") or card["name"])})
+                        return self.json(200, {"drafts": app.brands.draft(card["brand"], post_id, data.get("topic", ""))})
                     if action == "hashtags-suggest":
                         card = app.adapter.get(post_id)
                         return self.json(200, {"hashtags": app.brands.hashtags_for(card["brand"], post_id, int(data.get("variant", 0)))})
@@ -269,6 +297,10 @@ def make_handler(app: App):
                     return self.json(200, app.mobile.pull_server_events())
                 if path == "/api/generator/open":
                     return self.json(200, app.legacy.open_generator(data.get("brand", "atlet")))
+                if path.startswith("/api/brands/") and path.endswith("/compendium/reimport"):
+                    return self.json(200, app.brands.reimport_compendium(parts[3]))
+                if path.startswith("/api/brands/") and path.endswith("/preview") and len(parts) == 5:
+                    return self.json(200, app.brands.preview(parts[3], data.get("patch", {}), data.get("topic", ""), data.get("sample", "")))
                 if path.startswith("/api/brands/") and len(parts) == 4:
                     return self.json(200, app.brands.update(parts[3], data))
                 if path == "/api/learning/lessons":

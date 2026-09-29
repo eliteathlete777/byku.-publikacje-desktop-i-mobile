@@ -323,13 +323,76 @@ class BrandTests(Sandbox):
         brands = BrandService(self.settings.data_dir, self.store)
         drafts = brands.draft("rigger", "p1", "Kratownica w górę " * 30)
         self.assertEqual(len(drafts), 3)
+        limit = brands.get("rigger")["caption_max"]
         for d in drafts:
-            self.assertLessEqual(len(d["description"]), 250)
-            self.assertTrue(d["hashtags"].startswith("#rigger #backstage #bykurigger"))
-        notes = brands.lint("rigger", "Kup mój ebook", " ".join(f"#t{i}" for i in range(31)))
+            self.assertLessEqual(len(d["description"]), limit)
+            self.assertEqual(d["hashtags"], "")
+        notes = brands.lint("rigger", "⚡ Wiedziałeś, że to szychta? ⚡", " ".join(f"#t{i}" for i in range(31)))
         texts = " ".join(n["text"] for n in notes)
-        self.assertIn("ebook", texts)
-        self.assertIn("maks. 30", texts)
+        self.assertIn("szychta", texts)
+        self.assertIn("nie pytaniem", texts)
+        self.assertIn("„byku”", texts)
+        self.assertIn("zamiast hashtagów", texts)
+
+    def test_drafts_follow_compendium_for_both_brands(self):
+        from backend.brand_service import BrandService
+        brands = BrandService(self.settings.data_dir, self.store)
+        for brand in ("atlet", "rigger"):
+            for pid in ("a", "b", "c", "d"):
+                for topic in ("", "Warszawa, WK Gym"):
+                    for d in brands.draft(brand, pid, topic):
+                        self.assertGreaterEqual(len(d["description"]), 500, d["description"])
+                        self.assertLessEqual(len(d["description"]), 1200)
+                        self.assertEqual([n for n in d["lint"] if n["level"] != "info"], [], d["description"])
+        self.assertTrue(all("byku" in d["description"] for d in brands.draft("rigger", "x", "")))
+        self.assertFalse(any("byku" in d["description"] for d in brands.draft("atlet", "x", "")))
+
+    def test_compendium_is_served_and_reimported_from_source(self):
+        import tempfile
+        from unittest import mock
+        from backend import brand_service
+        from backend.brand_service import BrandService
+        src, local = Path(tempfile.mkdtemp()), Path(tempfile.mkdtemp())
+        name = brand_service.BrandService(self.settings.data_dir, self.store).get("atlet")["compendium"]
+        (local / name).write_text("# Atlet\n\nWersja 1.0\n", encoding="utf-8")
+        (src / name).write_text("# Atlet\n\nWersja 1.1\n", encoding="utf-8")
+        with mock.patch.object(brand_service, "STYLE_DIR", local):
+            brands = BrandService(self.settings.data_dir, self.store, style_source=src)
+            c = brands.compendium("atlet")
+            self.assertEqual(c["version"], "Wersja 1.0")
+            self.assertTrue(c["source_newer"])
+            c = brands.reimport_compendium("atlet")
+            self.assertEqual(c["version"], "Wersja 1.1")
+            self.assertFalse(c["source_newer"])
+
+    def test_atlet_drafts_follow_house_style(self):
+        from backend.brand_service import BrandService
+        brands = BrandService(self.settings.data_dir, self.store)
+        for d in brands.draft("atlet", "p2", "Hotel w Katowicach, dywan zamiast maty"):
+            hook = d["description"].split("\n")[0]
+            self.assertEqual(hook[0], hook[-1])
+            self.assertIn("Hotel w Katowicach", d["description"])
+            self.assertNotIn("—", d["description"])
+            self.assertGreaterEqual(d["description"].count("\n\n"), 3)
+        texts = lambda s: " ".join(n["text"] for n in brands.lint("atlet", s, "#a"))
+        self.assertNotIn("ego", texts("Zrób tego więcej, kolego."))
+        self.assertIn("ego", texts("Zostaw ego w szatni."))
+        self.assertIn("grawitacja", texts("Walka z grawitacją."))
+
+    def test_atlet_keywords_replace_hashtags_and_preview_does_not_save(self):
+        from backend.brand_service import BrandService
+        brands = BrandService(self.settings.data_dir, self.store)
+        for d in brands.draft("atlet", "p3", "Parking pod blokiem"):
+            self.assertEqual(d["hashtags"], "")
+            self.assertNotIn("#", d["description"])
+        notes = " ".join(n["text"] for n in brands.lint("atlet", "Trening #nogym — klucz do sukcesu", ""))
+        self.assertIn("zamiast hashtagów", notes)
+        self.assertIn("Brak słów kluczowych", notes)
+        self.assertIn("Długi myślnik", notes)
+        self.assertIn("klucz do sukcesu", notes)
+        preview = brands.preview("atlet", {"hooks": ["Testowy hak"], "hook_emojis": ["⚡"]}, "Scena")
+        self.assertTrue(preview["drafts"][0]["description"].startswith("⚡ Testowy hak ⚡"))
+        self.assertNotEqual(brands.get("atlet")["hooks"], ["Testowy hak"])
 
     def test_brand_update_persists_and_validates(self):
         from backend.brand_service import BrandService
@@ -341,6 +404,50 @@ class BrandTests(Sandbox):
             brands.update("atlet", {"caption_max": 5000})
         with self.assertRaises(ValueError):
             brands.get("inna")
+
+
+class ComposeTests(Sandbox):
+    """Opis z podstawy przez Claude: atrapa klienta API, bez sieci i bez klucza."""
+
+    def make_app(self, key="test-key", reply=None, stop="end_turn"):
+        import run
+        from types import SimpleNamespace as NS
+        self.calls = []
+        reply = reply if reply is not None else {"warianty": [
+            {"opis": f"⚡ Wariant {n} ⚡\n\nHotel w Katowicach po montażu.", "mechanizm_haka": "Scena", "brakujace_konkrety": ""} for n in (1, 2, 3)]}
+
+        def create(**kw):
+            self.calls.append(kw)
+            return NS(stop_reason=stop, content=[NS(type="thinking", thinking=""), NS(type="text", text=json.dumps(reply))])
+
+        factory = lambda api_key: NS(beta=NS(messages=NS(create=create)), key=api_key)
+        return run.App(replace(self.settings, anthropic_api_key=key), core=FallbackCore(), ai_client_factory=factory)
+
+    def test_compose_sends_compendium_and_basis_and_saves_basis(self):
+        app = self.make_app()
+        result = app.compose("atlet-pompki-porecze", "Hotel w Katowicach po montażu, dwie serie pompek przed prysznicem")
+        self.assertEqual([d["variant"] for d in result["drafts"]], [1, 2, 3])
+        self.assertTrue(all("lint" in d and d["hashtags"] == "" for d in result["drafts"]))
+        call = self.calls[0]
+        self.assertEqual(call["model"], "claude-opus-5-5")
+        self.assertEqual(call["fallbacks"], "default")
+        self.assertIn("server-side-fallback-2026-07-01", call["betas"])
+        self.assertEqual(call["output_config"]["format"]["type"], "json_schema")
+        self.assertIn("KOMPENDIUM STYLU", call["system"][0]["text"])
+        self.assertIn("codzienne minimum pompek", call["system"][0]["text"])
+        self.assertIn("dwie serie pompek przed prysznicem", call["messages"][0]["content"])
+        self.assertEqual(app.basis.get("atlet-pompki-porecze"), "Hotel w Katowicach po montażu, dwie serie pompek przed prysznicem")
+
+    def test_compose_explains_missing_key_basis_and_refusal(self):
+        from backend.ai_writer import AIWriterError
+        with self.assertRaisesRegex(AIWriterError, "klucza API"):
+            self.make_app(key="").compose("atlet-pompki-porecze", "coś")
+        with self.assertRaisesRegex(AIWriterError, "podstawę"):
+            self.make_app().compose("atlet-pompki-porecze", "   ")
+        with self.assertRaisesRegex(AIWriterError, "odmówił"):
+            self.make_app(stop="refusal").compose("atlet-pompki-porecze", "coś")
+        with self.assertRaisesRegex(AIWriterError, "formacie"):
+            self.make_app(reply={"inne": 1}).compose("atlet-pompki-porecze", "coś")
 
 
 class HttpTests(Sandbox):
@@ -378,6 +485,13 @@ class HttpTests(Sandbox):
         self.assertIn(code, (400, 404))
         code, body = self.call("/api/publications/atlet-pompki-porecze/drafts", {})
         self.assertEqual(len(json.loads(body)["drafts"]), 3)
+        code, _ = self.call("/api/publications/atlet-pompki-porecze/basis", {"basis": "Piwnica, 21:00, guma"})
+        self.assertEqual(code, 200)
+        code, body = self.call("/api/publications/atlet-pompki-porecze/basis")
+        self.assertEqual(json.loads(body)["basis"], "Piwnica, 21:00, guma")
+        code, body = self.call("/api/publications/atlet-pompki-porecze/compose", {"basis": "Piwnica, 21:00, guma"})
+        self.assertEqual(code, 400)
+        self.assertIn("klucza API", json.loads(body)["error"])
         code, body = self.call("/api/publications/atlet-pompki-porecze/phone-package", {"channel": "instagram"})
         self.assertEqual(code, 200)
         name = json.loads(body)["name"]
