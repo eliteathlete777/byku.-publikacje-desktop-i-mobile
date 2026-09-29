@@ -68,25 +68,52 @@ def _clear_orphan_lock(post_id: str, channel: str) -> bool:
         return False
 
 
-def _uploader_alive(post_id: str, channel: str = "") -> bool:
-    """Czy w systemie żyje uploader tej paczki (także z BYQ Studio). Z kanałem: tylko ta noga —
-    TikTok i Meta to osobne przeglądarki i mogą iść równolegle."""
+def _python_processes() -> list[tuple[int, str]]:
+    """(pid, linia komend) żywych procesów Pythona. Bajty + UTF-8: polskie litery w nazwie filmu
+    (np. „przytyło”) wywracały dekodowanie text=True (stdout = None → błąd 'splitlines')."""
     if os.name != "nt":
-        return False
+        return []
     try:
-        # Bajty + UTF-8: polskie litery w nazwie filmu (np. „przytyło”) w linii komend wywracały
-        # dekodowanie text=True (stdout = None → „'NoneType' has no attribute 'splitlines'”).
         raw = subprocess.run(
             ["powershell", "-NoProfile", "-Command",
              "[Console]::OutputEncoding = [Text.Encoding]::UTF8; "
-             "Get-CimInstance Win32_Process -Filter \"Name like 'python%'\" | ForEach-Object { $_.CommandLine }"],
+             "Get-CimInstance Win32_Process -Filter \"Name like 'python%'\" | ForEach-Object { \"$($_.ProcessId)|$($_.CommandLine)\" }"],
             capture_output=True, timeout=15, creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0)).stdout
     except (OSError, subprocess.SubprocessError):
-        return False
-    out = (raw or b"").decode("utf-8", errors="replace")
+        return []
+    out = []
+    for line in (raw or b"").decode("utf-8", errors="replace").splitlines():
+        pid, _, cmd = line.partition("|")
+        if pid.strip().isdigit():
+            out.append((int(pid), cmd))
+    return out
+
+
+def _uploader_alive(post_id: str, channel: str = "") -> bool:
+    """Czy w systemie żyje uploader tej paczki (także z BYQ Studio). Z kanałem: tylko ta noga —
+    TikTok i Meta to osobne przeglądarki i mogą iść równolegle."""
     skrypt = (r"tiktok(_karuzela)?_uploader\.py\b" if channel == "tiktok"
               else r"meta(_karuzela)?_uploader\.py\b" if channel else r"_uploader\.py\b")
-    return any(post_id in line and re.search(skrypt, line) for line in out.splitlines())
+    return any(post_id in cmd and re.search(skrypt, cmd) for _, cmd in _python_processes())
+
+
+class _AdoptedProcess:
+    """Uploader, który przeżył restart panelu (log idzie do pliku, więc żyje dalej) — pilnowany po PID."""
+
+    def __init__(self, pid: int):
+        self.pid = pid
+
+    def poll(self):
+        return None if any(pid == self.pid for pid, _ in _python_processes()) else 0
+
+    def kill(self):
+        try:
+            os.kill(self.pid, 9)
+        except OSError:
+            pass
+
+    def wait(self, timeout=None):
+        return 0
 
 
 def _human_problem(text: str) -> str:
@@ -145,6 +172,32 @@ class LegacyBridge:
     def __init__(self, adapter: StudioAdapter):
         self.adapter = adapter
         self.runs: dict[tuple[str, str], dict] = {}  # (post_id, kanał) -> uruchomiony uploader tej sesji panelu
+        threading.Thread(target=self._adopt_running, daemon=True).start()
+
+    def _adopt_running(self) -> None:
+        """Po restarcie panelu: przejmij żywe uploadery (np. czekające na dźwięk), żeby lista etapów
+        i przycisk „Muzyka dobrana” nie zniknęły."""
+        try:
+            from niezawodnosc import STATUS_DIR
+        except Exception:
+            return
+        for pid, cmd in _python_processes():
+            m_script = re.search(r"(tiktok|meta)(_karuzela)?_uploader\.py\b", cmd)
+            m_post = re.search(r"byq-\d{8}-\d{6}-\d+", cmd)
+            if not (m_script and m_post):
+                continue
+            post_id = m_post.group(0)
+            logs = sorted(Path(STATUS_DIR).glob(f"{post_id}-*-konsola.log"), key=lambda x: x.stat().st_mtime, reverse=True)
+            logs = [x for x in logs if (x.name == f"{post_id}-tiktok-konsola.log") == (m_script.group(1) == "tiktok")]
+            if not logs:
+                continue
+            channel = logs[0].name[len(post_id) + 1:-len("-konsola.log")]
+            if (post_id, channel) in self.runs:
+                continue
+            run = {"proc": _AdoptedProcess(pid), "log": str(logs[0]), "fh": None, "phase": "running",
+                   "started": time.strftime("%Y-%m-%dT%H:%M:%S", time.localtime(logs[0].stat().st_ctime))}
+            self.runs[(post_id, channel)] = run
+            threading.Thread(target=self._watch, args=(post_id, channel, run), daemon=True).start()
 
     def uploads(self) -> list[dict]:
         """Uploadery odpalone z panelu jako lista etapów (checkboxy dla Damiana).
