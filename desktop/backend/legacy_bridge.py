@@ -160,7 +160,8 @@ class LegacyBridge:
             running = run.get("phase") == "preparing" or (proc is not None and code is None)
             out.append({"post_id": post_id, "channel": channel, "pid": getattr(proc, "pid", None), "running": running,
                         "exit_code": code, "started": run["started"], "log": run.get("log", ""),
-                        "steps": steps, "problem": problem, "stopped": run.get("stopped", "")})
+                        "steps": steps, "problem": problem, "stopped": run.get("stopped", ""),
+                        "advice": run.get("advice", ""), "advice_state": run.get("advice_state", "")})
         return sorted(out, key=lambda r: r["started"], reverse=True)
 
     # ---------- start w tle + strażnik postępu ----------
