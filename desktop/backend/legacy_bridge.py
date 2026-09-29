@@ -59,7 +59,7 @@ def _archive_log(post_id: str, channel: str) -> None:
 
 def _clear_orphan_lock(post_id: str, channel: str) -> bool:
     """Blokada po martwym uploaderze. niezawodnosc sam odmawia, gdy Zaplanuj było już klikane (duplikat)."""
-    if _uploader_alive(post_id):
+    if _uploader_alive(post_id, channel):
         return False
     try:
         from niezawodnosc import zdejmij_osierocona_blokade
@@ -68,8 +68,9 @@ def _clear_orphan_lock(post_id: str, channel: str) -> bool:
         return False
 
 
-def _uploader_alive(post_id: str) -> bool:
-    """Czy w systemie żyje jakiś uploader tej paczki (także odpalony z BYQ Studio)."""
+def _uploader_alive(post_id: str, channel: str = "") -> bool:
+    """Czy w systemie żyje uploader tej paczki (także z BYQ Studio). Z kanałem: tylko ta noga —
+    TikTok i Meta to osobne przeglądarki i mogą iść równolegle."""
     if os.name != "nt":
         return False
     try:
@@ -79,7 +80,9 @@ def _uploader_alive(post_id: str) -> bool:
             capture_output=True, text=True, timeout=15, creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0)).stdout
     except (OSError, subprocess.SubprocessError):
         return False
-    return any(post_id in line and re.search(r"_uploader\.py\b", line) for line in out.splitlines())
+    skrypt = (r"tiktok(_karuzela)?_uploader\.py\b" if channel == "tiktok"
+              else r"meta(_karuzela)?_uploader\.py\b" if channel else r"_uploader\.py\b")
+    return any(post_id in line and re.search(skrypt, line) for line in out.splitlines())
 
 
 def _human_problem(text: str) -> str:
@@ -283,8 +286,8 @@ class LegacyBridge:
         current = self.runs.get((post_id, channel))
         if current and (current.get("phase") == "preparing" or (current.get("proc") and current["proc"].poll() is None)):
             raise RuntimeError("Ten wrzut już trwa. Poczekaj na checkboxy albo aż strażnik go przerwie.")
-        if _uploader_alive(post_id):
-            raise RuntimeError("Dla tej paczki działa już uploader (np. z BYQ Studio). Dokończ tamten wrzut.")
+        if _uploader_alive(post_id, channel):
+            raise RuntimeError("Dla tej paczki i tego kanału działa już uploader (np. z BYQ Studio). Dokończ tamten wrzut.")
         _clear_orphan_lock(post_id, channel)  # tylko gdy nikt nie pracuje i Zaplanuj nie było klikane
         run = {"proc": None, "log": "", "fh": None, "phase": "preparing", "problem": "",
                "started": datetime.now().isoformat(timespec="seconds")}
