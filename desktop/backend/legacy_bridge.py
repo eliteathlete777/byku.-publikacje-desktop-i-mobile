@@ -74,12 +74,16 @@ def _uploader_alive(post_id: str, channel: str = "") -> bool:
     if os.name != "nt":
         return False
     try:
-        out = subprocess.run(
+        # Bajty + UTF-8: polskie litery w nazwie filmu (np. „przytyło”) w linii komend wywracały
+        # dekodowanie text=True (stdout = None → „'NoneType' has no attribute 'splitlines'”).
+        raw = subprocess.run(
             ["powershell", "-NoProfile", "-Command",
+             "[Console]::OutputEncoding = [Text.Encoding]::UTF8; "
              "Get-CimInstance Win32_Process -Filter \"Name like 'python%'\" | ForEach-Object { $_.CommandLine }"],
-            capture_output=True, text=True, timeout=15, creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0)).stdout
+            capture_output=True, timeout=15, creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0)).stdout
     except (OSError, subprocess.SubprocessError):
         return False
+    out = (raw or b"").decode("utf-8", errors="replace")
     skrypt = (r"tiktok(_karuzela)?_uploader\.py\b" if channel == "tiktok"
               else r"meta(_karuzela)?_uploader\.py\b" if channel else r"_uploader\.py\b")
     return any(post_id in line and re.search(skrypt, line) for line in out.splitlines())
