@@ -16,7 +16,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ROOT))
 
-from backend import ai_writer, upload_advisor
+from backend import ai_writer
 from backend.brand_service import BrandService
 from backend.config import Settings, load_settings
 from backend.content_service import ContentService, RevisionConflict
@@ -68,27 +68,6 @@ class App:
              "lint": ai_writer.fidelity(v["description"], basis, card["content"].get("location", ""))
              + self.brands.lint(brand, v["description"], "")}
             for i, v in enumerate(variants)]}
-
-    def upload_advice(self, post_id: str, channel: str, capture=None) -> dict:
-        """Doradca AI dla zatrzymanego wrzutu: zrzut okna marki + etapy -> co kliknąć. Nic nie klika."""
-        run = self.legacy.runs.get((post_id, channel))
-        if run is None:
-            raise ValueError("Ten wrzut nie był uruchomiony w tej sesji panelu.")
-        view = next(u for u in self.legacy.uploads() if u["post_id"] == post_id and u["channel"] == channel)
-        card = self.adapter.get(post_id)
-        run["advice_state"] = "running"
-        try:
-            png = (capture or upload_advisor.capture)(channel, card["brand"])
-            text = upload_advisor.advise(
-                png=png, channel=channel, brand=card["brand"], name=card["name"], term=card.get("local_target_at") or "",
-                steps=view["steps"], problem=view["problem"], log_tail=_read_tail(run.get("log")),
-                api_key=self.settings.anthropic_api_key,
-                **({"client_factory": self.ai_client_factory} if self.ai_client_factory else {}))
-        except upload_advisor.AdvisorError as exc:
-            run.update(advice_state="failed", advice=str(exc))
-            raise RuntimeError(str(exc)) from exc
-        run.update(advice_state="done", advice=text)
-        return {"advice": text, "model": upload_advisor.MODEL}
 
     def _ai_key(self, provider: str) -> str:
         return self.settings.openai_api_key if provider == "openai" else self.settings.anthropic_api_key
@@ -336,8 +315,6 @@ def make_handler(app: App):
                     return self.json(200, app.mobile.pull_server_events())
                 if path == "/api/calendar/refresh":
                     return self.json(202, app.legacy.refresh_calendars(str(data.get("brand", "atlet"))))
-                if path == "/api/uploads/advice":
-                    return self.json(200, app.upload_advice(str(data["post_id"]), str(data["channel"])))
                 if path == "/api/generator/open":
                     return self.json(200, app.legacy.open_generator(data.get("brand", "atlet")))
                 if path.startswith("/api/brands/") and path.endswith("/compendium/reimport"):
@@ -358,13 +335,6 @@ def make_handler(app: App):
             return self.guard(route)
 
     return Handler
-
-
-def _read_tail(log: str | None, lines: int = 80) -> str:
-    try:
-        return "\n".join(Path(log).read_text(encoding="utf-8", errors="replace").splitlines()[-lines:]) if log else ""
-    except OSError:
-        return ""
 
 
 def open_folder(folder: Path) -> dict:

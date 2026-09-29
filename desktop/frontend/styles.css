@@ -126,11 +126,6 @@ main { min-width: 0; padding: 0 24px 40px; }
 .steps li.running .box { border-color: var(--blue); color: var(--blue); }
 .steps li.error { color: var(--red); font-weight: 700; }
 .steps li.error .box { background: var(--red); border-color: var(--red); color: #fff; }
-.advice { margin-top: 10px; border: 1px solid var(--violet); background: rgba(140, 110, 255, .07); padding: 8px 10px; }
-.advice header { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px; }
-.advice p { margin: 0; white-space: pre-wrap; font-size: 13.5px; line-height: 1.45; }
-.advice.running p { color: var(--muted); }
-.advice.failed p { color: var(--red); }
 .step-problem { margin: 8px 0 0; color: var(--red); font-size: 13px; }
 @media (max-width: 640px) { .upload-item { grid-template-columns: 44px 1fr; } .upload-btns { grid-column: 1 / -1; justify-content: flex-start; } }
 .focus { border: 1px solid var(--red); background: linear-gradient(90deg, #2a0f11, var(--surface) 55%); padding: 14px 16px; margin-bottom: 16px; }

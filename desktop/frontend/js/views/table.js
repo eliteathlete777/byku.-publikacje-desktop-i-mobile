@@ -45,25 +45,10 @@ function drawRuns(uploads) {
         <button type="button" class="btn ghost small" data-open-run="${esc(u.post_id)}">Karta</button></header>
       <ul class="steps">${u.steps.map(s => `<li class="${s.state}"><span class="box">${ICON[s.state]}</span>${esc(s.label)}</li>`).join("")}</ul>
       ${failed && u.problem ? `<p class="step-problem">${esc(u.problem)}</p>` : ""}
-      ${failed ? `<div class="advice ${esc(u.advice_state)}"><header><b>🧠 Doradca AI (Sonnet 5)</b>
-          <button type="button" class="btn ghost small" data-advice="${esc(u.post_id)}" data-ch="${esc(u.channel)}" ${u.advice_state === "running" ? "disabled" : ""}>${u.advice ? "Zapytaj ponownie" : "Co teraz?"}</button></header>
-          <p>${u.advice_state === "running" ? "Oglądam okno przeglądarki i myślę, co kliknąć… (do minuty)" : esc(u.advice || "Zrobię zrzut okna marki i powiem, co kliknąć. Sam niczego nie klikam.")}</p></div>` : ""}
     </article>`; }).join("")}` : "";
   $$("[data-music]", box).forEach(b => b.onclick = e => run(e.currentTarget, () => post(`${pub(b.dataset.music)}/music-ready`), "Sygnał muzyki wysłany, Python jedzie dalej."));
   $$("[data-open-run]", box).forEach(b => b.onclick = () => openCard(b.dataset.openRun, "channels"));
-  $$("[data-advice]", box).forEach(b => b.onclick = () => askAdvice(b.dataset.advice, b.dataset.ch));
-  // Doradca odpala się sam raz na zatrzymany wrzut (Damian: „AI tylko doradza”).
-  uploads.filter(u => !u.running && !u.advice_state && (u.exit_code !== 0 || u.steps.some(s => s.state === "error")))
-    .forEach(u => { const k = `${u.post_id}|${u.channel}|${u.started}`; if (!asked.has(k)) { asked.add(k); askAdvice(u.post_id, u.channel); } });
   return true;
-}
-
-const asked = new Set();
-async function askAdvice(postId, channel) {
-  const p = post("/api/uploads/advice", { post_id: postId, channel });
-  setTimeout(pollUploads, 300);   // pokaż „Oglądam okno…”
-  try { await p; } catch (e) { toast(e.message, "error"); }
-  pollUploads();
 }
 
 async function pollUploads() {

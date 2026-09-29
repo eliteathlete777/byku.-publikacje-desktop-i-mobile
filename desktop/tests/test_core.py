@@ -573,34 +573,6 @@ class UploadTrackerTests(Sandbox):
             app.legacy._watch("b", "tiktok", patient)
             self.assertFalse(patient["proc"].killed)
 
-    def test_upload_advice_sends_screenshot_and_steps_and_never_clicks(self):
-        import run
-        from types import SimpleNamespace as NS
-        calls = []
-
-        def create(**kw):
-            calls.append(kw)
-            return NS(stop_reason="end_turn", content=[NS(type="thinking"), NS(type="text", text="Co widzę: film jest w formularzu.\n1. Kliknij Dalej.")])
-
-        app = run.App(replace(self.settings, anthropic_api_key="k"), core=FallbackCore(),
-                      ai_client_factory=lambda key: NS(messages=NS(create=create)))
-        log = self.root / "meta.log"
-        log.write_text("BYQ_STATUS:" + json.dumps({"platforma": "instagram", "krok": "okladka", "status": "blad", "szczegoly": "brak Zmień obraz."}), encoding="utf-8")
-        app.legacy.runs[("atlet-pompki-porecze", "obie")] = {"proc": NS(pid=1, poll=lambda: 1), "log": str(log), "fh": None,
-                                                              "started": "x", "phase": "running"}
-        shots = []
-        out = app.upload_advice("atlet-pompki-porecze", "obie", capture=lambda ch, brand: shots.append((ch, brand)) or b"PNG")
-        self.assertIn("Kliknij Dalej", out["advice"])
-        self.assertEqual(shots, [("obie", "atlet")])
-        call = calls[0]
-        self.assertEqual(call["model"], "claude-sonnet-5")
-        self.assertEqual(call["thinking"], {"type": "adaptive"})
-        content = call["messages"][0]["content"]
-        self.assertEqual(content[0]["type"], "image")
-        self.assertIn("Okładka: ZATRZYMAŁ SIĘ", content[1]["text"])
-        self.assertIn("Ty niczego nie klikasz", call["system"])
-        self.assertEqual(app.legacy.uploads()[0]["advice_state"], "done")
-
     def test_meta_steps_merge_instagram_and_facebook(self):
         from backend.legacy_bridge import upload_steps
         st = lambda plat, krok, status, sz="": "BYQ_STATUS:" + json.dumps({"platforma": plat, "krok": krok, "status": status, "szczegoly": sz})
