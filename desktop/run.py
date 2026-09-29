@@ -224,6 +224,8 @@ def make_handler(app: App):
                         return self.json(200, {"notes": app.brands.lint(card["brand"], arg("description", ""), arg("hashtags", ""))})
                 if path == "/api/schedule/proposals":
                     return self.json(200, {"variants": app.schedule.propose(arg("brand", "atlet"), arg("start"))})
+                if path == "/api/uploads":
+                    return self.json(200, {"uploads": app.legacy.uploads()})
                 if path == "/api/jobs":
                     return self.json(200, {"jobs": app.jobs.list(), "locks": app.jobs.locks_state()})
                 if path.startswith("/api/jobs/"):

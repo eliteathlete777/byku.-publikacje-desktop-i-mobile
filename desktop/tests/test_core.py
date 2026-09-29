@@ -516,6 +516,26 @@ class ComposeTests(Sandbox):
             self.make_app(reply={"inne": 1}).compose("atlet-pompki-porecze", "coś")
 
 
+class UploadTrackerTests(Sandbox):
+    def test_uploads_report_running_finished_and_log_tail(self):
+        import run
+        from types import SimpleNamespace as NS
+        app = run.App(self.settings, core=FallbackCore())
+        log = self.root / "x-tiktok-konsola.log"
+        log.write_text("\n".join(f"krok {i}" for i in range(40)), encoding="utf-8")
+        codes = {"a": None, "b": 0}
+        for key in codes:
+            app.legacy.runs[(key, "tiktok")] = {"proc": NS(pid=1, poll=lambda k=key: codes[k]), "log": str(log), "fh": None,
+                                                "started": f"2026-09-29T20:0{len(app.legacy.runs)}:00"}
+        ups = {u["post_id"]: u for u in app.legacy.uploads()}
+        self.assertTrue(ups["a"]["running"])
+        self.assertEqual((ups["b"]["running"], ups["b"]["exit_code"]), (False, 0))
+        self.assertEqual(ups["a"]["tail"][-1], "krok 39")
+        self.assertEqual(len(ups["a"]["tail"]), 25)
+        with self.assertRaisesRegex(PermissionError, "allow_publication"):
+            app.legacy.prepare_publication("a", "tiktok")
+
+
 class HttpTests(Sandbox):
     def setUp(self):
         super().setUp()

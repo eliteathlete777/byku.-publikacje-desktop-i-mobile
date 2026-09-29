@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+from datetime import datetime
+from pathlib import Path
+
 from .studio_adapter import StudioAdapter
 
 
@@ -8,6 +11,26 @@ class LegacyBridge:
 
     def __init__(self, adapter: StudioAdapter):
         self.adapter = adapter
+        self.runs: dict[tuple[str, str], dict] = {}  # (post_id, kanał) -> uruchomiony uploader tej sesji panelu
+
+    def uploads(self, tail: int = 25) -> list[dict]:
+        """Uploadery odpalone z panelu: żyje / skończył (kod wyjścia) + końcówka logu konsoli."""
+        out = []
+        for (post_id, channel), run in self.runs.items():
+            proc = run["proc"]
+            code = proc.poll()
+            if code is not None and run.get("fh"):
+                run["fh"].close()
+                run["fh"] = None
+            lines: list[str] = []
+            if run["log"] and Path(run["log"]).is_file():
+                try:
+                    lines = Path(run["log"]).read_text(encoding="utf-8", errors="replace").splitlines()[-tail:]
+                except OSError:
+                    lines = []
+            out.append({"post_id": post_id, "channel": channel, "pid": proc.pid, "running": code is None,
+                        "exit_code": code, "started": run["started"], "log": run["log"], "tail": lines})
+        return sorted(out, key=lambda r: r["started"], reverse=True)
 
     def available(self) -> bool:
         return bool(self.adapter.core is not None and getattr(self.adapter.core, "legacy", False))
@@ -54,11 +77,18 @@ class LegacyBridge:
         if channel not in {"tiktok", "instagram", "facebook", "obie"}:
             raise ValueError("Nieprawidłowy kanał")
         self._require("Przygotowanie publikacji")
+        running = self.runs.get((post_id, channel))
+        if running and running["proc"].poll() is None:
+            raise RuntimeError(f"Uploader {channel} dla tej paczki już pracuje (PID {running['proc'].pid}). "
+                               "Dokończ w jego oknie przeglądarki albo poczekaj na koniec.")
         from studio.rdzen.most_publikacji import przygotuj_wrzut, uruchom_uploader
         prepared = przygotuj_wrzut(post_id, channel, root=self.adapter.settings.queue, ponownie=retry)
         if not prepared.get("ok"):
             raise RuntimeError("; ".join(prepared.get("problemy") or ["Nie udało się przygotować wrzutu"]))
         process = uruchom_uploader(prepared["cmd"], post_id=post_id, platforma=channel)
+        self.runs[(post_id, channel)] = {"proc": process, "log": getattr(process, "_byq_log", ""),
+                                         "fh": getattr(process, "_byq_log_fh", None),
+                                         "started": datetime.now().isoformat(timespec="seconds")}
         return {"ok": True, "pid": process.pid, "post_id": post_id, "channel": channel,
                 "retry": retry, "stage": "awaiting_manual_final_click", "folder": prepared.get("folder"),
                 "media": prepared.get("wideo")}
