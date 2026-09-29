@@ -52,19 +52,31 @@ class App:
         self.basis = ai_writer.BasisStore(settings.data_dir / "podstawy.json")
 
     def compose(self, post_id: str, basis: str) -> dict:
-        """Opis z podstawy: zapis podstawy, 3 warianty od Claude według kompendium, kontrola każdego wariantu."""
+        """Opis z podstawy: zapis podstawy, 3 warianty od Claude/ChatGPT według kompendium, kontrola każdego wariantu."""
         card = self.adapter.get(post_id)
         self.basis.set(post_id, basis)
         brand = card["brand"]
         profile = self.brands.get(brand)
+        ai = self.ai_status()
         extra = {"client_factory": self.ai_client_factory} if self.ai_client_factory else {}
         variants = ai_writer.compose(profile, self.brands.compendium(brand)["markdown"], basis,
                                      post_name=card["name"], post_type=card["assets"]["type"],
                                      location=card["content"].get("location", ""),
-                                     api_key=self.settings.anthropic_api_key, **extra)
-        return {"model": ai_writer.MODEL, "drafts": [
+                                     provider=ai["provider"], model=ai["model"], api_key=self._ai_key(ai["provider"]), **extra)
+        return {"model": ai["model"], "drafts": [
             {**v, "variant": i + 1, "hashtags": "", "lint": self.brands.lint(brand, v["description"], "")}
             for i, v in enumerate(variants)]}
+
+    def _ai_key(self, provider: str) -> str:
+        return self.settings.openai_api_key if provider == "openai" else self.settings.anthropic_api_key
+
+    def ai_status(self) -> dict:
+        s = self.settings
+        provider = ai_writer.pick_provider(s.ai_provider, s.anthropic_api_key, s.openai_api_key)
+        meta = ai_writer.PROVIDERS[provider]
+        return {"provider": provider, "label": meta["label"], "env": meta["env"], "module": meta["module"],
+                "key": bool(self._ai_key(provider)), "sdk": ai_writer.sdk_available(provider),
+                "model": ai_writer.model_for(provider, s.openai_model, s.claude_model)}
 
     def health(self) -> dict:
         s = self.settings
@@ -74,7 +86,7 @@ class App:
                 "core": getattr(self.adapter.core, "name", None), "core_error": self.adapter.core_error,
                 "legacy": self.legacy.available(), "drive": self.mobile.drive_status(),
                 "mobile_server": self.mobile.server_status(), "can_undo": self.schedule.can_undo(),
-                "ai": {"key": bool(s.anthropic_api_key), "sdk": ai_writer.sdk_available(), "model": ai_writer.MODEL}}
+                "ai": self.ai_status()}
 
 
 def make_handler(app: App):

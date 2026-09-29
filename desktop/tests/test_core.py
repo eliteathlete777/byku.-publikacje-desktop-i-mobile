@@ -420,8 +420,61 @@ class ComposeTests(Sandbox):
             self.calls.append(kw)
             return NS(stop_reason=stop, content=[NS(type="thinking", thinking=""), NS(type="text", text=json.dumps(reply))])
 
-        factory = lambda api_key: NS(beta=NS(messages=NS(create=create)), key=api_key)
+        factory = lambda api_key, provider: NS(beta=NS(messages=NS(create=create)), key=api_key)
         return run.App(replace(self.settings, anthropic_api_key=key), core=FallbackCore(), ai_client_factory=factory)
+
+    def make_openai_app(self, key="test-key", reply=None, status="completed", refusal=False, provider="", model=""):
+        import run
+        from types import SimpleNamespace as NS
+        self.calls = []
+        reply = reply if reply is not None else {"warianty": [
+            {"opis": f"⚡ Wariant {n} ⚡\n\nHotel w Katowicach po montażu.", "mechanizm_haka": "Scena", "brakujace_konkrety": ""} for n in (1, 2)]}
+        part = NS(type="refusal", refusal="nie") if refusal else NS(type="output_text", text=json.dumps(reply))
+
+        def create(**kw):
+            self.calls.append(kw)
+            return NS(status=status, output=[NS(type="reasoning"), NS(type="message", content=[part])])
+
+        self.providers = []
+        factory = lambda api_key, provider: self.providers.append(provider) or NS(responses=NS(create=create))
+        settings = replace(self.settings, openai_api_key=key, anthropic_api_key="", ai_provider=provider, openai_model=model)
+        return run.App(settings, core=FallbackCore(), ai_client_factory=factory)
+
+    def test_openai_compose_uses_responses_api_with_strict_schema(self):
+        app = self.make_openai_app()
+        self.assertEqual(app.health()["ai"]["provider"], "openai")
+        self.assertEqual(app.health()["ai"]["label"], "ChatGPT")
+        result = app.compose("atlet-pompki-porecze", "Hotel w Katowicach, pompki przed prysznicem")
+        self.assertEqual(self.providers, ["openai"])
+        self.assertEqual(result["model"], "gpt-5")
+        self.assertEqual(len(result["drafts"]), 2)
+        call = self.calls[0]
+        self.assertEqual(call["model"], "gpt-5")
+        self.assertIn("KOMPENDIUM STYLU", call["instructions"])
+        self.assertIn("pompki przed prysznicem", call["input"])
+        self.assertTrue(call["text"]["format"]["strict"])
+        self.assertEqual(call["text"]["format"]["type"], "json_schema")
+        self.assertEqual(call["reasoning"], {"effort": "high"})
+
+    def test_openai_model_override_refusal_truncation_and_missing_key(self):
+        from backend.ai_writer import AIWriterError
+        app = self.make_openai_app(model="gpt-4.1")
+        self.assertEqual(app.compose("atlet-pompki-porecze", "coś")["model"], "gpt-4.1")
+        self.assertNotIn("reasoning", self.calls[0])
+        with self.assertRaisesRegex(AIWriterError, "odmówił"):
+            self.make_openai_app(refusal=True).compose("atlet-pompki-porecze", "coś")
+        with self.assertRaisesRegex(AIWriterError, "ucięta"):
+            self.make_openai_app(status="incomplete").compose("atlet-pompki-porecze", "coś")
+        with self.assertRaisesRegex(AIWriterError, "OPENAI_API_KEY"):
+            self.make_openai_app(key="", provider="openai").compose("atlet-pompki-porecze", "coś")
+
+    def test_provider_choice(self):
+        from backend.ai_writer import pick_provider
+        self.assertEqual(pick_provider("", "", "sk-o"), "openai")
+        self.assertEqual(pick_provider("", "sk-a", ""), "claude")
+        self.assertEqual(pick_provider("", "sk-a", "sk-o"), "claude")
+        self.assertEqual(pick_provider("openai", "sk-a", "sk-o"), "openai")
+        self.assertEqual(pick_provider("", "", ""), "claude")
 
     def test_compose_sends_compendium_and_basis_and_saves_basis(self):
         app = self.make_app()
@@ -429,7 +482,8 @@ class ComposeTests(Sandbox):
         self.assertEqual([d["variant"] for d in result["drafts"]], [1, 2, 3])
         self.assertTrue(all("lint" in d and d["hashtags"] == "" for d in result["drafts"]))
         call = self.calls[0]
-        self.assertEqual(call["model"], "claude-opus-5-5")
+        self.assertEqual(call["model"], "claude-sonnet-5")
+        self.assertEqual(result["model"], "claude-sonnet-5")
         self.assertEqual(call["fallbacks"], "default")
         self.assertIn("server-side-fallback-2026-07-01", call["betas"])
         self.assertEqual(call["output_config"]["format"]["type"], "json_schema")

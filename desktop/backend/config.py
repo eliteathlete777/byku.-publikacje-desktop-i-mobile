@@ -27,6 +27,10 @@ class Settings:
     mobile_upload_token: str = ""
     style_source_dir: Path | None = None
     anthropic_api_key: str = field(default="", repr=False)
+    openai_api_key: str = field(default="", repr=False)
+    openai_model: str = ""
+    claude_model: str = ""
+    ai_provider: str = ""
 
     @property
     def queue(self) -> Path:
@@ -78,6 +82,10 @@ def load_settings(config_path: Path | None = None) -> Settings:
         mobile_upload_token=str(env.get("BYKU_MOBILE_UPLOAD_TOKEN", "")),
         style_source_dir=path(raw["style_source_dir"]) if raw.get("style_source_dir") else None,
         anthropic_api_key=str(env.get("ANTHROPIC_API_KEY", "")).strip(),
+        openai_api_key=str(env.get("OPENAI_API_KEY", "")).strip(),
+        openai_model=str(env.get("OPENAI_MODEL", "")).strip(),
+        claude_model=str(env.get("CLAUDE_MODEL", "")).strip(),
+        ai_provider=str(env.get("AI_PROVIDER", "")).strip().lower(),
     )
     if cfg.mode not in {"sandbox", "production"}:
         raise ValueError("mode musi być sandbox albo production")

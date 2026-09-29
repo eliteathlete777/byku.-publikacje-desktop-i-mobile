@@ -243,11 +243,11 @@ function content(c, p) {
   const kwMode = profile.tag_mode === "keywords";
   const locations = [...new Set([...(profile.locations || []), ...state.cards.map(x => x.content.location).filter(Boolean)])];
   const ai = state.health?.ai || {};
-  const aiBlock = !ai.sdk ? "Brak biblioteki anthropic (python -m pip install anthropic)." : !ai.key ? "Brak klucza API: dopisz ANTHROPIC_API_KEY=... do desktop/.env i uruchom appkę ponownie." : "";
+  const aiBlock = !ai.sdk ? `Brak biblioteki ${ai.module || "anthropic"} (python -m pip install ${ai.module || "anthropic"}).` : !ai.key ? "Brak klucza API: dopisz OPENAI_API_KEY=... (ChatGPT) albo ANTHROPIC_API_KEY=... (Claude) do desktop/.env i uruchom appkę ponownie." : "";
   p.innerHTML = `
     <div class="basis-box">
       <label class="field"><span>Podstawa opisu</span><small class="basis-hint">Wszystko, co ma się znaleźć w opisie: miejsce, sytuacja, ćwiczenie, liczby, żart. Nic spoza niej nie zostanie dopisane.</small><textarea id="basis" rows="5" placeholder="Np. Hotel w Katowicach po montażu, 22:30, dwie serie pompek przy łóżku przed prysznicem, guma w plecaku…"></textarea></label>
-      <div class="inline"><button class="btn primary" id="compose" type="button" ${aiBlock ? `disabled title="${esc(aiBlock)}"` : ""}>Ułóż opis z podstawy</button><small class="muted" id="basisState">${aiBlock ? esc(aiBlock) : `${esc(ai.model || "")} · 3 warianty według kompendium`}</small></div>
+      <div class="inline"><button class="btn primary" id="compose" type="button" ${aiBlock ? `disabled title="${esc(aiBlock)}"` : ""}>Ułóż opis z podstawy</button><small class="muted" id="basisState">${aiBlock ? esc(aiBlock) : `${esc(ai.label || "")} ${esc(ai.model || "")} · 3 warianty według kompendium`}</small></div>
     </div>
     <label class="field"><span>Opis <small id="counter" class="muted"></small></span><textarea id="description" rows="8">${esc(c.content.description)}</textarea></label>
     ${kwMode ? `<div class="field"><span>Słowa kluczowe <small class="muted">w treści opisu, bez #. Kliknij brakujące, żeby dopisać</small></span>
@@ -327,7 +327,7 @@ function content(c, p) {
   let basisTimer;
   basis.oninput = () => { clearTimeout(basisTimer); basisTimer = setTimeout(() => post(`${pub(c.post_id)}/basis`, { basis: basis.value }).then(() => { basisState.textContent = "Podstawa zapisana."; }).catch(() => {}), 600); };
   $("#compose").onclick = e => run(e.currentTarget, async () => {
-    basisState.textContent = "Claude układa 3 warianty według kompendium… (do minuty)";
+    basisState.textContent = `${ai.label || "AI"} układa 3 warianty według kompendium… (do minuty)`;
     try {
       const r = await post(`${pub(c.post_id)}/compose`, { basis: basis.value });
       showDrafts(r.drafts);
