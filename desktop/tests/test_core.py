@@ -577,9 +577,10 @@ class UploadTrackerTests(Sandbox):
         from backend.legacy_bridge import upload_steps
         st = lambda plat, krok, status, sz="": "BYQ_STATUS:" + json.dumps({"platforma": plat, "krok": krok, "status": status, "szczegoly": sz})
         steps, problem = upload_steps("\n".join([st("instagram", "opis", "ok"), st("facebook", "opis", "ok"),
-                                                 st("instagram", "znaczniki", "ok"), st("facebook", "znaczniki", "blad", "Locator.count TimeoutError('x')")]), "obie")
+                                                 st("instagram", "lokalizacja", "ok"), st("facebook", "lokalizacja", "blad", "Locator.count TimeoutError('x')")]), "obie")
         states = {s["id"]: s["state"] for s in steps}
-        self.assertEqual((states["opis"], states["znaczniki"]), ("ok", "error"))
+        self.assertEqual((states["opis"], states["lokalizacja"]), ("ok", "error"))
+        self.assertNotIn("znaczniki", states)
         self.assertEqual(problem, "Uploader zatrzymał się na tym etapie.")
 
 

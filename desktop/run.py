@@ -224,6 +224,8 @@ def make_handler(app: App):
                         return self.json(200, {"notes": app.brands.lint(card["brand"], arg("description", ""), arg("hashtags", ""))})
                 if path == "/api/schedule/proposals":
                     return self.json(200, {"variants": app.schedule.propose(arg("brand", "atlet"), arg("start"))})
+                if path == "/api/calendar/refresh":
+                    return self.json(200, app.legacy.calendar_status())
                 if path == "/api/uploads":
                     return self.json(200, {"uploads": app.legacy.uploads()})
                 if path == "/api/jobs":
@@ -311,6 +313,8 @@ def make_handler(app: App):
                     return self.json(200, app.mobile.import_events(data))
                 if path == "/api/mobile-events/pull":
                     return self.json(200, app.mobile.pull_server_events())
+                if path == "/api/calendar/refresh":
+                    return self.json(202, app.legacy.refresh_calendars(str(data.get("brand", "atlet"))))
                 if path == "/api/generator/open":
                     return self.json(200, app.legacy.open_generator(data.get("brand", "atlet")))
                 if path.startswith("/api/brands/") and path.endswith("/compendium/reimport"):

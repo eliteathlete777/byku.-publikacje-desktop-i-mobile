@@ -21,7 +21,6 @@ UPLOAD_STEPS = [
     ("okladka", "Okładka", ("okladka",)),
     ("muzyka", "Muzyka", ("muzyka", "dzwiek")),
     ("lokalizacja", "Lokalizacja", ("lokalizacja",)),
-    ("znaczniki", "Znaczniki FB", ("znaczniki",)),
     ("termin", "Termin ustawiony", ("harmonogram_dzien", "harmonogram_godzina")),
     ("gotowe", "Gotowe — kliknij Zaplanuj", ("gotowe_do_klikniecia",)),
 ]
@@ -115,8 +114,6 @@ def upload_steps(log_text: str, channel: str) -> tuple[list[dict], str]:
             latest[krok] = status
     steps = []
     for sid, label, keys in UPLOAD_STEPS:
-        if sid == "znaczniki" and channel != "obie":
-            continue
         states = [latest[k] for k in keys if k in latest]
         if "blad" in states:
             state = "error"
@@ -204,6 +201,39 @@ class LegacyBridge:
                 _clear_orphan_lock(post_id, channel)
                 return
         _clear_orphan_lock(post_id, channel)
+
+    # ---------- odświeżenie kalendarzy platform (TikTok Studio + Terminarz Meta) ----------
+    def calendar_status(self) -> dict:
+        return dict(getattr(self, "_cal", None) or {"state": "idle"})
+
+    def refresh_calendars(self, brand: str) -> dict:
+        """W tle: zrzut LIVE kalendarzy marki (okna przeglądarek marki) i naniesienie na kolejkę."""
+        self._require("Odświeżenie kalendarzy")
+        if self.calendar_status().get("state") == "running":
+            raise RuntimeError("Kalendarze już się odświeżają. Poczekaj na wynik.")
+        if any(u["running"] for u in self.uploads()):
+            raise RuntimeError("Trwa wrzut. Kalendarz przełączyłby jego okno na Terminarz — odśwież po zakończeniu wrzutu.")
+        brands = ["atlet", "rigger"] if brand in ("all", "obie") else [brand]
+        self._cal = {"state": "running", "brands": brands, "started": datetime.now().isoformat(timespec="seconds"),
+                     "done": [], "result": {}, "problem": ""}
+
+        def work():
+            try:
+                from studio.rdzen.kalendarz_live import naloz_live_na_kolejke, zrzut_kalendarzy_live
+                for b in brands:
+                    snap = zrzut_kalendarzy_live(b)
+                    wynik = naloz_live_na_kolejke(snap, root=self.adapter.settings.queue)
+                    errors = [e for e in (snap.get("blad_tiktok"), snap.get("blad_meta")) if e]
+                    self._cal["result"][b] = {"potwierdzone": wynik.get("live_ok", 0), "brak": wynik.get("live_brak", 0),
+                                              "tiktok": len(snap.get("tiktok") or []), "meta": len(snap.get("meta") or []),
+                                              "bledy": [_human_problem(str(e)) for e in errors]}
+                    self._cal["done"].append(b)
+                self._cal["state"] = "done"
+            except Exception as exc:
+                self._cal.update(state="failed", problem=_human_problem(str(exc)))
+
+        threading.Thread(target=work, daemon=True).start()
+        return self.calendar_status()
 
     def available(self) -> bool:
         return bool(self.adapter.core is not None and getattr(self.adapter.core, "legacy", False))

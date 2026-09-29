@@ -1,4 +1,4 @@
-import { $, $$, api, esc, state, savePref, toast } from "./core.js";
+import { $, $$, api, post, esc, state, savePref, toast, confirmDialog } from "./core.js";
 import { initDrawer, renderDrawer } from "./drawer.js";
 import { renderTable } from "./views/table.js";
 import { renderLibrary, renderBoard } from "./views/library.js";
@@ -90,6 +90,23 @@ document.addEventListener("byku:brand", () => { savePref("brand", state.brand); 
 $$("#brandSwitch button").forEach(b => b.onclick = () => { state.brand = b.dataset.brand; savePref("brand", state.brand); render(); });
 let searchTimer;
 $("#search").oninput = e => { clearTimeout(searchTimer); searchTimer = setTimeout(() => { state.query = e.target.value; if (!["brands", "learning", "system", "transfer"].includes(state.view)) VIEWS[state.view][3](); }, 120); };
+$("#refreshCal").onclick = async e => {
+  const btn = e.currentTarget, label = btn.innerHTML;
+  const who = state.brand === "all" ? "Atlet + Rigger" : state.brand.toUpperCase();
+  if (!(await confirmDialog(`Odświeżyć kalendarze ${who}?`, "Python otworzy TikTok Studio i Terminarz Meta w oknach marki i odhaczy to, co już jest wstawione albo zaplanowane. Okno Meta przejdzie na Terminarz — jeśli jakiś formularz czeka na Twoje Zaplanuj, najpierw go dokończ.", "Odśwież"))) return;
+  btn.disabled = true; btn.innerHTML = "📅 ↻ Sprawdzam kalendarze…";
+  try {
+    await post("/api/calendar/refresh", { brand: state.brand });
+    toast(`Otwieram kalendarze ${who} w oknach marki. To potrwa ok. minuty na markę.`);
+    let s;
+    do { await new Promise(r => setTimeout(r, 3000)); s = await api("/api/calendar/refresh"); } while (s.state === "running");
+    await load();
+    if (s.state === "failed") throw new Error(`Kalendarze: ${s.problem}`);
+    const parts = Object.entries(s.result).map(([b, r]) => `${b.toUpperCase()}: ${r.potwierdzone} wstawione lub zaplanowane${r.bledy.length ? ` (${r.bledy.join("; ")})` : ""}`);
+    toast(`Kalendarze sprawdzone. ${parts.join(" · ")}`, "ok");
+  } catch (err) { toast(err.message, "error"); }
+  finally { btn.disabled = false; btn.innerHTML = label; }
+};
 $("#refresh").onclick = async e => { const btn = e.currentTarget; btn.classList.add("spin"); await load(); btn.classList.remove("spin"); toast("Odświeżono z kolejki.", "ok"); };
 $("#systemCard").onclick = () => go("system");
 document.addEventListener("keydown", e => { if (e.key === "Escape" && state.selected && !$("#modal").open) { state.selected = null; render(); } });

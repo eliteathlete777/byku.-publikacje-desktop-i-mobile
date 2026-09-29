@@ -65,6 +65,9 @@ main { min-width: 0; padding: 0 24px 40px; }
 .icon-btn { width: 38px; height: 38px; border: 1px solid var(--line-strong); background: var(--raised); font-size: 19px; display: grid; place-items: center; }
 .icon-btn:hover { border-color: #777; }
 .icon-btn.spin { animation: spin .8s linear infinite; }
+.cal-btn { height: 38px; padding: 0 14px; border: 1px solid var(--line-strong); background: var(--raised); color: var(--text); font-size: 13.5px; font-weight: 700; white-space: nowrap; }
+.cal-btn:hover { border-color: #777; }
+.cal-btn:disabled { opacity: .7; cursor: progress; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .file-btn { position: relative; overflow: hidden; }
 .file-btn input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
