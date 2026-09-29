@@ -1,7 +1,11 @@
 from __future__ import annotations
 
 import json
+import os
 import re
+import subprocess
+import threading
+import time
 from datetime import datetime
 from pathlib import Path
 
@@ -22,6 +26,61 @@ UPLOAD_STEPS = [
     ("gotowe", "Gotowe — kliknij Zaplanuj", ("gotowe_do_klikniecia",)),
 ]
 _RANK = {"ok": 1, "w_toku": 2, "blad": 3}
+
+
+STALL_S = 120        # tyle bez nowej linii w logu = zawieszony (start przeglądarki trwa ~35 s)
+WATCH_EVERY_S = 5
+
+
+def _read(log: str | None) -> str:
+    try:
+        return Path(log).read_text(encoding="utf-8", errors="replace") if log and Path(log).is_file() else ""
+    except OSError:
+        return ""
+
+
+def _size(log: str | None) -> int:
+    try:
+        return Path(log).stat().st_size if log else -1
+    except OSError:
+        return -1
+
+
+def _archive_log(post_id: str, channel: str) -> None:
+    """uruchom_uploader nadpisuje log tej nogi; poprzedni odkładamy z godziną, żeby diagnoza nie ginęła."""
+    try:
+        from niezawodnosc import STATUS_DIR
+        old = Path(STATUS_DIR) / f"{post_id}-{channel}-konsola.log"
+        if old.is_file():
+            stamp = datetime.fromtimestamp(old.stat().st_mtime).strftime("%Y%m%d-%H%M%S")
+            old.replace(old.with_name(f"{old.stem}-{stamp}.log"))
+    except Exception:
+        pass
+
+
+def _clear_orphan_lock(post_id: str, channel: str) -> bool:
+    """Blokada po martwym uploaderze. niezawodnosc sam odmawia, gdy Zaplanuj było już klikane (duplikat)."""
+    if _uploader_alive(post_id):
+        return False
+    try:
+        from niezawodnosc import zdejmij_osierocona_blokade
+        return bool(zdejmij_osierocona_blokade(post_id, channel))
+    except Exception:
+        return False
+
+
+def _uploader_alive(post_id: str) -> bool:
+    """Czy w systemie żyje jakiś uploader tej paczki (także odpalony z BYQ Studio)."""
+    if os.name != "nt":
+        return False
+    try:
+        out = subprocess.run(
+            ["powershell", "-NoProfile", "-Command",
+             "Get-CimInstance Win32_Process -Filter \"Name like 'python%'\" | ForEach-Object { $_.CommandLine }"],
+            capture_output=True, text=True, timeout=15, creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0)).stdout
+    except (OSError, subprocess.SubprocessError):
+        return False
+    return any(post_id in line and re.search(r"_uploader\.py\b", line) for line in out.splitlines())
 
 
 def _human_problem(text: str) -> str:
@@ -89,25 +148,62 @@ class LegacyBridge:
         Etapy czytamy z linii BYQ_STATUS w logu konsoli; surowy log zostaje na dysku (pole log) do diagnozy.
         """
         out = []
-        for (post_id, channel), run in self.runs.items():
-            proc = run["proc"]
-            code = proc.poll()
+        for (post_id, channel), run in list(self.runs.items()):
+            proc = run.get("proc")
+            code = proc.poll() if proc else None
             if code is not None and run.get("fh"):
                 run["fh"].close()
                 run["fh"] = None
-            text = ""
-            if run["log"] and Path(run["log"]).is_file():
-                try:
-                    text = Path(run["log"]).read_text(encoding="utf-8", errors="replace")
-                except OSError:
-                    text = ""
-            steps, problem = upload_steps(text, channel)
+            steps, problem = upload_steps(_read(run.get("log")), channel)
+            prep_state = {"preparing": "running", "failed": "error"}.get(run.get("phase"), "ok")
+            steps.insert(0, {"id": "przygotowanie", "label": "Film przygotowany (HD)", "state": prep_state})
+            problem = run.get("problem") or problem
             if code not in (None, 0) and not problem:
-                problem = "Uploader zakończył się błędem, zanim zgłosił etap. Okna przeglądarki nie zamykaj, sprawdzę przyczynę."
-            out.append({"post_id": post_id, "channel": channel, "pid": proc.pid, "running": code is None,
-                        "exit_code": code, "started": run["started"], "log": run["log"],
-                        "steps": steps, "problem": problem})
+                problem = "Uploader zakończył się błędem, zanim zgłosił etap. Okna przeglądarki nie zamykaj."
+            running = run.get("phase") == "preparing" or (proc is not None and code is None)
+            out.append({"post_id": post_id, "channel": channel, "pid": getattr(proc, "pid", None), "running": running,
+                        "exit_code": code, "started": run["started"], "log": run.get("log", ""),
+                        "steps": steps, "problem": problem, "stopped": run.get("stopped", "")})
         return sorted(out, key=lambda r: r["started"], reverse=True)
+
+    # ---------- start w tle + strażnik postępu ----------
+    def _launch(self, post_id: str, channel: str, retry: bool, run: dict) -> None:
+        """Wątek: HD + walidacja (przygotuj_wrzut), start uploadera, potem pilnowanie postępu."""
+        try:
+            from studio.rdzen.most_publikacji import przygotuj_wrzut, uruchom_uploader
+            prepared = przygotuj_wrzut(post_id, channel, root=self.adapter.settings.queue, ponownie=retry)
+            if not prepared.get("ok"):
+                run.update(phase="failed", problem="; ".join(prepared.get("problemy") or ["Nie udało się przygotować wrzutu"]))
+                return
+            _archive_log(post_id, channel)
+            process = uruchom_uploader(prepared["cmd"], post_id=post_id, platforma=channel)
+            run.update(proc=process, log=getattr(process, "_byq_log", ""), fh=getattr(process, "_byq_log_fh", None), phase="running")
+        except Exception as exc:  # błąd ma być widoczny na liście, nie w konsoli serwera
+            run.update(phase="failed", problem=f"Przygotowanie wrzutu padło: {exc}")
+            return
+        self._watch(post_id, channel, run)
+
+    def _watch(self, post_id: str, channel: str, run: dict) -> None:
+        """Brak nowej linii w logu przez STALL_S (i nie czekamy na Damiana) -> przerywamy, zdejmujemy blokadę."""
+        proc, last_size, last_change = run["proc"], -1, time.monotonic()
+        while proc.poll() is None:
+            time.sleep(WATCH_EVERY_S)
+            size = _size(run.get("log"))
+            if size != last_size:
+                last_size, last_change = size, time.monotonic()
+                continue
+            steps, _ = upload_steps(_read(run.get("log")), channel)
+            state = {s["id"]: s["state"] for s in steps}
+            waiting_for_user = state.get("muzyka") == "running" or state.get("gotowe") in ("running", "ok")
+            if not waiting_for_user and time.monotonic() - last_change > STALL_S:
+                proc.kill()
+                proc.wait(timeout=10)
+                run["stopped"] = (f"Brak postępu przez {STALL_S // 60} min, przerwałem, żeby nie blokować. "
+                                  "Okno przeglądarki zostaje; możesz kliknąć Wrzuć jeszcze raz.")
+                run["problem"] = run["stopped"]
+                _clear_orphan_lock(post_id, channel)
+                return
+        _clear_orphan_lock(post_id, channel)
 
     def available(self) -> bool:
         return bool(self.adapter.core is not None and getattr(self.adapter.core, "legacy", False))
@@ -154,21 +250,17 @@ class LegacyBridge:
         if channel not in {"tiktok", "instagram", "facebook", "obie"}:
             raise ValueError("Nieprawidłowy kanał")
         self._require("Przygotowanie publikacji")
-        running = self.runs.get((post_id, channel))
-        if running and running["proc"].poll() is None:
-            raise RuntimeError(f"Uploader {channel} dla tej paczki już pracuje (PID {running['proc'].pid}). "
-                               "Dokończ w jego oknie przeglądarki albo poczekaj na koniec.")
-        from studio.rdzen.most_publikacji import przygotuj_wrzut, uruchom_uploader
-        prepared = przygotuj_wrzut(post_id, channel, root=self.adapter.settings.queue, ponownie=retry)
-        if not prepared.get("ok"):
-            raise RuntimeError("; ".join(prepared.get("problemy") or ["Nie udało się przygotować wrzutu"]))
-        process = uruchom_uploader(prepared["cmd"], post_id=post_id, platforma=channel)
-        self.runs[(post_id, channel)] = {"proc": process, "log": getattr(process, "_byq_log", ""),
-                                         "fh": getattr(process, "_byq_log_fh", None),
-                                         "started": datetime.now().isoformat(timespec="seconds")}
-        return {"ok": True, "pid": process.pid, "post_id": post_id, "channel": channel,
-                "retry": retry, "stage": "awaiting_manual_final_click", "folder": prepared.get("folder"),
-                "media": prepared.get("wideo")}
+        current = self.runs.get((post_id, channel))
+        if current and (current.get("phase") == "preparing" or (current.get("proc") and current["proc"].poll() is None)):
+            raise RuntimeError("Ten wrzut już trwa. Poczekaj na checkboxy albo aż strażnik go przerwie.")
+        if _uploader_alive(post_id):
+            raise RuntimeError("Dla tej paczki działa już uploader (np. z BYQ Studio). Dokończ tamten wrzut.")
+        _clear_orphan_lock(post_id, channel)  # tylko gdy nikt nie pracuje i Zaplanuj nie było klikane
+        run = {"proc": None, "log": "", "fh": None, "phase": "preparing", "problem": "",
+               "started": datetime.now().isoformat(timespec="seconds")}
+        self.runs[(post_id, channel)] = run
+        threading.Thread(target=self._launch, args=(post_id, channel, retry, run), daemon=True).start()
+        return {"ok": True, "post_id": post_id, "channel": channel, "retry": retry, "stage": "preparing"}
 
     def music_ready(self, post_id: str) -> dict:
         if not self.adapter.settings.allow_publication:

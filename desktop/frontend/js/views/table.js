@@ -40,7 +40,7 @@ function drawRuns(uploads) {
     const ready = u.steps.some(s => s.id === "gotowe" && s.state === "ok");
     return `<article class="upload-run ${u.running ? "live" : failed ? "bad" : "ok"}">
       <header><b>${esc(name(u.post_id))} · ${esc(LEG_NAME[u.channel] || u.channel)}</b>
-        <span class="pill ${u.running ? "running" : failed ? "failed" : "published"}">${u.running ? "Pracuje…" : failed ? "Zatrzymał się" : ready ? "Gotowe — kliknij Zaplanuj" : "Zakończony"}</span>
+        <span class="pill ${u.running ? "running" : failed ? "failed" : "published"}">${u.running ? "Pracuje…" : u.stopped ? "Przerwany (brak postępu)" : failed ? "Zatrzymał się" : ready ? "Gotowe — kliknij Zaplanuj" : "Zakończony"}</span>
         ${u.running ? `<button type="button" class="btn ghost small" data-music="${esc(u.post_id)}">Muzyka dobrana</button>` : ""}
         <button type="button" class="btn ghost small" data-open-run="${esc(u.post_id)}">Karta</button></header>
       <ul class="steps">${u.steps.map(s => `<li class="${s.state}"><span class="box">${ICON[s.state]}</span>${esc(s.label)}</li>`).join("")}</ul>
@@ -68,7 +68,7 @@ function bindUploads(v) {
       `Python otworzy okno przeglądarki ${c.brand.toUpperCase()} i wypełni formularz: wideo, okładka, opis, lokalizacja „${c.content.location || "brak"}”, termin ${fmtTerm(c.local_target_at)}. `
       + "Nie zamykaj tego okna. Zaplanuj/Udostępnij klikasz Ty, gdy wszystko się zgadza.", "Uruchom");
     if (!ok) return;
-    await run(btn, () => post(`${pub(c.post_id)}/prepare-publication`, { channel: leg }), r => `Uploader wystartował (PID ${r.pid}). Postęp poniżej.`);
+    await run(btn, () => post(`${pub(c.post_id)}/prepare-publication`, { channel: leg }), "Start. Postęp w checkboxach poniżej.");
     pollUploads();
   });
   pollUploads();

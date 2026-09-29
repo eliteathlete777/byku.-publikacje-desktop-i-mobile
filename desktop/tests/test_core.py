@@ -541,6 +541,38 @@ class UploadTrackerTests(Sandbox):
         with self.assertRaisesRegex(PermissionError, "allow_publication"):
             app.legacy.prepare_publication("a", "tiktok")
 
+    def test_watchdog_kills_stalled_upload_but_not_one_waiting_for_user(self):
+        import run
+        from unittest.mock import patch
+        from backend import legacy_bridge as lb
+        app = run.App(self.settings, core=FallbackCore())
+
+        class Proc:
+            def __init__(self, live_polls=None):
+                self.killed, self.pid, self.live_polls = False, 7, live_polls
+            def poll(self):
+                if self.live_polls is not None:
+                    self.live_polls -= 1
+                    return 0 if self.live_polls < 0 else None
+                return 1 if self.killed else None
+            def kill(self): self.killed = True
+            def wait(self, timeout=None): return 1
+
+        st = lambda krok, status: "BYQ_STATUS:" + json.dumps({"platforma": "tiktok", "krok": krok, "status": status})
+        stalled, waiting = self.root / "stalled.log", self.root / "waiting.log"
+        stalled.write_text(st("wgranie_pliku", "w_toku"), encoding="utf-8")
+        waiting.write_text(st("gotowe_do_klikniecia", "ok"), encoding="utf-8")
+        with patch.object(lb, "STALL_S", 0.2), patch.object(lb, "WATCH_EVERY_S", 0.05), \
+                patch.object(lb, "_clear_orphan_lock", return_value=True) as clear:
+            dead = {"proc": Proc(), "log": str(stalled), "started": "x", "phase": "running"}
+            app.legacy._watch("a", "tiktok", dead)
+            self.assertTrue(dead["proc"].killed)
+            self.assertIn("Brak postępu", dead["problem"])
+            clear.assert_called_with("a", "tiktok")
+            patient = {"proc": Proc(live_polls=12), "log": str(waiting), "started": "x", "phase": "running"}
+            app.legacy._watch("b", "tiktok", patient)
+            self.assertFalse(patient["proc"].killed)
+
     def test_meta_steps_merge_instagram_and_facebook(self):
         from backend.legacy_bridge import upload_steps
         st = lambda plat, krok, status, sz="": "BYQ_STATUS:" + json.dumps({"platforma": plat, "krok": krok, "status": status, "szczegoly": sz})
