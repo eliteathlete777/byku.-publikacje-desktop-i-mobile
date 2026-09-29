@@ -89,6 +89,7 @@ document.addEventListener("byku:select", () => { if (["today", "finish", "archiv
 document.addEventListener("byku:changed", () => { renderNav(); if (!["transfer", "learning", "brands", "system", "add"].includes(state.view)) VIEWS[state.view][3](); api("/api/health").then(h => { state.health = h; renderHealth(); }).catch(() => {}); });
 document.addEventListener("byku:goto", e => go(e.detail));
 document.addEventListener("byku:reload", () => load());
+document.addEventListener("byku:watched", () => { if (state.view === "add") renderAdd(); });
 document.addEventListener("byku:brand", () => { savePref("brand", state.brand); render(); });
 $$("#brandSwitch button").forEach(b => b.onclick = () => { state.brand = b.dataset.brand; savePref("brand", state.brand); render(); });
 let searchTimer;

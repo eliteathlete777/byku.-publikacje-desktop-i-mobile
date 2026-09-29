@@ -1,5 +1,7 @@
 // Panel szczegółów publikacji: podgląd, treść, kanały, telefon, historia.
 import { $, $$, api, post, pub, esc, state, toast, run, pill, thumb, fmtTerm, guarded, blockReason, confirmDialog, modal, CHANNELS } from "./core.js";
+import { openThumbStudio } from "./thumbstudio.js";
+import { markWatched } from "./core.js";
 
 let reload = async () => {};
 export function initDrawer(onReload) { reload = onReload; }
@@ -19,7 +21,7 @@ export function renderDrawer() {
   if (!c) { d.innerHTML = ""; return; }
   d.innerHTML = `
     <div class="drawer-head">
-      ${c.assets.thumbnail_url ? `<button type="button" class="thumb-edit-btn" id="headThumb" title="Kliknij, aby edytować kadr miniatury">${thumb(c, "drawer-thumb")}</button>` : thumb(c, "drawer-thumb")}
+      <button type="button" class="thumb-edit-btn" id="headThumb" title="Studio miniatury: klatka, kadr, napisy" ${guarded("write")}>${thumb(c, "drawer-thumb")}</button>
       <div class="drawer-title">
         <p class="kicker">${esc(c.brand.toUpperCase())} · ${c.assets.type === "carousel" ? "KARUZELA" : "ROLKA"}</p>
         <h2>${esc(c.name)}</h2>
@@ -31,7 +33,7 @@ export function renderDrawer() {
     <div class="tabs" role="tablist">${TABS.map(([id, n]) => `<button role="tab" type="button" data-tab="${id}" class="${state.tab === id ? "active" : ""}">${n}</button>`).join("")}</div>
     <div class="drawer-body" id="panel"></div>`;
   $("#closeDrawer").onclick = closeDrawer;
-  if ($("#headThumb")) $("#headThumb").onclick = () => openThumbnailEditor(c, { url: c.assets.thumbnail_url });
+  $("#headThumb").onclick = () => openStudio(c);
   $$(".tabs button", d).forEach(b => b.onclick = () => { state.tab = b.dataset.tab; renderDrawer(); });
   ({ preview, content, channels, phone, history })[state.tab](c, $("#panel"));
 }
@@ -70,20 +72,17 @@ function preview(c, p) {
     <div class="actions">
       <button class="btn primary" id="primary" type="button">${esc(c.next_action.label)}</button>
       <button class="btn ghost" id="folder" type="button">Otwórz folder</button>
-      <label class="btn ghost file-btn" ${blockReason("write") ? `title="${esc(blockReason("write"))}"` : ""}>Zmień miniaturę<input type="file" accept="image/png" id="thumbInput" ${blockReason("write") ? "disabled" : ""}></label>
-      ${!hasThumb ? `<button class="btn ghost" id="genThumb" type="button" ${guarded("write")}>Wygeneruj miniaturę ${c.assets.type === "carousel" ? "z pierwszego slajdu" : "z wideo"}</button>` : ""}
+      <button class="btn ${hasThumb ? "ghost" : "primary"}" id="thumbStudio" type="button" ${guarded("write")}>Studio miniatury</button>
+      <label class="btn ghost file-btn" ${blockReason("write") ? `title="${esc(blockReason("write"))}"` : ""}>Miniatura z pliku<input type="file" accept="image/*" id="thumbInput" ${blockReason("write") ? "disabled" : ""}></label>
     </div>`;
+  $("video.player", p)?.addEventListener("play", () => markWatched(c.post_id), { once: true });
   $("#folder").onclick = e => run(e.currentTarget, () => post(`${pub(c.post_id)}/open-folder`), "Otwarto folder paczki.");
   $("#primary").onclick = () => primary(c);
   $("#thumbInput").onchange = e => {
     const file = e.target.files[0]; e.target.value = "";
-    if (file) openThumbnailEditor(c, { file });
+    if (file) openStudio(c, { file });
   };
-  if ($("#genThumb")) $("#genThumb").onclick = e => run(e.currentTarget, async () => {
-    const url = c.assets.type === "carousel" ? media[0] : await captureVideoFrame(media[0]);
-    if (!url) throw new Error("Brak pliku źródłowego do wygenerowania miniatury.");
-    openThumbnailEditor(c, { url });
-  });
+  $("#thumbStudio").onclick = () => openStudio(c);
   const captionArea = $("#captionQuick"), captionActions = $("#captionEditActions");
   const original = c.content.description;
   captionArea.oninput = () => { captionActions.hidden = captionArea.value === original; };
@@ -115,116 +114,9 @@ function sceneFrom(description) {
   return afterHook.split(/(?<=[.!?])\s/)[0] || "";
 }
 
-function captureVideoFrame(videoUrl) {
-  return new Promise((resolve, reject) => {
-    if (!videoUrl) return resolve(null);
-    const v = document.createElement("video");
-    v.src = videoUrl; v.muted = true; v.playsInline = true; v.preload = "auto";
-    v.addEventListener("loadedmetadata", () => { v.currentTime = Math.min(1, (v.duration || 2) * 0.1) || 0.05; });
-    v.addEventListener("seeked", () => {
-      const canvas = document.createElement("canvas");
-      canvas.width = v.videoWidth; canvas.height = v.videoHeight;
-      canvas.getContext("2d").drawImage(v, 0, 0);
-      resolve(canvas.toDataURL("image/png"));
-    });
-    v.addEventListener("error", () => reject(new Error("Nie udało się wczytać wideo, aby wygenerować miniaturę.")));
-  });
-}
-
-// ---------- Edytor miniatury ----------
-const THUMB_RATIOS = [["9:16", 9 / 16], ["4:5", 4 / 5], ["1:1", 1]];
-const FRAME_W = 260;
-
-function openThumbnailEditor(c, source) {
-  const fromFile = !!source.file;
-  const url = fromFile ? URL.createObjectURL(source.file) : source.url;
-  const img = new Image();
-  let ratioKey = c.assets.type === "carousel" ? "1:1" : "9:16";
-  const st = { scale: 1, offX: 0, offY: 0 };
-
-  const dlg = modal(`
-    <h2>${fromFile ? "Zmień miniaturę" : "Edytuj kadr miniatury"}</h2>
-    <p class="muted small">Przeciągnij, aby przesunąć kadr. Suwak przybliża.</p>
-    <div class="thumb-editor">
-      <div class="thumb-frame" id="thumbFrame"><img id="thumbImg" src="${esc(url)}" alt="" draggable="false"></div>
-      <div class="thumb-controls">
-        <div class="field"><span>Proporcje</span><div class="seg" id="ratioSeg">${THUMB_RATIOS.map(([k]) => `<button type="button" data-r="${k}" class="${k === ratioKey ? "active" : ""}">${k}</button>`).join("")}</div></div>
-        <div class="field"><span>Powiększenie</span><input id="thumbZoom" type="range" min="1" max="3" step="0.01" value="1"></div>
-      </div>
-    </div>
-    <div class="actions end">
-      <button class="btn ghost" id="thumbCancel" type="button">Anuluj</button>
-      <button class="btn primary" id="thumbSave" type="button">Zapisz miniaturę</button>
-    </div>`, d => {
-    if (fromFile) d.addEventListener("close", () => URL.revokeObjectURL(url), { once: true });
-  });
-
-  const frame = $("#thumbFrame", dlg), imgEl = $("#thumbImg", dlg), zoom = $("#thumbZoom", dlg);
-  let coverScale = 1, ready = false;
-
-  const setFrameSize = () => {
-    const h = Math.round(FRAME_W / THUMB_RATIOS.find(([k]) => k === ratioKey)[1]);
-    frame.style.width = `${FRAME_W}px`; frame.style.height = `${h}px`;
-  };
-  const clamp = () => {
-    const s = coverScale * st.scale;
-    const maxX = Math.max(0, (img.naturalWidth * s - frame.clientWidth) / 2);
-    const maxY = Math.max(0, (img.naturalHeight * s - frame.clientHeight) / 2);
-    st.offX = Math.min(maxX, Math.max(-maxX, st.offX));
-    st.offY = Math.min(maxY, Math.max(-maxY, st.offY));
-  };
-  const paint = () => {
-    if (!ready) return;
-    clamp();
-    const s = coverScale * st.scale;
-    imgEl.style.width = `${img.naturalWidth * s}px`;
-    imgEl.style.height = `${img.naturalHeight * s}px`;
-    imgEl.style.transform = `translate(-50%, -50%) translate(${st.offX}px, ${st.offY}px)`;
-  };
-
-  img.onload = () => {
-    ready = true; setFrameSize();
-    coverScale = Math.max(frame.clientWidth / img.naturalWidth, frame.clientHeight / img.naturalHeight);
-    st.scale = 1; st.offX = 0; st.offY = 0; zoom.value = "1";
-    paint();
-  };
-  img.src = url;
-
-  $$("#ratioSeg button", dlg).forEach(b => b.onclick = () => {
-    ratioKey = b.dataset.r;
-    $$("#ratioSeg button", dlg).forEach(x => x.classList.toggle("active", x === b));
-    setFrameSize();
-    coverScale = Math.max(frame.clientWidth / img.naturalWidth, frame.clientHeight / img.naturalHeight);
-    st.offX = 0; st.offY = 0; paint();
-  });
-  zoom.oninput = () => { st.scale = +zoom.value; paint(); };
-
-  let dragging = null;
-  frame.onpointerdown = e => { dragging = { x: e.clientX, y: e.clientY, offX: st.offX, offY: st.offY }; frame.setPointerCapture(e.pointerId); };
-  frame.onpointermove = e => { if (!dragging) return; st.offX = dragging.offX + (e.clientX - dragging.x); st.offY = dragging.offY + (e.clientY - dragging.y); paint(); };
-  const endDrag = () => { dragging = null; };
-  frame.onpointerup = endDrag; frame.onpointercancel = endDrag;
-
-  $("#thumbCancel", dlg).onclick = () => dlg.close();
-  $("#thumbSave", dlg).onclick = async e => {
-    await run(e.currentTarget, async () => {
-      const outW = 1080, outH = Math.round(outW / THUMB_RATIOS.find(([k]) => k === ratioKey)[1]);
-      const canvas = document.createElement("canvas");
-      canvas.width = outW; canvas.height = outH;
-      const ctx = canvas.getContext("2d");
-      const k = outW / frame.clientWidth, s = coverScale * st.scale * k;
-      ctx.save();
-      ctx.translate(outW / 2 + st.offX * k, outH / 2 + st.offY * k);
-      ctx.scale(s, s);
-      ctx.drawImage(img, -img.naturalWidth / 2, -img.naturalHeight / 2);
-      ctx.restore();
-      const blob = await new Promise(res => canvas.toBlob(res, "image/png"));
-      const r = await fetch(`${pub(c.post_id)}/thumbnail`, { method: "PUT", body: blob, headers: { "X-Expected-Revision": c.revision } });
-      const data = await r.json(); if (!r.ok) throw new Error(data.error);
-      dlg.close();
-      await refreshCard(c, data);
-    }, "Miniatura podmieniona. Nowa wersja treści.");
-  };
+// Studio miniatury (thumbstudio.js) — po zapisie odświeża kartę.
+export function openStudio(c, opts = {}) {
+  openThumbStudio(c, opts, fresh => refreshCard(c, fresh));
 }
 
 export function primary(c) {

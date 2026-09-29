@@ -12,6 +12,9 @@ export const state = {
 };
 
 function loadPref(key, fallback) { try { return localStorage.getItem(`byku.desktop.${key}`) || fallback; } catch { return fallback; } }
+// Etap „Odtworzenie filmu” w Dodaj: odhacza się, gdy film ruszył w karcie albo w studiu miniatury.
+export function isWatched(id) { return loadPref(`watched.${id}`, "") === "1"; }
+export function markWatched(id) { savePref(`watched.${id}`, "1"); document.dispatchEvent(new CustomEvent("byku:watched", { detail: id })); }
 export function savePref(key, value) { try { localStorage.setItem(`byku.desktop.${key}`, value); } catch { /* brak pamięci przeglądarki */ } }
 
 export async function api(path, opt = {}) {

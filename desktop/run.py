@@ -21,7 +21,7 @@ from backend.brand_service import BrandService
 from backend.config import Settings, load_settings
 from backend.content_service import ContentService, RevisionConflict
 from backend.core import CoreUnavailable
-from backend.import_service import ImportService
+from backend.import_service import ImportService, frame_at
 from backend.job_service import JobService
 from backend.legacy_bridge import LegacyBridge
 from backend.mobile_packages import MobilePackages, TransferError
@@ -215,6 +215,14 @@ def make_handler(app: App):
                     if parts[4] == "thumbnail":
                         return self.file(app.adapter.folder_for(post_id) / "miniaturka.png", "image/png") \
                             if (app.adapter.folder_for(post_id) / "miniaturka.png").is_file() else self.json(404, {"error": "Brak miniatury"})
+                    if parts[4] == "frame":
+                        card = app.adapter.get(post_id)
+                        if card["assets"]["type"] != "reel" or not card["assets"]["files"]:
+                            return self.json(404, {"error": "Ta paczka nie ma filmu"})
+                        png = frame_at(app.adapter.file_for(post_id, card["assets"]["files"][0]), float(arg("t", "0") or 0))
+                        self.send_response(200); self.send_header("Content-Type", "image/png")
+                        self.send_header("Content-Length", str(len(png))); self.end_headers(); self.wfile.write(png)
+                        return None
                     if parts[4] == "media" and len(parts) == 6:
                         return self.file(app.adapter.file_for(post_id, parts[5]))
                     if parts[4] == "capabilities":

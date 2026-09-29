@@ -65,6 +65,19 @@ def frame_png(video: Path, dest: Path) -> bool:
     return False
 
 
+def frame_at(video: Path, t: float) -> bytes:
+    """Klatka filmu jako PNG (dla studia miniatury, gdy przeglądarka nie dekoduje HEVC)."""
+    exe = _ffmpeg()
+    if not exe:
+        raise ImportProblem("Brak ffmpeg — nie wytnę klatki z filmu.")
+    flags = getattr(subprocess, "CREATE_NO_WINDOW", 0)
+    r = subprocess.run([exe, "-v", "error", "-ss", f"{max(0.0, t):.3f}", "-i", str(video), "-frames:v", "1",
+                        "-f", "image2pipe", "-vcodec", "png", "-"], capture_output=True, timeout=60, creationflags=flags)
+    if not r.stdout:
+        raise ImportProblem("Nie udało się wyciąć klatki z filmu.")
+    return r.stdout
+
+
 class ImportService:
     def __init__(self, adapter: StudioAdapter):
         self.adapter = adapter

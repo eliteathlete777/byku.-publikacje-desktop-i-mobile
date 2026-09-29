@@ -1,8 +1,8 @@
 // Dodaj — nowe rolki z gołego filmu. Folder = jedna rolka (nazwa folderu = nazwa rolki),
 // z folderu idzie największy film (mniejszy plik to odpad produkcji). Potem ta sama rolka
 // przechodzi przez panel: opis z podstawy → okładka → lokalizacja → akceptacja → termin → wrzut.
-import { $, $$, esc, state, api, post, toast, thumb, fmtTerm, guarded, blockReason } from "../core.js";
-import { openCard } from "../drawer.js";
+import { $, $$, esc, state, api, post, toast, thumb, fmtTerm, guarded, blockReason, isWatched } from "../core.js";
+import { openCard, openStudio } from "../drawer.js";
 
 const VIDEO = /\.(mp4|mov|m4v|avi|mkv)$/i;
 const SOURCE = "BYKU.PUBLIKACJE Dodaj";
@@ -153,9 +153,11 @@ function stages(c) {
   const coverEdited = v && at && v > at + 5;
   const desc = (c.content.description || "").trim();
   return [
-    ["Film", "ok", "preview"],
-    [desc.length >= 250 ? "Opis" : desc ? `Opis (${desc.length}/250)` : "Opis z podstawy", desc.length >= 250 ? "ok" : desc ? "running" : "todo", "content"],
-    [coverEdited ? "Okładka" : c.assets.thumbnail_url ? "Okładka (klatka z filmu)" : "Okładka", coverEdited ? "ok" : c.assets.thumbnail_url ? "running" : "todo", "preview"],
+    // Kolejność procesu twórczego Damiana (29.09): film → odtworzenie → okładka → opis z podstawy → lokalizacja → akceptacja → termin → TikTok → IG + FB.
+    ["Film wrzucony", "ok", "preview"],
+    ["Odtworzenie filmu", isWatched(c.post_id) || coverEdited || desc ? "ok" : "todo", "watch"],
+    [coverEdited ? "Okładka" : c.assets.thumbnail_url ? "Okładka (na razie klatka z filmu)" : "Okładka", coverEdited ? "ok" : c.assets.thumbnail_url ? "running" : "todo", "cover"],
+    [desc.length >= 250 ? "Opis z podstawy" : desc ? `Opis z podstawy (${desc.length}/250)` : "Opis z podstawy", desc.length >= 250 ? "ok" : desc ? "running" : "todo", "content"],
     [c.content.location ? `Lokalizacja: ${c.content.location}` : "Lokalizacja", c.content.location ? "ok" : "todo", "content"],
     ["Akceptacja treści", c.content.approved ? "ok" : "todo", "content"],
     [c.local_target_at ? `Termin: ${fmtTerm(c.local_target_at)}` : "Termin", c.local_target_at ? "ok" : "todo", "preview"],
@@ -171,7 +173,7 @@ function pipeline() {
   const ICON = { ok: "✓", running: "…", todo: "" };
   return `<section class="upload-panel">
     <header><div><p class="kicker">Dodane rolki</p><h2>Od filmu do Zaplanuj</h2></div>
-      <small class="muted">Kliknij etap, żeby otworzyć kartę w tym miejscu. Kolejność: opis z podstawy → okładka → lokalizacja → akceptacja → termin → wrzut ze Stołu publikacji.</small></header>
+      <small class="muted">Kliknij etap, żeby otworzyć kartę w tym miejscu. Kolejność: film → odtworzenie → okładka → opis z podstawy → lokalizacja → akceptacja → termin → TikTok → IG + FB (wrzut ze Stołu publikacji).</small></header>
     ${open.map(c => `<article class="upload-run">
       <header>${thumb(c)}<b>${esc(c.name.replace(/\.[^.]+$/, ""))}</b><small class="muted">${esc(c.brand.toUpperCase())}</small>
         <button type="button" class="btn ghost small" data-card="${esc(c.post_id)}">Karta</button></header>
@@ -223,7 +225,13 @@ function draw() {
   $("#inFiles").onchange = e => accept([...e.target.files].map(file => ({ file, path: file.name })));
   $$("[data-inc]", v).forEach(b => b.onchange = () => { groups[+b.dataset.inc].include = b.checked; draw(); });
   $$("[data-title]", v).forEach(b => b.onchange = async () => { groups[+b.dataset.title].title = cleanTitle(b.value); await markExisting(); draw(); });
-  $$("[data-card]", v).forEach(b => b.onclick = () => openCard(b.dataset.card, b.dataset.tab || "content"));
+  $$("[data-card]", v).forEach(b => b.onclick = () => {
+    const tab = b.dataset.tab;
+    openCard(b.dataset.card, ["cover", "watch"].includes(tab) ? "preview" : tab || "content");
+    const card = state.cards.find(x => x.post_id === b.dataset.card);
+    if (tab === "cover" && card) openStudio(card);
+    if (tab === "watch") $("#drawer video.player")?.play().catch(() => {});
+  });
   if ($("#addClear")) $("#addClear").onclick = () => { groups = []; draw(); };
   if ($("#addGo")) $("#addGo").onclick = e => addAll(e.currentTarget);
 }
