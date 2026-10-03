@@ -49,6 +49,12 @@ description: Wrzut rolek BYKU (Rigger i Atlet) na TikTok i Meta (Instagram + Fac
 - **Strażnik**: 2 min bez nowej linii w logu i nie czeka na Damiana (muzyka/Zaplanuj) → panel przerywa proces i zdejmuje blokadę.
 - **Odśwież kalendarz** przełącza okno Meta na Terminarz — nigdy w trakcie wrzutu.
 
+## Potwierdzanie: co jest już na platformach (Damian 30.09–03.10)
+- **Źródło prawdy = listy postów, nie siatka Terminarza.** TikTok Studio → Posty (`https://www.tiktok.com/tiktokstudio/content`: opis + plakietka „6 paź 8:05 PM” = zaplanowane, sama data = opublikowane). Meta → Zawartość → **Zaplanowane** / **Opublikowane** (`…/latest/posts/scheduled_posts|published_posts?asset_id=…`): wiersz `[role=row]` z pełnym opisem, „Rolka · Byku.Rigger” = Facebook, „Rolka · byku.rigger” = Instagram, data „6 października 20:12”. Odczyt: `studio/rdzen/kalendarz_live.py` (`JS_WIERSZE_META`, dopasowanie po pierwszych słowach opisu + DZIEŃ z listy).
+- **Checkboxy nóg w panelu**: TikTok i Meta (IG + FB jednym kliknięciem). Wrzut z panelu z ✓ na wszystkich etapach (muzyka się nie liczy) odhacza nogę sam.
+- **Rozbieżności** (Damian ✓, lista nie widzi — albo odwrotnie): `desktop/data/rozbieznosci.json`, `GET /api/legs/mismatches`, lista „Do sprawdzenia przez agenta” na Stole. Agent sam otwiera listy zdalnie, znajduje wpis, poprawia odczyt albo checkbox i zapisuje wniosek tutaj.
+- Otwarte 03.10: lista Meta „Zaplanowane” wróciła pusta przy ostatnim odczycie (Opublikowane OK) — prawdopodobnie za krótkie czekanie albo tabela przewija się we własnym kontenerze. W panelu odczyt Riggera padł „Connection closed while reading from the driver”, uruchomiony osobno działał.
+
 ## Jak prowadzić wrzut samodzielnie (Claude)
 1. Sprawdź kartę: `GET http://127.0.0.1:8902/api/publications?brand=rigger` (approved, termin w przyszłości, lokalizacja).
 2. Start: `POST /api/publications/<post_id>/prepare-publication {"channel":"tiktok"|"obie"}`; obserwuj `GET /api/uploads` (checkboxy etapów).
