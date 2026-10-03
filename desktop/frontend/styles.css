@@ -455,3 +455,14 @@ body.tour-active { scroll-behavior: smooth; }
 @media (max-width: 1100px) { .ts { grid-template-columns: 1fr 1fr; } .ts-stage { grid-row: 1 / span 2; grid-column: 2; } }
 @media (max-width: 700px) { .ts { grid-template-columns: 1fr; } .ts-stage { grid-row: auto; grid-column: auto; } .ts-grid { grid-template-columns: 1fr; } }
 .watch-player { display: block; width: 100%; max-height: 72vh; background: #000; margin: 10px 0; }
+
+/* ---------- checkboxy nóg TikTok / Meta ---------- */
+.legs { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 5px; }
+.leg { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; padding: 2px 8px 2px 4px; border: 1px solid var(--line-strong); color: var(--muted); cursor: pointer; white-space: nowrap; }
+.leg input { width: 15px; height: 15px; accent-color: var(--green); margin: 0; }
+.leg.on { color: var(--text); border-color: var(--green); }
+.leg.mismatch { border-color: var(--amber); }
+.leg i { font-style: normal; }
+.mismatch-list { margin: 0 0 6px; padding-left: 18px; font-size: 13px; }
+.mismatch-list li { margin: 3px 0; color: var(--amber); }
+.mismatch-list b { color: var(--text); }

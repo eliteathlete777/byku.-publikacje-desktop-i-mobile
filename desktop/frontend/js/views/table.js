@@ -1,5 +1,5 @@
 // Stół publikacji, Do dokończenia, Archiwum — tabela kart z filtrami i metrykami.
-import { $, $$, esc, state, pill, thumb, fmtTerm, activeCards, brandCards, matches, CHANNELS, api, post, pub, run, toast, confirmDialog, guarded, blockReason } from "../core.js";
+import { $, $$, esc, state, pill, thumb, fmtTerm, activeCards, brandCards, matches, CHANNELS, api, post, pub, run, toast, confirmDialog, guarded, blockReason, legChips, bindLegs } from "../core.js";
 import { openCard, primary } from "../drawer.js";
 
 // ---------- Wrzut na platformy: nasz Python (tiktok_uploader / meta_uploader) odpalany ze Stołu ----------
@@ -21,12 +21,13 @@ function uploadPanel(cards) {
     <header><div><p class="kicker">Wrzut na platformy</p><h2>Python wgrywa, Ty klikasz Zaplanuj</h2></div>
       <small class="muted">${reason ? esc(reason) : "Okno przeglądarki marki: wideo, okładka, opis, lokalizacja i termin z paczki. Końcowe Zaplanuj/Udostępnij klikasz sam."}</small></header>
     <div class="upload-list">${list.map(c => `<div class="upload-item">${thumb(c)}
-        <span><b>${esc(c.name)}</b><small>${esc(c.brand.toUpperCase())} · ${esc(fmtTerm(c.local_target_at))} · 📍 ${esc(c.content.location || "brak lokalizacji")}</small></span>
+        <span><b>${esc(c.name)}</b><small>${esc(c.brand.toUpperCase())} · ${esc(fmtTerm(c.local_target_at))} · 📍 ${esc(c.content.location || "brak lokalizacji")}</small>${legChips(c)}</span>
         <span class="upload-btns">${LEGS.map(([k, n, need]) => need(c)
           ? `<button type="button" class="btn primary small" data-up="${k}" data-id="${esc(c.post_id)}" ${guarded("publish")}>Wrzuć ${n}</button>`
           : `<span class="pill published">${n} ✓</span>`).join("")}</span>
       </div>`).join("") || `<p class="muted">Brak zaakceptowanych paczek z terminem do wrzucenia. Zaakceptuj treść w karcie (zakładka Treść).</p>`}</div>
     <div id="uploadRuns"></div>
+    <div id="legMismatch"></div>
   </section>`;
 }
 
@@ -72,6 +73,18 @@ function bindUploads(v) {
     pollUploads();
   });
   pollUploads();
+  drawMismatches();
+}
+
+// Ty odhaczyłeś, a lista platformy tego nie pokazuje (albo odwrotnie) — sygnał dla agenta AI.
+async function drawMismatches() {
+  const box = $("#legMismatch");
+  if (!box) return;
+  try {
+    const { items = [], checked_at } = await api("/api/legs/mismatches");
+    const live = items.filter(m => state.cards.some(c => c.post_id === m.post_id && c.legs?.[m.leg]?.mismatch));
+    box.innerHTML = live.length ? `<h3>Do sprawdzenia przez agenta</h3><ul class="mismatch-list">${live.map(m => `<li><b>${esc(m.name)}</b> · ${m.leg === "meta" ? "Meta (IG + FB)" : "TikTok"} · ${m.mismatch === "mine_not_seen" ? "odhaczone, a lista platformy tego nie pokazuje" : "platforma pokazuje, a nie jest odhaczone"}</li>`).join("")}</ul><small class="muted">Ostatnie sprawdzenie list platform: ${esc(checked_at || "—")}. Agent porówna to w oknach TikTok Studio → Posty i Meta → Zawartość.</small>` : "";
+  } catch { box.innerHTML = ""; }
 }
 
 const FILTERS = {
@@ -101,7 +114,7 @@ function metrics(cards) {
 function row(c) {
   const primaryCls = ["phone_package", "publish", "manual_check"].includes(c.next_action.code) ? "primary" : "ghost";
   return `<article class="row ${state.selected === c.post_id ? "selected" : ""}" data-id="${esc(c.post_id)}" tabindex="0">
-    <div class="material">${thumb(c)}<div><b>${esc(c.name)}</b><small>${esc(c.brand.toUpperCase())} · ${c.assets.type === "carousel" ? "Karuzela" : "Rolka"}${c.assets.missing.length ? ` · <span class="bad">${esc(c.assets.missing.join(", "))}</span>` : ""}</small><small class="term">${esc(fmtTerm(c.local_target_at))}</small></div></div>
+    <div class="material">${thumb(c)}<div><b>${esc(c.name)}</b><small>${esc(c.brand.toUpperCase())} · ${c.assets.type === "carousel" ? "Karuzela" : "Rolka"}${c.assets.missing.length ? ` · <span class="bad">${esc(c.assets.missing.join(", "))}</span>` : ""}</small><small class="term">${esc(fmtTerm(c.local_target_at))}</small>${legChips(c)}</div></div>
     ${CHANNELS.map(([k]) => `<div class="cell">${pill(c.channels[k])}</div>`).join("")}
     <div class="next"><button type="button" class="btn ${primaryCls} small" data-primary="${esc(c.post_id)}">${esc(c.next_action.label)}</button><small>${esc(c.next_action.reason)}</small></div>
   </article>`;
@@ -134,6 +147,7 @@ export function renderTable(mode) {
 }
 
 function bind(v) {
+  bindLegs(v);
   $$(".row", v).forEach(r => {
     r.onclick = e => { if (!e.target.closest("[data-primary]")) openCard(r.dataset.id); };
     r.onkeydown = e => { if (e.key === "Enter") openCard(r.dataset.id); };

@@ -106,6 +106,7 @@ class StudioAdapter:
             else "manual_checked" if tt["manual_checked"] else ""
         )
         card["next_action"] = next_action(card, selected_channel)
+        card["legs"] = leg_view(card)
         return card
 
     def list_cards(self, *, brand: str = "atlet", include_archive: bool = False, selected_channel: str = "instagram") -> dict[str, Any]:
@@ -181,6 +182,50 @@ class StudioAdapter:
         self.require_core().recalc_status(package)
         self.require_core().save(folder, package, recompute=False)
         return self.get(post_id, channel)
+
+
+    # ---------- checkboxy nóg: TikTok i Meta (IG + FB razem) ----------
+    LEGS = {"tiktok": ("tiktok",), "meta": ("instagram", "facebook")}
+
+    def set_leg(self, post_id: str, leg: str, checked: bool, source: str = "user") -> dict[str, Any]:
+        """Damian (albo automat po pełnym wrzucie z panelu) odhacza nogę jako wrzuconą.
+        Meta = Instagram + Facebook jednym kliknięciem. Dowód z kalendarza platformy zostaje osobno —
+        rozbieżność (Ty ✓, platforma nie widzi) to sygnał dla agenta, że odczyt kalendarza trzeba poprawić."""
+        if leg not in self.LEGS:
+            raise ValueError("Noga to tiktok albo meta")
+        self.ensure_writes("Odhaczenie platformy")
+        folder, package = self.read_package(post_id)
+        who = {"user": "Damian", "panel_wrzut": "panel po pełnym wrzucie"}.get(source, source)
+        for channel in self.LEGS[leg]:
+            if channel not in package.platformy:
+                continue
+            entry = package.platformy_stan.setdefault(channel, {"stan": "czeka", "proby": 0, "url": "", "info": ""})
+            entry["haczyk"] = bool(checked)
+            entry["haczyk_zrodlo"] = source if checked else ""
+            entry["info"] = f"Wrzucone — odhaczył {who} (BYKU.PUBLIKACJE)" if checked else f"Odznaczone — {who}"
+            if checked:
+                entry["stan"] = "potwierdzony"
+            elif entry.get("stan") == "potwierdzony" and not entry.get("platform_evidence") in ("scheduled", "published"):
+                entry["stan"], entry["url"] = "czeka", ""
+            package.dopisz_historie(f"{channel}:haczyk", entry["info"])
+        self.require_core().recalc_status(package)
+        self.require_core().save(folder, package, recompute=False)
+        return self.get(post_id)
+
+
+def leg_view(card: dict[str, Any]) -> dict[str, dict[str, Any]]:
+    """Stan nóg dla UI i agenta: mine = checkbox (Damian/automat), seen = lista platformy (kalendarz LIVE)."""
+    out = {}
+    for leg, chans in StudioAdapter.LEGS.items():
+        chs = [card["channels"][c] for c in chans if card["channels"].get(c, {}).get("enabled", True)]
+        if not chs:
+            continue
+        mine = all(c["manual_checked"] for c in chs)
+        seen = all(c["platform_evidence"] in ("scheduled", "published") for c in chs)
+        published = all(c["platform_evidence"] == "published" for c in chs)
+        out[leg] = {"mine": mine, "seen": seen, "published": published,
+                    "mismatch": "mine_not_seen" if mine and not seen else "seen_not_mine" if seen and not mine else ""}
+    return out
 
 
 def _approved(history: list[dict]) -> bool:

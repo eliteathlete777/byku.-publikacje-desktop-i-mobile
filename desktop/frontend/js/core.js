@@ -117,3 +117,27 @@ export function guarded(kind, attrs = "") {
   const reason = blockReason(kind);
   return reason ? `disabled title="${esc(reason)}" data-reason="${esc(reason)}" ${attrs}` : attrs;
 }
+
+// ---------- Checkboxy nóg: TikTok i Meta (IG + FB razem) ----------
+// ✓ = Ty (albo automat po pełnym wrzucie z panelu). 👁 = rolka widoczna na liście platformy (Odśwież kalendarz).
+const LEG_NAMES = [["tiktok", "TikTok"], ["meta", "Meta (IG + FB)"]];
+export function legChips(c) {
+  const L = c.legs || {};
+  return `<span class="legs">${LEG_NAMES.filter(([k]) => L[k]).map(([k, n]) => {
+    const v = L[k];
+    const note = v.mine && v.seen ? (v.published ? "Opublikowane — potwierdzone na liście platformy" : "Zaplanowane — potwierdzone na liście platformy")
+      : v.mine ? "Odhaczone, ale lista platformy jeszcze tego nie pokazuje (agent sprawdzi)"
+      : v.seen ? "Platforma to pokazuje — odhacz, jeśli się zgadza" : "Jeszcze nie wrzucone";
+    return `<label class="leg ${v.mine ? "on" : ""} ${v.mismatch ? "mismatch" : ""}" title="${esc(note)}"><input type="checkbox" data-leg="${k}" data-id="${esc(c.post_id)}" ${v.mine ? "checked" : ""}>${n}${v.seen ? ` <i aria-label="widoczne na platformie">👁</i>` : ""}</label>`;
+  }).join("")}</span>`;
+}
+export function bindLegs(root) {
+  $$(".leg", root).forEach(l => { l.onclick = e => e.stopPropagation(); });
+  $$("[data-leg]", root).forEach(cb => cb.onchange = async () => {
+    cb.disabled = true;
+    try {
+      await post(`${pub(cb.dataset.id)}/leg`, { leg: cb.dataset.leg, checked: cb.checked });
+      document.dispatchEvent(new CustomEvent("byku:reload"));
+    } catch (e) { cb.checked = !cb.checked; cb.disabled = false; toast(e.message, "error"); }
+  });
+}

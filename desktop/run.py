@@ -242,6 +242,8 @@ def make_handler(app: App):
                     return self.json(200, {"variants": app.schedule.propose(arg("brand", "atlet"), arg("start"))})
                 if path == "/api/calendar/refresh":
                     return self.json(200, app.legacy.calendar_status())
+                if path == "/api/legs/mismatches":
+                    return self.json(200, app.legacy.mismatches())
                 if path == "/api/uploads":
                     return self.json(200, {"uploads": app.legacy.uploads()})
                 if path == "/api/jobs":
@@ -308,6 +310,8 @@ def make_handler(app: App):
                         return self.json(200, app.mobile.to_drive(post_id))
                     if action == "to-server":
                         return self.json(200, app.mobile.to_server(post_id))
+                    if action == "leg":
+                        return self.json(200, app.adapter.set_leg(post_id, str(data.get("leg", "")), bool(data.get("checked"))))
                     if action == "manual-check":
                         return self.json(200, app.adapter.set_manual_check(post_id, data["channel"], bool(data.get("checked")), data["expected_revision"]))
                     if action == "publish":

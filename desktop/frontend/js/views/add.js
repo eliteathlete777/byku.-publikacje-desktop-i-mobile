@@ -1,7 +1,7 @@
 // Dodaj — nowe rolki z gołego filmu. Folder = jedna rolka (nazwa folderu = nazwa rolki),
 // z folderu idzie największy film (mniejszy plik to odpad produkcji). Potem ta sama rolka
 // przechodzi przez panel: opis z podstawy → okładka → lokalizacja → akceptacja → termin → wrzut.
-import { $, $$, esc, state, api, post, toast, thumb, fmtTerm, guarded, blockReason, isWatched, markWatched, playUrl, modal } from "../core.js";
+import { $, $$, esc, state, api, post, toast, thumb, fmtTerm, guarded, blockReason, isWatched, markWatched, playUrl, modal, legChips, bindLegs } from "../core.js";
 import { openCard, openStudio } from "../drawer.js";
 
 const VIDEO = /\.(mp4|mov|m4v|avi|mkv)$/i;
@@ -177,8 +177,8 @@ function stages(c) {
     [c.content.location ? `Lokalizacja: ${c.content.location}` : "Lokalizacja", c.content.location ? "ok" : "todo", "content"],
     ["Akceptacja treści", c.content.approved ? "ok" : "todo", "content"],
     [c.local_target_at ? `Termin: ${fmtTerm(c.local_target_at)}` : "Termin", c.local_target_at ? "ok" : "todo", "preview"],
-    ["TikTok", legDone(c.channels.tiktok) ? "ok" : "todo", "channels"],
-    ["IG + FB", legDone(c.channels.instagram) && legDone(c.channels.facebook) ? "ok" : "todo", "channels"]
+    ["TikTok", c.legs?.tiktok?.mine || legDone(c.channels.tiktok) ? "ok" : "todo", "channels"],
+    ["IG + FB", c.legs?.meta?.mine || (legDone(c.channels.instagram) && legDone(c.channels.facebook)) ? "ok" : "todo", "channels"]
   ];
 }
 
@@ -191,7 +191,7 @@ function pipeline() {
     <header><div><p class="kicker">Dodane rolki</p><h2>Od filmu do Zaplanuj</h2></div>
       <small class="muted">Kliknij etap, żeby otworzyć kartę w tym miejscu. Kolejność: film → odtworzenie → okładka → opis z podstawy → lokalizacja → akceptacja → termin → TikTok → IG + FB (wrzut ze Stołu publikacji).</small></header>
     ${open.map(c => `<article class="upload-run">
-      <header>${thumb(c)}<b>${esc(c.name.replace(/\.[^.]+$/, ""))}</b><small class="muted">${esc(c.brand.toUpperCase())}</small>
+      <header>${thumb(c)}<b>${esc(c.name.replace(/\.[^.]+$/, ""))}</b><small class="muted">${esc(c.brand.toUpperCase())}</small>${legChips(c)}
         <button type="button" class="btn ghost small" data-card="${esc(c.post_id)}">Karta</button></header>
       <ul class="steps">${stages(c).map(([label, st, tab]) => `<li class="${st}"><button type="button" class="step-link" data-card="${esc(c.post_id)}" data-tab="${tab}"><span class="box">${ICON[st]}</span>${esc(label)}</button></li>`).join("")}</ul>
     </article>`).join("") || `<p class="muted">${cards.length ? "Wszystkie dodane rolki przeszły całą drogę." : "Jeszcze nic nie dodano z tej zakładki."}</p>`}
@@ -248,6 +248,7 @@ function draw() {
     if (tab === "cover" && card) openStudio(card);
     if (tab === "watch" && card) watch(card);
   });
+  bindLegs(v);
   if ($("#addClear")) $("#addClear").onclick = () => { groups = []; draw(); };
   if ($("#addGo")) $("#addGo").onclick = e => addAll(e.currentTarget);
 }

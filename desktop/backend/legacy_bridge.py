@@ -172,7 +172,8 @@ class LegacyBridge:
     def __init__(self, adapter: StudioAdapter):
         self.adapter = adapter
         self.runs: dict[tuple[str, str], dict] = {}  # (post_id, kanał) -> uruchomiony uploader tej sesji panelu
-        threading.Thread(target=self._adopt_running, daemon=True).start()
+        if getattr(adapter.settings, "mode", "") == "production":  # testy/sandbox nie dotykają żywych uploaderów
+            threading.Thread(target=self._adopt_running, daemon=True).start()
 
     def _adopt_running(self) -> None:
         """Po restarcie panelu: przejmij żywe uploadery (np. czekające na dźwięk), żeby lista etapów
@@ -261,6 +262,24 @@ class LegacyBridge:
                 _clear_orphan_lock(post_id, channel)
                 return
         _clear_orphan_lock(post_id, channel)
+        self._auto_confirm(post_id, channel, run)
+
+    def _auto_confirm(self, post_id: str, channel: str, run: dict) -> bool:
+        """Damian 30.09: wrzut z panelu, który ma ✓ na wszystkich etapach (muzyka się nie liczy),
+        odhacza nogę jako wrzuconą. Dowód z kalendarza platformy dochodzi osobno (Odśwież kalendarz)."""
+        if run.get("confirmed"):
+            return True
+        steps, _ = upload_steps(_read(run.get("log")), channel)
+        if not steps or any(s["state"] != "ok" for s in steps if s["id"] != "muzyka"):
+            return False
+        leg = "tiktok" if channel == "tiktok" else "meta"
+        try:
+            self.adapter.set_leg(post_id, leg, True, source="panel_wrzut")
+        except Exception as exc:  # brak zapisu nie może wywrócić strażnika
+            run["problem"] = f"Wrzut gotowy, ale nie odhaczyłem {leg}: {exc}"
+            return False
+        run["confirmed"] = True
+        return True
 
     # ---------- odświeżenie kalendarzy platform (TikTok Studio + Terminarz Meta) ----------
     def calendar_status(self) -> dict:
@@ -288,12 +307,43 @@ class LegacyBridge:
                                               "tiktok": len(snap.get("tiktok") or []), "meta": len(snap.get("meta") or []),
                                               "bledy": [_human_problem(str(e)) for e in errors]}
                     self._cal["done"].append(b)
+                self._cal["mismatches"] = self.write_mismatches(brands)
                 self._cal["state"] = "done"
             except Exception as exc:
                 self._cal.update(state="failed", problem=_human_problem(str(exc)))
 
         threading.Thread(target=work, daemon=True).start()
         return self.calendar_status()
+
+    # ---------- rozbieżności: Twój checkbox vs lista platformy ----------
+    def mismatches_path(self) -> Path:
+        return Path(self.adapter.settings.data_dir) / "rozbieznosci.json"
+
+    def write_mismatches(self, brands: list[str]) -> list[dict]:
+        """Po odczycie kalendarzy: gdzie checkbox (Damian/automat) i lista platformy się nie zgadzają.
+        Plik czyta agent AI: sprawdza wpis w oknie platformy zdalnie, poprawia odczyt kalendarza albo checkbox."""
+        rows = []
+        for brand in brands:
+            for card in self.adapter.list_cards(brand=brand)["items"]:
+                if not card.get("local_target_at"):
+                    continue
+                for leg, v in (card.get("legs") or {}).items():
+                    if v["mismatch"]:
+                        rows.append({"post_id": card["post_id"], "brand": brand, "name": card["name"], "leg": leg,
+                                     "mismatch": v["mismatch"], "termin": card["local_target_at"],
+                                     "opis_start": (card["content"]["description"] or "")[:80]})
+        data = {"checked_at": datetime.now().isoformat(timespec="seconds"), "brands": brands, "items": rows}
+        try:
+            self.mismatches_path().write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
+        except OSError:
+            pass
+        return rows
+
+    def mismatches(self) -> dict:
+        try:
+            return json.loads(self.mismatches_path().read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            return {"checked_at": "", "items": []}
 
     def available(self) -> bool:
         return bool(self.adapter.core is not None and getattr(self.adapter.core, "legacy", False))

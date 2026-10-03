@@ -584,6 +584,43 @@ class UploadTrackerTests(Sandbox):
         self.assertEqual(problem, "Uploader zatrzymał się na tym etapie.")
 
 
+class LegTests(Sandbox):
+    """Checkboxy nóg: TikTok i Meta (IG + FB jednym kliknięciem); automat po pełnym wrzucie."""
+
+    def card_with_all(self):
+        return next(c for c in self.adapter.list_cards(brand="all")["items"]
+                    if all(c["channels"][ch]["enabled"] and not c["channels"][ch]["manual_checked"]
+                           and c["channels"][ch]["platform_evidence"] == "unknown" for ch in ("tiktok", "instagram", "facebook")))
+
+    def test_meta_checkbox_marks_instagram_and_facebook(self):
+        c = self.card_with_all()
+        after = self.adapter.set_leg(c["post_id"], "meta", True)
+        self.assertTrue(after["channels"]["instagram"]["manual_checked"] and after["channels"]["facebook"]["manual_checked"])
+        self.assertEqual(after["legs"]["meta"]["mine"], True)
+        self.assertEqual(after["legs"]["meta"]["mismatch"], "mine_not_seen")  # platforma jeszcze nie widzi
+        self.assertFalse(after["legs"]["tiktok"]["mine"])
+        back = self.adapter.set_leg(c["post_id"], "meta", False)
+        self.assertFalse(back["legs"]["meta"]["mine"])
+        with self.assertRaises(ValueError):
+            self.adapter.set_leg(c["post_id"], "instagram", True)
+
+    def test_complete_upload_checks_leg_but_music_does_not_count(self):
+        import run
+        app = run.App(self.settings, core=FallbackCore())
+        c = self.card_with_all()
+        st = lambda krok, status: "BYQ_STATUS:" + json.dumps({"platforma": "tiktok", "krok": krok, "status": status})
+        full = ["start", "konto", "wgranie_pliku", "opis", "okladka", "lokalizacja", "harmonogram_godzina", "gotowe_do_klikniecia"]
+        log = self.root / "full.log"
+        log.write_text("\n".join(st(k, "ok") for k in full), encoding="utf-8")
+        run_ = {"log": str(log)}
+        self.assertTrue(app.legacy._auto_confirm(c["post_id"], "tiktok", run_))
+        self.assertTrue(app.adapter.get(c["post_id"])["legs"]["tiktok"]["mine"])
+        half = self.root / "half.log"
+        half.write_text("\n".join(st(k, "ok") for k in full[:5]), encoding="utf-8")
+        self.assertFalse(app.legacy._auto_confirm(c["post_id"], "obie", {"log": str(half)}))
+        self.assertFalse(app.adapter.get(c["post_id"])["legs"]["meta"]["mine"])
+
+
 class HttpTests(Sandbox):
     def setUp(self):
         super().setUp()
