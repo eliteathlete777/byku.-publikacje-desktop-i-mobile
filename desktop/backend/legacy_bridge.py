@@ -27,6 +27,7 @@ UPLOAD_STEPS = [
 _RANK = {"ok": 1, "w_toku": 2, "blad": 3}
 
 
+MAX_ATTEMPTS = 3      # tyle razy można ponowić wrzut tej nogi z panelu
 STALL_S = 120        # tyle bez nowej linii w logu = zawieszony (start przeglądarki trwa ~35 s)
 WATCH_EVERY_S = 5
 
@@ -221,7 +222,8 @@ class LegacyBridge:
             running = run.get("phase") == "preparing" or (proc is not None and code is None)
             out.append({"post_id": post_id, "channel": channel, "pid": getattr(proc, "pid", None), "running": running,
                         "exit_code": code, "started": run["started"], "log": run.get("log", ""),
-                        "steps": steps, "problem": problem, "stopped": run.get("stopped", "")})
+                        "steps": steps, "problem": problem, "stopped": run.get("stopped", ""),
+                        "attempt": int(run.get("attempt", 1)), "max_attempts": MAX_ATTEMPTS})
         return sorted(out, key=lambda r: r["started"], reverse=True)
 
     # ---------- start w tle + strażnik postępu ----------
@@ -388,6 +390,17 @@ class LegacyBridge:
     def _leg_pending(ch: dict) -> bool:
         return bool(ch) and ch.get("enabled") is not False and ch.get("platform_evidence") not in ("scheduled", "published") and not ch.get("manual_checked")
 
+    def _wait_browser_open(self, post_id: str, leg: str, timeout: float = 120.0) -> None:
+        """Czeka, aż uploader nogi `leg` otworzy przeglądarkę (krok „start” ok) albo padnie."""
+        end = time.monotonic() + timeout
+        while time.monotonic() < end:
+            run = self.runs.get((post_id, leg)) or {}
+            if run.get("phase") == "failed":
+                return
+            if run.get("phase") == "running" and '"krok": "start", "status": "ok"' in _read(run.get("log")):
+                return
+            time.sleep(1)
+
     def prepare_everywhere(self, post_id: str, retry: bool = False) -> dict:
         """„Wrzuć wszędzie”: TikTok i Meta (IG + FB) startują jednocześnie, każdy we własnej przeglądarce.
         Noga już zaplanowana/opublikowana jest pomijana. Błąd jednej nogi nie zatrzymuje drugiej."""
@@ -412,11 +425,12 @@ class LegacyBridge:
             except Exception as exc:  # noqa: BLE001 — raportujemy per noga
                 problems[leg] = str(exc)
 
-        threads = [threading.Thread(target=start, args=(leg,)) for leg in legs]
-        for t in threads:
-            t.start()
-        for t in threads:
-            t.join()
+        # Przeglądarki działają równolegle, ale ich START jest rozsunięty: dwa sterowniki Patchright ruszające
+        # w tej samej sekundzie wywalały drugi z błędem „launch_persistent_context: Connection closed”.
+        for n, leg in enumerate(legs):
+            if n:
+                self._wait_browser_open(post_id, legs[n - 1])
+            start(leg)
         if not started:
             raise RuntimeError("; ".join(f"{k}: {v}" for k, v in problems.items()))
         return {"ok": True, "post_id": post_id, "started": started, "problems": problems}
@@ -434,12 +448,17 @@ class LegacyBridge:
             raise ValueError("Brak nowej okładki z tytułem. Zrób ją w Studiu miniatury, zanim ruszy wrzut.")
         self.adapter.resync_sums(post_id)  # okładka jest świadomą zmianą z panelu (znacznik zgodny z plikiem)
         current = self.runs.get((post_id, channel))
+        attempt = 1
+        if retry and current:
+            attempt = int(current.get("attempt", 1)) + 1
+            if attempt > MAX_ATTEMPTS:
+                raise RuntimeError(f"Wykorzystano {MAX_ATTEMPTS} próby tego wrzutu. Napisz w czacie, co poprawić w skrypcie, i puszczamy od nowa.")
         if current and (current.get("phase") == "preparing" or (current.get("proc") and current["proc"].poll() is None)):
             raise RuntimeError("Ten wrzut już trwa. Poczekaj na checkboxy albo aż strażnik go przerwie.")
         if _uploader_alive(post_id, channel):
             raise RuntimeError("Dla tej paczki i tego kanału działa już uploader (np. z BYQ Studio). Dokończ tamten wrzut.")
         _clear_orphan_lock(post_id, channel)  # tylko gdy nikt nie pracuje i Zaplanuj nie było klikane
-        run = {"proc": None, "log": "", "fh": None, "phase": "preparing", "problem": "",
+        run = {"proc": None, "log": "", "fh": None, "phase": "preparing", "problem": "", "attempt": attempt,
                "started": datetime.now().isoformat(timespec="seconds")}
         self.runs[(post_id, channel)] = run
         threading.Thread(target=self._launch, args=(post_id, channel, retry, run), daemon=True).start()
