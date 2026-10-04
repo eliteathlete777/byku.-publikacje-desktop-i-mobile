@@ -513,3 +513,14 @@ body.full .drawer { position: static; display: block; height: 100vh; overflow: h
 .next .btn[data-full] { margin-top: 6px; }
 .cover-queue { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px; margin: 0 0 12px; border: 1px solid #7a2a2a; background: #1d0f0f; border-radius: 8px; }
 .dash-nav { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 13px; }
+
+.cover-hero { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 18px 20px; margin-bottom: 18px; border: 1px solid var(--line); border-radius: 10px; background: linear-gradient(135deg, #1d1010, #121212); }
+.cover-hero h2 { margin: 4px 0; font-size: 22px; }
+.cover-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; }
+.cover-tile { display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: #121212; }
+.cover-tile.bad { border-color: #7a2a2a; }
+.cover-tile.ok { border-color: #2c6b46; }
+.cover-tile-img { padding: 0; border: 0; background: #222; aspect-ratio: 4/5; cursor: pointer; display: block; }
+.cover-tile-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cover-tile-body { display: flex; flex-direction: column; gap: 6px; padding: 12px; }
+.cover-tile-body small { color: var(--muted); }

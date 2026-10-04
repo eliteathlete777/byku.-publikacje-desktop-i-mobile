@@ -173,6 +173,12 @@ class ContentTests(Sandbox):
         with self.assertRaises(RevisionConflict):
             service.replace_thumbnail(card["post_id"], expected_revision=card["revision"], data=png((1, 2, 3)))
 
+    def test_manual_archive_at_any_stage_and_restore(self):
+        a = self.adapter.set_archived("atlet-gumy-plecy", True)
+        self.assertTrue(a["archived"])
+        b = self.adapter.set_archived("atlet-gumy-plecy", False)
+        self.assertFalse(b["archived"])
+
     def test_manual_check_is_independent_per_channel(self):
         before = self.adapter.get("atlet-gumy-plecy")
         after = self.adapter.set_manual_check("atlet-gumy-plecy", "instagram", True, before["revision"])

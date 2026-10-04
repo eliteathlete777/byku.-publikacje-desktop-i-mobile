@@ -119,7 +119,7 @@ function row(c) {
   return `<article class="row ${state.selected === c.post_id ? "selected" : ""}" data-id="${esc(c.post_id)}" tabindex="0">
     <div class="material">${thumb(c)}<div><b>${esc(c.name)}</b><small>${esc(c.brand.toUpperCase())} · ${c.assets.type === "carousel" ? "Karuzela" : "Rolka"}${c.assets.missing.length ? ` · <span class="bad">${esc(c.assets.missing.join(", "))}</span>` : ""}</small><small class="term">${esc(fmtTerm(c.local_target_at))}</small>${legChips(c)}<span class="row-cover ${c.assets.cover_custom ? "ok" : "bad"}">${c.assets.cover_custom ? "✓ okładka z tytułem" : "✕ brak okładki z tytułem"}</span></div></div>
     ${CHANNELS.map(([k]) => `<div class="cell">${pill(c.channels[k])}</div>`).join("")}
-    <div class="next"><button type="button" class="btn ${primaryCls} small" data-primary="${esc(c.post_id)}">${esc(c.next_action.label)}</button><small>${esc(c.next_action.reason)}</small><button type="button" class="btn ghost small" data-full="${esc(c.post_id)}" title="Edycja pełnoekranowa w nowej zakładce">⛶ Pełny ekran</button></div>
+    <div class="next"><button type="button" class="btn ${primaryCls} small" data-primary="${esc(c.post_id)}">${esc(c.next_action.label)}</button><small>${esc(c.next_action.reason)}</small><button type="button" class="btn ghost small" data-full="${esc(c.post_id)}" title="Edycja pełnoekranowa w nowej zakładce">⛶ Pełny ekran</button><button type="button" class="btn ghost small ${c.archived ? "" : "danger"}" data-archive="${esc(c.post_id)}" data-to="${c.archived ? "0" : "1"}" title="${c.archived ? "Wróć do Stołu" : "Przenieś do Archiwum (odwracalne)"}">${c.archived ? "↩ Przywróć" : "🗄 Archiwizuj"}</button></div>
   </article>`;
 }
 
@@ -156,9 +156,14 @@ export function renderTable(mode) {
 function bind(v) {
   bindLegs(v);
   $$(".row", v).forEach(r => {
-    r.onclick = e => { if (!e.target.closest("[data-primary],[data-full]")) openCard(r.dataset.id); };
+    r.onclick = e => { if (!e.target.closest("[data-primary],[data-full],[data-archive]")) openCard(r.dataset.id); };
     r.onkeydown = e => { if (e.key === "Enter") openCard(r.dataset.id); };
   });
   $$("[data-full]", v).forEach(b => b.onclick = () => openFull(b.dataset.full));
+  $$("[data-archive]", v).forEach(b => b.onclick = async e => {
+    const c = state.cards.find(x => x.post_id === b.dataset.archive), to = b.dataset.to === "1";
+    if (to && !(await confirmDialog(`Zarchiwizować „${c.name}”?`, "Rolka zniknie ze Stołu i z list roboczych, ale zostaje w Archiwum — możesz ją stamtąd przywrócić. Nic nie jest usuwane z dysku ani z platform.", "Archiwizuj"))) return;
+    await run(e.currentTarget, async () => { Object.assign(c, await post(`${pub(c.post_id)}/archive`, { archived: to })); document.dispatchEvent(new CustomEvent("byku:changed")); }, to ? "Przeniesiono do Archiwum." : "Przywrócono do Stołu.");
+  });
   $$("[data-primary]", v).forEach(b => b.onclick = () => { const c = state.cards.find(x => x.post_id === b.dataset.primary); openCard(c.post_id); primary(c); });
 }

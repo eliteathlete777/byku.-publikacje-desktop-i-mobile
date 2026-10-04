@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import time
 from pathlib import Path
 from typing import Any
 
@@ -169,6 +170,42 @@ class StudioAdapter:
     def ensure_writes(self, what: str = "Zapis produkcyjny") -> None:
         if not self.settings.writes_allowed:
             raise PermissionError(f"{what} jest zablokowany: allow_production_writes=false (bezpieczny podgląd)")
+
+    def accept_cover(self, post_id: str) -> dict[str, Any]:
+        """Damian uznaje OBECNĄ okładkę (już z tytułem, np. zrobioną wcześniej) za nową okładkę z tytułem."""
+        self.ensure_writes("Uznanie okładki")
+        folder = self.folder_for(post_id)
+        thumb = folder / "miniaturka.png"
+        if not thumb.is_file():
+            raise ValueError("Ta rolka nie ma okładki do uznania.")
+        (folder / "okladka-wlasna.json").write_text(json.dumps(
+            {"sha256": hashlib.sha256(thumb.read_bytes()).hexdigest(), "saved_at": time.strftime("%Y-%m-%d %H:%M:%S"), "accepted_existing": True}), encoding="utf-8")
+        return self.get(post_id)
+
+    def set_archived(self, post_id: str, archived: bool) -> dict[str, Any]:
+        """Ręczne archiwum Stołu: na każdym etapie (też szkic i już zaplanowane). Powrót odtwarza status z platform."""
+        self.ensure_writes("Archiwizacja")
+        folder, package = self.read_package(post_id)
+        if archived:
+            if package.status == "archiwum":
+                return self.get(post_id)
+            package.status = "archiwum"
+            package.dopisz_historie("archiwum", "ręcznie ze Stołu publikacji (BYKU.PUBLIKACJE DESKTOP)")
+        else:
+            if package.status != "archiwum":
+                return self.get(post_id)
+            stany = [str((w or {}).get("stan") or "") for w in (package.platformy_stan or {}).values()]
+            package.status = ("potwierdzony" if stany and all(s == "potwierdzony" for s in stany)
+                              else "wyslany" if any(s in ("wyslany", "potwierdzony") for s in stany)
+                              else "zaplanowany" if package.termin else "szkic")
+            package.dopisz_historie("z_archiwum", package.status)
+        core = self.require_core()
+        mag = getattr(core, "_magazyn", None)
+        if mag is not None:
+            mag.zapisz_paczke(folder, package, wymus=True, przelicz_sumy=False)
+        else:
+            core.save(folder, package, recompute=False)
+        return self.get(post_id)
 
     def set_manual_check(self, post_id: str, channel: str, checked: bool, expected_revision: str) -> dict[str, Any]:
         if channel not in CHANNELS:

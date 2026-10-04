@@ -8,6 +8,7 @@ import { renderBrands } from "./views/brands.js";
 import { renderLearning } from "./views/learning.js";
 import { renderSystem } from "./views/system.js";
 import { renderAdd } from "./views/add.js";
+import { renderCovers } from "./views/covers.js";
 import { initTour, startTour } from "./tour.js";
 import { renderDashboard } from "./dashboard.js";
 
@@ -15,6 +16,7 @@ const FULL = new URLSearchParams(location.search).get("edit");
 if (FULL) document.body.classList.add("full");
 
 const VIEWS = {
+  covers: ["Okładki RIGGER", "Okładki z tytułem dla wszystkich rolek Riggera, także zaplanowanych", "▨", renderCovers],
   add: ["Dodaj", "Nowe rolki: foldery z filmem → opis → okładka → wrzut", "＋", renderAdd],
   today: ["Stół publikacji", "Praca na dziś", "◉", () => renderTable("today")],
   finish: ["Do dokończenia", "Braki, opisy, akceptacja", "✎", () => renderTable("finish")],
@@ -33,7 +35,8 @@ function counts() {
   return {
     today: a.filter(c => c.next_action.code !== "done").length,
     finish: a.filter(c => ["finish", "review_content"].includes(c.next_action.code)).length,
-    transfer: a.filter(c => c.phone_ready).length
+    transfer: a.filter(c => c.phone_ready).length,
+    covers: state.cards.filter(c => c.brand === "rigger" && !c.archived && !c.assets.cover_custom).length
   };
 }
 
@@ -91,7 +94,7 @@ initCalendar(load);
 initTour(go);
 $("#tourStart").onclick = startTour;
 document.addEventListener("byku:select", () => { if (FULL) return; if (["today", "finish", "archive", "library"].includes(state.view)) VIEWS[state.view][3](); });
-document.addEventListener("byku:changed", () => { if (FULL) return; renderNav(); if (!["transfer", "learning", "brands", "system", "add"].includes(state.view)) VIEWS[state.view][3](); api("/api/health").then(h => { state.health = h; renderHealth(); }).catch(() => {}); });
+document.addEventListener("byku:changed", () => { if (FULL) return; renderNav(); if (!["transfer", "learning", "brands", "system", "add", "covers"].includes(state.view)) VIEWS[state.view][3](); api("/api/health").then(h => { state.health = h; renderHealth(); }).catch(() => {}); });
 document.addEventListener("byku:goto", e => go(e.detail));
 document.addEventListener("byku:reload", () => load());
 document.addEventListener("byku:watched", () => { if (state.view === "add") renderAdd(); });
@@ -119,4 +122,5 @@ $("#refreshCal").onclick = async e => {
 $("#refresh").onclick = async e => { const btn = e.currentTarget; btn.classList.add("spin"); await load(); btn.classList.remove("spin"); toast("Odświeżono z kolejki.", "ok"); };
 $("#systemCard").onclick = () => go("system");
 document.addEventListener("keydown", e => { if (e.key === "Escape" && state.selected && !$("#modal").open) { state.selected = null; render(); } });
+try { if (!FULL && !localStorage.getItem("byku.desktop.coversShown")) { localStorage.setItem("byku.desktop.coversShown", "1"); state.view = "covers"; savePref("view", "covers"); } } catch { /* brak pamięci przeglądarki */ }
 load();

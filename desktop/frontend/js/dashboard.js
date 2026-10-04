@@ -42,7 +42,7 @@ export async function renderDashboard(id) {
   document.title = `Edycja · ${c.name}`;
   const queue = (new URLSearchParams(location.search).get("q") || "").split(",").filter(x => state.cards.some(k => k.post_id === x));
   const pos = queue.indexOf(id);
-  const go = target => { if (target) location.search = `?edit=${encodeURIComponent(target)}&q=${encodeURIComponent(queue.join(","))}`; };
+  const go = target => { if (target) location.search = `?edit=${encodeURIComponent(target)}&q=${encodeURIComponent(queue.join(","))}${new URLSearchParams(location.search).get("studio") === "1" ? "&studio=1" : ""}`; };
   const nextNoCover = queue.find((x, k) => k !== pos && !state.cards.find(y => y.post_id === x).assets.cover_custom);
   const profile = state.brands[c.brand] || {};
   const kwMode = profile.tag_mode === "keywords", keywords = profile.keywords || [];
@@ -123,6 +123,7 @@ export async function renderDashboard(id) {
   $("video.dash-video")?.addEventListener("play", () => markWatched(c.post_id), { once: true });
   const studio = () => openThumbStudio(c, {}, fresh => refresh(fresh));
   $("#dCover").onclick = studio; $("#dStudio").onclick = studio;
+  if (new URLSearchParams(location.search).get("studio") === "1" && !c.assets.cover_custom && !renderDashboard.autoOpened) { renderDashboard.autoOpened = true; setTimeout(studio, 300); }
 
   api(`${pub(c.post_id)}/basis`).then(r => { if (!basis.value) basis.value = r.basis || ""; }).catch(() => {});
   let bt; basis.oninput = () => { clearTimeout(bt); bt = setTimeout(() => post(`${pub(c.post_id)}/basis`, { basis: basis.value }).catch(() => {}), 600); };

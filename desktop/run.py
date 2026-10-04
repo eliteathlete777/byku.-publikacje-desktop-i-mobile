@@ -312,6 +312,10 @@ def make_handler(app: App):
                         return self.json(200, app.mobile.to_server(post_id))
                     if action == "leg":
                         return self.json(200, app.adapter.set_leg(post_id, str(data.get("leg", "")), bool(data.get("checked"))))
+                    if action == "cover-accept":
+                        return self.json(200, app.adapter.accept_cover(post_id))
+                    if action == "archive":
+                        return self.json(200, app.adapter.set_archived(post_id, bool(data.get("archived", True))))
                     if action == "manual-check":
                         return self.json(200, app.adapter.set_manual_check(post_id, data["channel"], bool(data.get("checked")), data["expected_revision"]))
                     if action == "publish":
