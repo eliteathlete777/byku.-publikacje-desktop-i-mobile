@@ -40,6 +40,10 @@ export async function renderDashboard(id) {
   const c = state.cards.find(x => x.post_id === id);
   if (!c) { root.innerHTML = `<div class="dash-empty"><h2>Nie znaleziono rolki</h2><p class="muted">${esc(id)}</p></div>`; return; }
   document.title = `Edycja · ${c.name}`;
+  const queue = (new URLSearchParams(location.search).get("q") || "").split(",").filter(x => state.cards.some(k => k.post_id === x));
+  const pos = queue.indexOf(id);
+  const go = target => { if (target) location.search = `?edit=${encodeURIComponent(target)}&q=${encodeURIComponent(queue.join(","))}`; };
+  const nextNoCover = queue.find((x, k) => k !== pos && !state.cards.find(y => y.post_id === x).assets.cover_custom);
   const profile = state.brands[c.brand] || {};
   const kwMode = profile.tag_mode === "keywords", keywords = profile.keywords || [];
   const limit = profile.caption_max || 2200, min = profile.caption_min || 0;
@@ -54,6 +58,7 @@ export async function renderDashboard(id) {
   <div class="dash">
     <header class="dash-top">
       <div class="dash-id"><span class="brand-mark">B</span><div><p class="kicker">${esc(c.brand.toUpperCase())} · ${c.assets.type === "carousel" ? "KARUZELA" : "ROLKA"} · edycja pełnoekranowa</p><h1>${esc(c.name)}</h1></div></div>
+      ${queue.length > 1 ? `<div class="dash-nav"><button class="btn ghost small" id="navPrev" type="button" ${pos <= 0 ? "disabled" : ""}>‹</button><span>${pos + 1} / ${queue.length}</span><button class="btn ghost small" id="navNext" type="button" ${pos >= queue.length - 1 ? "disabled" : ""}>›</button>${nextNoCover ? `<button class="btn primary small" id="navNoCover" type="button">Następna bez okładki →</button>` : ""}</div>` : ""}
       <ol class="dash-steps" id="steps"></ol>
       <div class="dash-actions">
         <button class="btn ghost" id="dSave" type="button" ${guarded("write")}>Zapisz wersję</button>
@@ -135,5 +140,8 @@ export async function renderDashboard(id) {
     catch (err) { if (err.status === 409) throw new Error("Paczka zmieniła się w międzyczasie. Skopiuj tekst, odśwież stronę i zapisz ponownie."); throw err; }
   }, approve ? "Zapisano i zaakceptowano." : "Zapisano jako wersję roboczą.");
   $("#dSave").onclick = save(false); $("#dApprove").onclick = save(true);
+  $("#navPrev")?.addEventListener("click", () => go(queue[pos - 1]));
+  $("#navNext")?.addEventListener("click", () => go(queue[pos + 1]));
+  $("#navNoCover")?.addEventListener("click", () => go(nextNoCover));
   paint(); lint();
 }

@@ -507,3 +507,9 @@ body.full .drawer { position: static; display: block; height: 100vh; overflow: h
 .dash .lint { max-height: 84px; overflow: auto; margin: 0; }
 .dash-empty { padding: 40px; }
 @media (max-width: 1100px) { body.full .drawer { overflow: auto; height: auto; } .dash { height: auto; grid-template-columns: 1fr; } }
+
+.row-cover { display: inline-block; margin-top: 4px; font-size: 11px; font-weight: 800; }
+.row-cover.ok { color: #7be0a0; } .row-cover.bad { color: #ff8a80; }
+.next .btn[data-full] { margin-top: 6px; }
+.cover-queue { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 14px; margin: 0 0 12px; border: 1px solid #7a2a2a; background: #1d0f0f; border-radius: 8px; }
+.dash-nav { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 13px; }
