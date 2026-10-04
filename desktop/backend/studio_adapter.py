@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import hashlib
+import json
 from pathlib import Path
 from typing import Any
 
@@ -48,6 +49,15 @@ class StudioAdapter:
             videos = [folder / preferred] + [p for p in videos if p.name != preferred]
         return videos[:1]
 
+    @staticmethod
+    def cover_custom(folder: Path) -> bool:
+        """Okładka z tytułem zrobiona w studiu miniatury (znacznik z sumą aktualnego PNG), nie klatka startowa."""
+        thumb, mark = folder / "miniaturka.png", folder / "okladka-wlasna.json"
+        try:
+            return thumb.is_file() and json.loads(mark.read_text(encoding="utf-8")).get("sha256") == hashlib.sha256(thumb.read_bytes()).hexdigest()
+        except (OSError, ValueError):
+            return False
+
     def _assets(self, folder: Path, package: Any) -> dict[str, Any]:
         missing: list[str] = []
         thumb = folder / "miniaturka.png"
@@ -65,6 +75,7 @@ class StudioAdapter:
             "files": [p.name for p in media],
             "media_urls": [f"{base}/media/{p.name}" for p in media if p.is_file()],
             "missing": missing,
+            "cover_custom": self.cover_custom(folder),
             "thumbnail_url": f"{base}/thumbnail?v={int(thumb.stat().st_mtime)}" if thumb.is_file() else "",
         }
 

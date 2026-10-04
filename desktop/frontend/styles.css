@@ -466,3 +466,44 @@ body.tour-active { scroll-behavior: smooth; }
 .mismatch-list { margin: 0 0 6px; padding-left: 18px; font-size: 13px; }
 .mismatch-list li { margin: 3px 0; color: var(--amber); }
 .mismatch-list b { color: var(--text); }
+
+.drawer-head { grid-template-columns: 86px 1fr 38px 38px !important; }
+/* ---------- Pełnoekranowy dashboard edycji ---------- */
+body.full .shell { display: block; }
+body.full .rail, body.full main { display: none; }
+body.full .drawer { position: static; display: block; height: 100vh; overflow: hidden; border: 0; background: radial-gradient(1200px 600px at 10% -10%, #1d1212 0%, #0b0b0b 60%); }
+.dash { height: 100vh; display: grid; grid-template-columns: minmax(320px, 1fr) minmax(320px, 1fr) minmax(360px, 1.2fr); grid-template-rows: auto minmax(0, 1fr); gap: 16px; padding: 16px 20px 20px; }
+.dash-top { grid-column: 1 / -1; display: flex; align-items: center; gap: 24px; padding: 10px 16px; background: #141414; border: 1px solid var(--line); border-radius: 10px; }
+.dash-id { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.dash-id h1 { font-size: 20px; margin: 2px 0 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dash-steps { display: flex; gap: 8px; list-style: none; margin: 0 auto; padding: 0; flex-wrap: wrap; justify-content: center; }
+.dash-steps li { display: flex; align-items: center; gap: 6px; padding: 5px 11px; border-radius: 999px; border: 1px solid var(--line-strong); color: var(--muted); font-size: 12px; font-weight: 700; }
+.dash-steps li.ok { color: #7be0a0; border-color: #2c6b46; background: #10231a; }
+.dash-steps i { font-style: normal; }
+.dash-actions { display: flex; gap: 10px; }
+.dash-col { min-height: 0; display: flex; flex-direction: column; gap: 12px; padding: 16px; background: #121212; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.dash-col h2 { margin: 0; font-size: 12px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.dash-video { width: 100%; flex: 1 1 0; min-height: 0; background: #000; border-radius: 8px; object-fit: contain; }
+.dash-slides { display: flex; gap: 6px; overflow-x: auto; flex: 1 1 0; min-height: 0; }
+.dash-slides img { height: 100%; border-radius: 6px; }
+.dash-cover { display: grid; grid-template-columns: 96px 1fr; gap: 14px; align-items: start; }
+.dash-cover-img { padding: 0; border: 1px solid var(--line-strong); border-radius: 8px; overflow: hidden; background: #222; aspect-ratio: 4/5; cursor: pointer; }
+.dash-cover-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cover-badge { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 800; margin-bottom: 6px; }
+.cover-badge.ok { background: #10231a; color: #7be0a0; border: 1px solid #2c6b46; }
+.cover-badge.bad { background: #2a1010; color: #ff8a80; border: 1px solid #7a2a2a; }
+.dash-compose .variants { flex: 1 1 0; min-height: 0; overflow: auto; }
+.vp { display: flex; flex-direction: column; gap: 10px; height: 100%; }
+.vp-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.vp-tabs button { display: flex; flex-direction: column; align-items: center; padding: 8px; border: 1px solid var(--line-strong); border-radius: 8px; background: #1a1a1a; color: var(--muted); cursor: pointer; }
+.vp-tabs button b { font-size: 18px; }
+.vp-tabs button.on { border-color: var(--red); color: var(--text); background: #241212; }
+.vp-body { flex: 1; min-height: 0; overflow: auto; padding: 12px; background: #0d0d0d; border: 1px solid var(--line); border-radius: 8px; }
+.vp-body p { white-space: pre-wrap; margin: 0 0 8px; line-height: 1.5; }
+.vp-actions { display: grid; grid-template-columns: 44px 1fr 44px; gap: 8px; }
+.dash-desc { flex: 1 1 0; min-height: 0; resize: none; font-size: 15px; line-height: 1.55; }
+.kw-box { padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: #0d0d0d; }
+.kw-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 12px; font-weight: 700; }
+.dash .lint { max-height: 84px; overflow: auto; margin: 0; }
+.dash-empty { padding: 40px; }
+@media (max-width: 1100px) { body.full .drawer { overflow: auto; height: auto; } .dash { height: auto; grid-template-columns: 1fr; } }

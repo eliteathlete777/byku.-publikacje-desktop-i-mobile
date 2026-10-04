@@ -390,6 +390,8 @@ class LegacyBridge:
         if channel not in {"tiktok", "instagram", "facebook", "obie"}:
             raise ValueError("Nieprawidłowy kanał")
         self._require("Przygotowanie publikacji")
+        if not self.adapter.cover_custom(self.adapter.folder_for(post_id)):
+            raise ValueError("Brak nowej okładki z tytułem. Zrób ją w Studiu miniatury, zanim ruszy wrzut.")
         current = self.runs.get((post_id, channel))
         if current and (current.get("phase") == "preparing" or (current.get("proc") and current["proc"].poll() is None)):
             raise RuntimeError("Ten wrzut już trwa. Poczekaj na checkboxy albo aż strażnik go przerwie.")

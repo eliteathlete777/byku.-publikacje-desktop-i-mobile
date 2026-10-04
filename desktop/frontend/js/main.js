@@ -9,6 +9,10 @@ import { renderLearning } from "./views/learning.js";
 import { renderSystem } from "./views/system.js";
 import { renderAdd } from "./views/add.js";
 import { initTour, startTour } from "./tour.js";
+import { renderDashboard } from "./dashboard.js";
+
+const FULL = new URLSearchParams(location.search).get("edit");
+if (FULL) document.body.classList.add("full");
 
 const VIEWS = {
   add: ["Dodaj", "Nowe rolki: foldery z filmem → opis → okładka → wrzut", "＋", renderAdd],
@@ -47,6 +51,7 @@ function go(view) {
 }
 
 export function render() {
+  if (FULL) { state.selected = FULL; renderDashboard(FULL); return; }
   if (!VIEWS[state.view]) state.view = "today";
   const [title, kicker] = VIEWS[state.view];
   $("#title").textContent = title; $("#kicker").textContent = kicker;
@@ -85,8 +90,8 @@ initDrawer(load);
 initCalendar(load);
 initTour(go);
 $("#tourStart").onclick = startTour;
-document.addEventListener("byku:select", () => { if (["today", "finish", "archive", "library"].includes(state.view)) VIEWS[state.view][3](); });
-document.addEventListener("byku:changed", () => { renderNav(); if (!["transfer", "learning", "brands", "system", "add"].includes(state.view)) VIEWS[state.view][3](); api("/api/health").then(h => { state.health = h; renderHealth(); }).catch(() => {}); });
+document.addEventListener("byku:select", () => { if (FULL) return; if (["today", "finish", "archive", "library"].includes(state.view)) VIEWS[state.view][3](); });
+document.addEventListener("byku:changed", () => { if (FULL) return; renderNav(); if (!["transfer", "learning", "brands", "system", "add"].includes(state.view)) VIEWS[state.view][3](); api("/api/health").then(h => { state.health = h; renderHealth(); }).catch(() => {}); });
 document.addEventListener("byku:goto", e => go(e.detail));
 document.addEventListener("byku:reload", () => load());
 document.addEventListener("byku:watched", () => { if (state.view === "add") renderAdd(); });

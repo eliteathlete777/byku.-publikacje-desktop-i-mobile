@@ -2,6 +2,7 @@
 import { $, $$, api, post, pub, esc, state, toast, run, pill, thumb, fmtTerm, guarded, blockReason, confirmDialog, modal, CHANNELS } from "./core.js";
 import { openThumbStudio } from "./thumbstudio.js";
 import { markWatched, playUrl } from "./core.js";
+import { variantPicker } from "./dashboard.js";
 
 let reload = async () => {};
 export function initDrawer(onReload) { reload = onReload; }
@@ -27,12 +28,14 @@ export function renderDrawer() {
         <h2>${esc(c.name)}</h2>
         <small class="muted mono">${esc(c.post_id)}</small>
       </div>
+      <button class="icon-btn" id="fullEdit" type="button" title="Edycja pełnoekranowa w nowej zakładce" aria-label="Pełny ekran">⛶</button>
       <button class="icon-btn" id="closeDrawer" type="button" aria-label="Zamknij szczegóły">×</button>
     </div>
     <div class="next-step ${esc(c.next_action.code)}"><span>Następny krok</span><b>${esc(c.next_action.label)}</b><small>${esc(c.next_action.reason)}</small></div>
     <div class="tabs" role="tablist">${TABS.map(([id, n]) => `<button role="tab" type="button" data-tab="${id}" class="${state.tab === id ? "active" : ""}">${n}</button>`).join("")}</div>
     <div class="drawer-body" id="panel"></div>`;
   $("#closeDrawer").onclick = closeDrawer;
+  $("#fullEdit").onclick = () => window.open(`/?edit=${encodeURIComponent(c.post_id)}`, "_blank");
   $("#headThumb").onclick = () => openStudio(c);
   $$(".tabs button", d).forEach(b => b.onclick = () => { state.tab = b.dataset.tab; renderDrawer(); });
   ({ preview, content, channels, phone, history })[state.tab](c, $("#panel"));
@@ -212,10 +215,7 @@ function content(c, p) {
     $$("#draftList [data-v]").forEach(b => b.onclick = () => { const d = r.drafts[+b.dataset.v - 1]; desc.value = d.description; tags = []; addTag(d.hashtags); drawChips(); counter(); lint(); toast("Szkic w edytorze. Popraw i zapisz."); });
   }, "Szkice z szablonu marki. Nic nie zostało zapisane.");
   const basis = $("#basis"), basisState = $("#basisState");
-  const showDrafts = drafts => {
-    $("#draftList").innerHTML = drafts.map(d => `<article class="draft"><header><b>Wariant ${d.variant}${d.hook_mechanism ? ` · <small class="muted">${esc(d.hook_mechanism)}</small>` : ""}</b><span><small class="muted">${d.description.length} znaków</small> <button class="btn ghost small" type="button" data-v="${d.variant}">Wstaw do edytora</button></span></header><p>${esc(d.description)}</p>${d.hashtags ? `<small class="tags">${esc(d.hashtags)}</small>` : ""}${d.missing ? `<p class="note">Konkret podniósłby tekst: ${esc(d.missing)}</p>` : ""}${d.lint?.length ? `<ul class="lint">${d.lint.map(n => `<li class="${esc(n.level)}">${esc(n.text)}</li>`).join("")}</ul>` : d.lint ? `<small class="ok-note">Zgodny z kompendium.</small>` : ""}</article>`).join("");
-    $$("#draftList [data-v]").forEach(b => b.onclick = () => { const d = drafts[+b.dataset.v - 1]; desc.value = d.description; tags = []; addTag(d.hashtags || ""); drawChips(); counter(); lint(); toast("Wariant w edytorze. Popraw i zapisz."); });
-  };
+  const showDrafts = drafts => variantPicker($("#draftList"), drafts, d => { desc.value = d.description; tags = []; addTag(d.hashtags || ""); drawChips(); counter(); lint(); toast("Wariant w edytorze. Popraw i zapisz."); });
   api(`${pub(c.post_id)}/basis`).then(r => { if (!basis.value) basis.value = r.basis || ""; }).catch(() => {});
   let basisTimer;
   basis.oninput = () => { clearTimeout(basisTimer); basisTimer = setTimeout(() => post(`${pub(c.post_id)}/basis`, { basis: basis.value }).then(() => { basisState.textContent = "Podstawa zapisana."; }).catch(() => {}), 600); };

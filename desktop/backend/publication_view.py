@@ -54,6 +54,8 @@ def next_action(card: dict[str, Any], selected_channel: str = "instagram") -> di
     missing = card.get("assets", {}).get("missing", [])
     if missing or not card.get("content", {}).get("description", "").strip():
         return {"code": "finish", "channel": selected_channel, "label": "Uzupełnij paczkę", "reason": ", ".join(missing) or "Brakuje opisu."}
+    if not card.get("content", {}).get("approved", False) and not card.get("assets", {}).get("cover_custom", True):
+        return {"code": "finish", "channel": selected_channel, "label": "Zrób okładkę z tytułem", "reason": "Rolka potrzebuje nowej okładki z tytułem (Studio miniatury)."}
     if not card.get("content", {}).get("approved", False):
         return {"code": "review_content", "channel": selected_channel, "label": "Sprawdź opis", "reason": "Ta wersja treści nie została zaakceptowana."}
     if not ch.get("local_target_at") and not card.get("local_target_at"):

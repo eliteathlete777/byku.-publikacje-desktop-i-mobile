@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import json
 import shutil
 import time
@@ -64,6 +65,8 @@ class ContentService:
         if current["revision"] != expected_revision:
             raise RevisionConflict(current, proposal)
         self.adapter.ensure_writes("Zapis treści")
+        if approve and not self.adapter.cover_custom(folder):
+            raise ValueError("Najpierw zrób nową okładkę z tytułem w Studiu miniatury i zapisz ją. Bez niej nie zaakceptuję rolki.")
         before = current["content"]
         tx = self._transaction(post_id, folder, ("post.json", "opis.txt"), expected_revision)
         try:
@@ -100,6 +103,8 @@ class ContentService:
         tmp = folder / "miniaturka.png.byku-tmp"
         tmp.write_bytes(data)
         tmp.replace(folder / "miniaturka.png")
+        (folder / "okladka-wlasna.json").write_text(json.dumps(
+            {"sha256": hashlib.sha256(data).hexdigest(), "saved_at": time.strftime("%Y-%m-%d %H:%M:%S")}), encoding="utf-8")
         self._commit(tx, post_id)
         emit(self.learning, "thumbnail_replaced", post_id=post_id, brand=current["brand"], result="ok")
         return self.adapter.get(post_id)

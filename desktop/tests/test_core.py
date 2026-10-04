@@ -126,6 +126,11 @@ class ContentTests(Sandbox):
     def test_content_persists_and_conflict_preserves_proposal(self):
         service = ContentService(self.adapter, self.store)
         before = self.adapter.get("atlet-pompki-porecze")
+        with self.assertRaises(ValueError):  # bramka: bez nowej okładki z tytułem nie ma akceptacji
+            service.save("atlet-pompki-porecze", expected_revision=before["revision"], description="X", hashtags="", location="", approve=True)
+        from tools.make_sandbox import png
+        before = service.replace_thumbnail("atlet-pompki-porecze", expected_revision=before["revision"], data=png((9, 9, 9)))
+        self.assertTrue(before["assets"]["cover_custom"])
         saved = service.save("atlet-pompki-porecze", expected_revision=before["revision"], description="Nowy opis",
                              hashtags="", location="Warszawa", approve=True)
         self.assertEqual(saved["content"]["description"], "Nowy opis")
@@ -149,6 +154,8 @@ class ContentTests(Sandbox):
     def test_approved_change_becomes_style_lesson(self):
         service = ContentService(self.adapter, self.store)
         card = self.adapter.get("rigger-kratownica-narodowy")
+        from tools.make_sandbox import png
+        card = service.replace_thumbnail(card["post_id"], expected_revision=card["revision"], data=png((9, 9, 9)))
         service.save(card["post_id"], expected_revision=card["revision"], description="Nowy styl, byku.",
                      hashtags="#rigger", location="", approve=True)
         styles = [x for x in self.store.lessons("style") if x["brand"] == "rigger"]

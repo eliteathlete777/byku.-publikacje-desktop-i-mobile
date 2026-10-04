@@ -5,10 +5,27 @@
     "handle": "@byku_athlete",
     "compendium": "BYKU-ATLET-kompendium-stylu.md",
     "tone": "Motywacyjny profil faceta, który po całym dniu fizycznej roboty i tak robi swoje codzienne minimum pompek i ciągnie innych, żeby też zaczęli. Starszy kolega z roboty: bezpośredni, surowy, męski, rejestr budowy i brygadzisty, motywuje przez czyn i scenę, nie przez hasła. Do widza „Ty”, bez „byku”. Zero wulgaryzmów.",
-    "sections": ["hooks", "scene", "merytoryka", "closings", "questions|ctas", "closers"],
+    "sections": [
+      "hooks",
+      "scene",
+      "merytoryka",
+      "closings",
+      "questions|ctas",
+      "closers"
+    ],
     "pad_key": "merytoryka",
-    "hook_emojis": ["💣", "💪", "🔥", "⚡"],
-    "allowed_hook_emojis": ["💣", "💪", "🔥", "⚡"],
+    "hook_emojis": [
+      "💣",
+      "💪",
+      "🔥",
+      "⚡"
+    ],
+    "allowed_hook_emojis": [
+      "💣",
+      "💪",
+      "🔥",
+      "⚡"
+    ],
     "hooks": [
       "Myślisz, że po 12 godzinach roboty nie masz już siły na trening?",
       "„Zrobię po prysznicu” to najskuteczniejsza wymówka, jaką znam",
@@ -72,7 +89,13 @@
       "Trening w każdych warunkach, forma bez siłowni, gumy oporowe, kalistenika, street workout, no gym."
     ],
     "tag_mode": "keywords",
-    "keywords": ["gumy oporowe", "kalistenika", "street workout", "no gym", "forma bez siłowni"],
+    "keywords": [
+      "gumy oporowe",
+      "kalistenika",
+      "street workout",
+      "no gym",
+      "forma bez siłowni"
+    ],
     "style_rules": [
       "Hak: to samo emoji (💣 💪 🔥 ⚡) z obu stron.",
       "Jest scena albo konkretna liczba, zero zmyśleń. Fakty o autorze tylko z tabeli (11 / 7 / 11 / 5 lat).",
@@ -85,9 +108,85 @@
       "E-book nie częściej niż co 3–4 posty, bez „Napisz GUMA”.",
       "CTA inne niż w poprzednim poście. Nie zaczynaj od siebie, tylko od bólu, wymówki albo sceny z roboty."
     ],
-    "banned_words": ["ego", "grawitacja", "matrix", "luksus", "lambo", "alpha", "system", "game changer", "klucz do sukcesu", "na wyższy poziom", "prawdziwa moc", "odkryj", "w dzisiejszych czasach", "warto pamiętać", "podsumowując", "zaangażowanie bez granic", "uwierz w siebie", "jesteś zwycięzcą", "nie poddawaj się", "zarabiaj pasywnie", "badania pokazują", "emg", "zero hype'u", "wchodzimy w praktykę", "pozdro i rośnij duży", "zapraszam do środka", "twardy zawodnik", "o jeden procent lepszy", "forma to nie sprint", "małe kroki", "decyzja należy do Ciebie", "rozkminił", "tania dopamina", "czyste endorfiny", "polisa ubezpieczeniowa", "kapitał", "pożyczka na procent", "procent realizacji", "silnik", "motor napędowy", "pancerz", "ring", "defilada", "bezlitosny", "protokół", "misja", "operacja", "żołnierski", "front", "pamiętaj", "zapamiętaj", "zrozum to", "zasada jest jedna", "jedyny przeciwnik nosi twoje buty", "regularność daje wyniki", "zasada 15 minut", "rdzeń systemu", "czy wiesz, że", "zero dni w siłowni", "kurwa", "chuj", "jebać", "pierdolić", "zajebisty"],
-    "avoid_phrases": ["inwestycja", "zwrot z", "płaci się", "wiesz, jak"],
-    "full_name_checks": [["minimum", "minimum pompek", "zrób minimum, a motywacja przyjdzie"]],
+    "banned_words": [
+      "ego",
+      "grawitacja",
+      "matrix",
+      "luksus",
+      "lambo",
+      "alpha",
+      "system",
+      "game changer",
+      "klucz do sukcesu",
+      "na wyższy poziom",
+      "prawdziwa moc",
+      "odkryj",
+      "w dzisiejszych czasach",
+      "warto pamiętać",
+      "podsumowując",
+      "zaangażowanie bez granic",
+      "uwierz w siebie",
+      "jesteś zwycięzcą",
+      "nie poddawaj się",
+      "zarabiaj pasywnie",
+      "badania pokazują",
+      "emg",
+      "zero hype'u",
+      "wchodzimy w praktykę",
+      "pozdro i rośnij duży",
+      "zapraszam do środka",
+      "twardy zawodnik",
+      "o jeden procent lepszy",
+      "forma to nie sprint",
+      "małe kroki",
+      "decyzja należy do Ciebie",
+      "rozkminił",
+      "tania dopamina",
+      "czyste endorfiny",
+      "polisa ubezpieczeniowa",
+      "kapitał",
+      "pożyczka na procent",
+      "procent realizacji",
+      "silnik",
+      "motor napędowy",
+      "pancerz",
+      "ring",
+      "defilada",
+      "bezlitosny",
+      "protokół",
+      "misja",
+      "operacja",
+      "żołnierski",
+      "front",
+      "pamiętaj",
+      "zapamiętaj",
+      "zrozum to",
+      "zasada jest jedna",
+      "jedyny przeciwnik nosi twoje buty",
+      "regularność daje wyniki",
+      "zasada 15 minut",
+      "rdzeń systemu",
+      "czy wiesz, że",
+      "zero dni w siłowni",
+      "kurwa",
+      "chuj",
+      "jebać",
+      "pierdolić",
+      "zajebisty"
+    ],
+    "avoid_phrases": [
+      "inwestycja",
+      "zwrot z",
+      "płaci się",
+      "wiesz, jak"
+    ],
+    "full_name_checks": [
+      [
+        "minimum",
+        "minimum pompek",
+        "zrób minimum, a motywacja przyjdzie"
+      ]
+    ],
     "forbidden_address": "byku",
     "required_words": [],
     "hook_no_question": false,
@@ -98,9 +197,20 @@
     "rotating_count": 0,
     "caption_min": 250,
     "caption_max": 1200,
-    "locations": ["Katowice", "Warszawa"],
-    "posting_slots": ["19:14", "20:23", "20:41"],
-    "posting_days": [0, 2, 4]
+    "locations": [
+      "Katowice",
+      "Warszawa"
+    ],
+    "posting_slots": [
+      "19:14",
+      "20:23",
+      "20:41"
+    ],
+    "posting_days": [
+      0,
+      2,
+      4
+    ]
   },
   "rigger": {
     "id": "rigger",
@@ -108,10 +218,28 @@
     "handle": "@byku.rigger",
     "compendium": "BYKU-RIGGER-kompendium-stylu.md",
     "tone": "Backstage branży eventowej oczami riggera, który po robocie jeszcze trenuje. Zamiast biurka codziennie nowe miejsce, nowa scena, nowy widok, i słychać, że się tym jara. Autentycznie, branżowy humor, respekt do wysokości i BHP. Stawiasz widza na konstrukcji. Zwrot zawsze „byku”. Myśl wynika z faktu, zero morałów, zero wulgaryzmów.",
-    "sections": ["hooks", "scene", "facts", "side?", "questions", "closers"],
+    "sections": [
+      "hooks",
+      "scene",
+      "facts",
+      "side?",
+      "questions",
+      "closers"
+    ],
     "pad_key": "facts",
     "hook_emojis": [],
-    "allowed_hook_emojis": ["🔥", "⚡", "💣", "💪", "🤘", "👊", "🔨", "⚠️", "⛓️", "🕒"],
+    "allowed_hook_emojis": [
+      "🔥",
+      "⚡",
+      "💣",
+      "💪",
+      "🤘",
+      "👊",
+      "🔨",
+      "⚠️",
+      "⛓️",
+      "🕒"
+    ],
     "hooks": [
       "👊 Stoję na tym, co za moment pojedzie w dół 👊",
       "⚡ Zamiast biurka mam dziś widok z konstrukcji ⚡",
@@ -177,7 +305,22 @@
     "closings": [],
     "merytoryka": [],
     "tag_mode": "keywords",
-    "keywords": ["rigging", "technik sceny", "praca na wysokości", "backstage", "montaż sceny"],
+    "keywords": [
+      "rigging",
+      "backstage",
+      "technik sceny",
+      "montaż sceny",
+      "praca na wysokości",
+      "scaffolding",
+      "rusztowania",
+      "gopro",
+      "dji",
+      "pov",
+      "redbull",
+      "action4",
+      "metaglasses",
+      "viral"
+    ],
     "style_rules": [
       "Hak = stwierdzenie z kadru, nie pytanie. To samo emoji z zestawu na obu końcach, dobrane pod temat (🔨 młotek, ⛓️ zawiesia, 🕒 presja czasu, ⚠️ bezpieczeństwo).",
       "Scena i ciekawostka zgodne z kadrem, zero zmyślonych liczb. Wagi haka dźwigowego nigdy.",
@@ -190,11 +333,36 @@
       "Eventy, artyści i firmy tylko z briefu Damiana. Lokalizacja w opisie max raz, domyślnie Warszawa.",
       "Trening i e-book najwyżej jako wątek poboczny. Tematem zawsze jest robota."
     ],
-    "banned_words": ["szychta", "ego", "matrix", "grawitacja", "zasada 15 minut", "wiedziałeś, że", "miałeś kiedyś tak", "zatrzymaj scrollowanie", "czy wiesz, że", "kurwa", "chuj", "jebać", "pierdolić", "zajebisty"],
-    "avoid_phrases": ["uczy pokory", "standard nie zna słowa wystarczy", "ciężki dzień", "kolejne wyzwanie", "klucz do sukcesu", "na wyższy poziom", "ufasz temu"],
+    "banned_words": [
+      "szychta",
+      "ego",
+      "matrix",
+      "grawitacja",
+      "zasada 15 minut",
+      "wiedziałeś, że",
+      "miałeś kiedyś tak",
+      "zatrzymaj scrollowanie",
+      "czy wiesz, że",
+      "kurwa",
+      "chuj",
+      "jebać",
+      "pierdolić",
+      "zajebisty"
+    ],
+    "avoid_phrases": [
+      "uczy pokory",
+      "standard nie zna słowa wystarczy",
+      "ciężki dzień",
+      "kolejne wyzwanie",
+      "klucz do sukcesu",
+      "na wyższy poziom",
+      "ufasz temu"
+    ],
     "full_name_checks": [],
     "forbidden_address": "",
-    "required_words": ["byku"],
+    "required_words": [
+      "byku"
+    ],
     "hook_no_question": true,
     "max_dashes": null,
     "max_exclaims": null,
@@ -203,8 +371,21 @@
     "rotating_count": 0,
     "caption_min": 250,
     "caption_max": 1200,
-    "locations": ["Warszawa", "Pałac Kultury i Nauki", "Stadion Narodowy", "Spodek"],
-    "posting_slots": ["20:07", "20:33", "20:51"],
-    "posting_days": [1, 3, 6]
+    "locations": [
+      "Warszawa",
+      "Pałac Kultury i Nauki",
+      "Stadion Narodowy",
+      "Spodek"
+    ],
+    "posting_slots": [
+      "20:07",
+      "20:33",
+      "20:51"
+    ],
+    "posting_days": [
+      1,
+      3,
+      6
+    ]
   }
 }
