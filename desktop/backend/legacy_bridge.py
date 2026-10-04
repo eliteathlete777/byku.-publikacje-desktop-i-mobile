@@ -29,6 +29,7 @@ _RANK = {"ok": 1, "w_toku": 2, "blad": 3}
 
 MAX_ATTEMPTS = 3      # tyle razy można ponowić wrzut tej nogi z panelu
 STALL_S = 120        # tyle bez nowej linii w logu = zawieszony (start przeglądarki trwa ~35 s)
+STALL_AFTER_START_S = 30   # po otwarciu przeglądarki: tyle ciszy w logu = ponawiamy
 WATCH_EVERY_S = 5
 
 
@@ -254,12 +255,26 @@ class LegacyBridge:
                 continue
             steps, _ = upload_steps(_read(run.get("log")), channel)
             state = {s["id"]: s["state"] for s in steps}
-            waiting_for_user = state.get("muzyka") == "running" or state.get("gotowe") in ("running", "ok")
-            if not waiting_for_user and time.monotonic() - last_change > STALL_S:
+            # Meta jest bez dźwięku, więc tam „muzyka” nigdy nie jest czekaniem na Damiana.
+            waiting_for_user = (channel == "tiktok" and state.get("muzyka") == "running") or state.get("gotowe") in ("running", "ok")
+            # 04.10 (Damian): ruch stoi > 30 s = ponawiamy skrypt. Przed otwarciem przeglądarki zostaje zapas na jej start.
+            limit = STALL_AFTER_START_S if state.get("start") == "ok" else STALL_S
+            if not waiting_for_user and time.monotonic() - last_change > limit:
                 proc.kill()
                 proc.wait(timeout=10)
-                run["stopped"] = (f"Brak postępu przez {STALL_S // 60} min, przerwałem, żeby nie blokować. "
-                                  "Okno przeglądarki zostaje; możesz kliknąć Wrzuć jeszcze raz.")
+                attempt = int(run.get("attempt", 1))
+                if attempt < MAX_ATTEMPTS:
+                    run["problem"] = f"Brak postępu przez {limit} s. Ponawiam skrypt (próba {attempt + 1}/{MAX_ATTEMPTS})."
+                    run["stopped"] = run["problem"]
+                    _clear_orphan_lock(post_id, channel)
+                    time.sleep(3)
+                    try:
+                        self.prepare_publication(post_id, channel, retry=True)
+                    except Exception as exc:  # noqa: BLE001
+                        run["problem"] = f"Brak postępu przez {limit} s. Ponowienie nie ruszyło: {exc}"
+                    return
+                run["stopped"] = (f"Brak postępu przez {limit} s po {MAX_ATTEMPTS} próbach. Okno przeglądarki zostaje; "
+                                  "napisz w czacie, co poprawić w skrypcie.")
                 run["problem"] = run["stopped"]
                 _clear_orphan_lock(post_id, channel)
                 return
