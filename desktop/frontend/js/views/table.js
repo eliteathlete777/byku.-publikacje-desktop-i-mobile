@@ -6,7 +6,7 @@ import { openCard, primary } from "../drawer.js";
 const legDone = ch => !ch || ch.enabled === false || ["scheduled", "published"].includes(ch.platform_evidence) || ch.manual_checked;
 const LEGS = [["tiktok", "TikTok", c => !legDone(c.channels.tiktok)],
               ["obie", "IG + FB", c => !legDone(c.channels.instagram) || !legDone(c.channels.facebook)]];
-const LEG_NAME = { tiktok: "TikTok", obie: "IG + FB", instagram: "Instagram", facebook: "Facebook" };
+const LEG_NAME = { tiktok: "TikTok", obie: "IG + FB", wszedzie: "TikTok + IG + FB", instagram: "Instagram", facebook: "Facebook" };
 let uploadTimer = null;
 
 function uploadCandidates(cards) {
@@ -24,7 +24,8 @@ function uploadPanel(cards) {
         <span><b>${esc(c.name)}</b><small>${esc(c.brand.toUpperCase())} · ${esc(fmtTerm(c.local_target_at))} · 📍 ${esc(c.content.location || "brak lokalizacji")}</small>${legChips(c)}</span>
         <span class="upload-btns">${LEGS.map(([k, n, need]) => need(c)
           ? `<button type="button" class="btn primary small" data-up="${k}" data-id="${esc(c.post_id)}" ${guarded("publish")}>Wrzuć ${n}</button>`
-          : `<span class="pill published">${n} ✓</span>`).join("")}</span>
+          : `<span class="pill published">${n} ✓</span>`).join("")}${LEGS.every(([, , need]) => need(c))
+          ? `<button type="button" class="btn primary small everywhere" data-up="wszedzie" data-id="${esc(c.post_id)}" title="TikTok i IG + FB startują jednocześnie, każdy w swojej przeglądarce" ${guarded("publish")}>⚡ Wrzuć wszędzie</button>` : ""}</span>
       </div>`).join("") || `<p class="muted">Brak zaakceptowanych paczek z terminem do wrzucenia. Zaakceptuj treść w karcie (zakładka Treść).</p>`}</div>
     <div id="uploadRuns"></div>
     <div id="legMismatch"></div>
@@ -66,10 +67,10 @@ function bindUploads(v) {
   $$("[data-up]", v).forEach(b => b.onclick = async e => {
     const c = state.cards.find(x => x.post_id === b.dataset.id), leg = b.dataset.up, btn = e.currentTarget;
     const ok = await confirmDialog(`Wrzucić ${c.name} na ${LEG_NAME[leg]}?`,
-      `Python otworzy okno przeglądarki ${c.brand.toUpperCase()} i wypełni formularz: wideo, okładka, opis, lokalizacja „${c.content.location || "brak"}”, termin ${fmtTerm(c.local_target_at)}. `
+      `${leg === "wszedzie" ? "Python otworzy DWIE przeglądarki jednocześnie (TikTok oraz Meta) i w obu " : `Python otworzy okno przeglądarki ${c.brand.toUpperCase()} i `}wypełni formularz: wideo, okładka, opis, lokalizacja „${c.content.location || "brak"}”, termin ${fmtTerm(c.local_target_at)}. `
       + "Nie zamykaj tego okna. Zaplanuj/Udostępnij klikasz Ty, gdy wszystko się zgadza.", "Uruchom");
     if (!ok) return;
-    await run(btn, () => post(`${pub(c.post_id)}/prepare-publication`, { channel: leg }), "Start. Postęp w checkboxach poniżej.");
+    await run(btn, () => post(`${pub(c.post_id)}/prepare-publication`, { channel: leg }), r => r.problems && Object.keys(r.problems).length ? `Ruszyło: ${r.started.map(k => LEG_NAME[k]).join(", ")}. Nie ruszyło: ${Object.entries(r.problems).map(([k, v]) => `${LEG_NAME[k]} (${v})`).join("; ")}` : "Start. Postęp w checkboxach poniżej.");
     pollUploads();
   });
   pollUploads();

@@ -80,10 +80,14 @@ export function channelLabel(ch) {
 
 export const pill = ch => { const [t, c] = channelLabel(ch); return `<span class="pill ${c}">${esc(t)}</span>`; };
 
+// Wrzucone = zarchiwizowane (archiwum znaczy: już poszło) albo odhaczone przez Ciebie na obu nogach (TikTok i Meta).
+export const isUploaded = c => !!c.archived || (!!c.legs?.tiktok?.mine && !!c.legs?.meta?.mine);
+
 export function thumb(card, cls = "thumb") {
-  return card.assets.thumbnail_url
+  const img = card.assets.thumbnail_url
     ? `<img class="${cls}" src="${esc(card.assets.thumbnail_url)}" alt="" loading="lazy">`
     : `<div class="${cls} missing">brak<br>miniatury</div>`;
+  return isUploaded(card) ? `<span class="thumb-wrap">${img}<i class="uploaded-badge" title="Wrzucone" aria-label="Wrzucone">✓</i></span>` : img;
 }
 
 export function fmtTerm(v) {

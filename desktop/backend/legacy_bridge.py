@@ -384,7 +384,43 @@ class LegacyBridge:
             "legacy": True,
         }
 
+    @staticmethod
+    def _leg_pending(ch: dict) -> bool:
+        return bool(ch) and ch.get("enabled") is not False and ch.get("platform_evidence") not in ("scheduled", "published") and not ch.get("manual_checked")
+
+    def prepare_everywhere(self, post_id: str, retry: bool = False) -> dict:
+        """„Wrzuć wszędzie”: TikTok i Meta (IG + FB) startują jednocześnie, każdy we własnej przeglądarce.
+        Noga już zaplanowana/opublikowana jest pomijana. Błąd jednej nogi nie zatrzymuje drugiej."""
+        card = self.adapter.get(post_id)
+        ch = card["channels"]
+        legs = []
+        if self._leg_pending(ch.get("tiktok")):
+            legs.append("tiktok")
+        if self._leg_pending(ch.get("instagram")) or self._leg_pending(ch.get("facebook")):
+            legs.append("obie")
+        if not legs:
+            raise ValueError("Wszystkie platformy tej rolki są już zaplanowane albo opublikowane.")
+        started, problems = [], {}
+
+        def start(leg: str) -> None:
+            try:
+                self.prepare_publication(post_id, leg, retry)
+                started.append(leg)
+            except Exception as exc:  # noqa: BLE001 — raportujemy per noga
+                problems[leg] = str(exc)
+
+        threads = [threading.Thread(target=start, args=(leg,)) for leg in legs]
+        for t in threads:
+            t.start()
+        for t in threads:
+            t.join()
+        if not started:
+            raise RuntimeError("; ".join(f"{k}: {v}" for k, v in problems.items()))
+        return {"ok": True, "post_id": post_id, "started": started, "problems": problems}
+
     def prepare_publication(self, post_id: str, channel: str, retry: bool = False) -> dict:
+        if channel == "wszedzie":
+            return self.prepare_everywhere(post_id, retry)
         if not self.adapter.settings.allow_publication:
             raise PermissionError("Publikowanie jest zablokowane (allow_publication=false). Końcowe kliknięcie i tak zawsze wykonujesz ręcznie.")
         if channel not in {"tiktok", "instagram", "facebook", "obie"}:

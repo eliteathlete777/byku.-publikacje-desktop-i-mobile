@@ -1,5 +1,5 @@
 // Kalendarz: dzień / tydzień / miesiąc / lista, przeciąganie, warianty rozkładu, cofanie.
-import { $, $$, api, post, esc, state, toast, run, modal, pill, activeCards, matches, guarded, blockReason } from "../core.js";
+import { $, $$, api, post, esc, state, toast, run, modal, pill, brandCards, matches, guarded, blockReason, isUploaded } from "../core.js";
 import { openCard } from "../drawer.js";
 
 let mode = "week";
@@ -28,12 +28,14 @@ function title() {
 }
 
 function card(c, compact = false) {
-  return `<article class="cal-card ${esc(c.brand)}" draggable="${!blockReason("write")}" data-id="${esc(c.post_id)}" title="${esc(c.name)}">
-    <b>${esc((c.local_target_at || "").slice(11) || "—")}</b><span>${esc(c.name)}</span>${compact ? "" : `<small>${esc(c.brand.toUpperCase())} · ${c.assets.type === "carousel" ? "karuzela" : "rolka"}</small>${pill(c.channels.instagram)}`}</article>`;
+  const up = isUploaded(c);
+  return `<article class="cal-card ${esc(c.brand)} ${up ? "uploaded" : ""}" draggable="${!up && !blockReason("write")}" data-id="${esc(c.post_id)}" title="${esc(c.name)}">
+    <b>${up ? "✓ " : ""}${esc((c.local_target_at || "").slice(11) || "—")}</b><span>${esc(c.name)}</span>${compact ? "" : `<small>${esc(c.brand.toUpperCase())} · ${c.assets.type === "carousel" ? "karuzela" : "rolka"}${c.archived ? " · w archiwum" : ""}</small>${up ? `<span class="pill published">Wrzucone</span>` : pill(c.channels.instagram)}`}</article>`;
 }
 
 export function renderCalendar() {
-  const cards = activeCards().filter(matches);
+  // Archiwum = już wrzucone: zostaje na kalendarzu na zielono. Bez terminu archiwalne nie trafia do „Bez terminu”.
+  const cards = brandCards().filter(c => !c.archived || c.local_target_at).filter(matches);
   const byDay = {};
   cards.forEach(c => { const k = (c.local_target_at || "").slice(0, 10); (byDay[k] ||= []).push(c); });
   Object.values(byDay).forEach(xs => xs.sort((a, b) => a.local_target_at.localeCompare(b.local_target_at)));
