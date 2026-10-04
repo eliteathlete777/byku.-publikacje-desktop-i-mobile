@@ -716,6 +716,25 @@ class ImportTests(Sandbox):
         with self.assertRaises(ImportProblem):
             self.add(svc, brand="all")
 
+    def test_pending_basis_attaches_by_folder_name_and_brand(self):
+        import json
+        from backend.import_service import ImportService
+        pending = self.settings.data_dir / "podstawy-oczekujace.json"
+        pending.parent.mkdir(parents=True, exist_ok=True)
+        pending.write_text(json.dumps({
+            "2026-10-12 #92 #2 Kim jestem": {"marka": "atlet", "podstawa": "11 lat treningu"},
+            "DALJ WALE": {"marka": "atlet", "podstawa": "inna marka"},
+        }, ensure_ascii=False), encoding="utf-8")
+        svc = ImportService(self.adapter)
+        r = self.add(svc, title="2026-10-12 #92 #2 kim jestem", name="x.mp4", brand="atlet")
+        self.assertTrue(r["basis"])
+        bases = json.loads((self.settings.data_dir / "podstawy.json").read_text(encoding="utf-8"))
+        self.assertEqual(bases[r["post_id"]], "11 lat treningu")
+        self.assertEqual(json.loads(pending.read_text(encoding="utf-8"))["2026-10-12 #92 #2 Kim jestem"]["post_id"], r["post_id"])
+        other = self.add(svc, title="DALJ WALE", name="y.mp4", brand="rigger")
+        self.assertFalse(other["basis"])
+        self.assertNotIn(other["post_id"], json.loads((self.settings.data_dir / "podstawy.json").read_text(encoding="utf-8")))
+
     def test_title_cleanup(self):
         from backend.import_service import clean_title
         self.assertEqual(clean_title('  WISLOSTRADA  PRZEBITKA  '), "WISLOSTRADA PRZEBITKA")

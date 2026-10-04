@@ -9,6 +9,7 @@ Szkic bez opisu nie przejdzie bramki wrzutu (rdzeń wymaga opisu).
 from __future__ import annotations
 
 import hashlib
+import json
 import re
 import shutil
 import subprocess
@@ -24,6 +25,7 @@ MIN_VIDEO = 10_000
 MAX_VIDEO = 4 * 1024 ** 3
 BRANDS = {"atlet", "rigger"}
 SOURCE_TAG = "BYKU.PUBLIKACJE Dodaj"
+PENDING_FILE = "podstawy-oczekujace.json"
 
 
 class ImportProblem(ValueError):
@@ -208,7 +210,36 @@ class ImportService:
             shutil.rmtree(tmp, ignore_errors=True)
             raise
         warm_preview(dest / video.name, Path(self.adapter.settings.data_dir) / "podglady")
-        return {"status": "added", "post_id": post_id, "title": title, "thumbnail": thumb}
+        basis = self.attach_pending_basis(brand, title, post_id)
+        return {"status": "added", "post_id": post_id, "title": title, "thumbnail": thumb, "basis": basis}
+
+    def attach_pending_basis(self, brand: str, title: str, post_id: str) -> bool:
+        """Podstawa opisu przygotowana zawczasu (data/podstawy-oczekujace.json, klucz = nazwa folderu
+        rolki) trafia do data/podstawy.json pod nowy post_id. Wpis zostaje z polem post_id (ślad)."""
+        data_dir = Path(self.adapter.settings.data_dir)
+        pending_file = data_dir / PENDING_FILE
+        if not pending_file.is_file():
+            return False
+        pending = json.loads(pending_file.read_text(encoding="utf-8"))
+        key = title_key(title)
+        match = next((k for k, v in pending.items() if title_key(k) == key
+                      and str(v.get("marka", "")).lower() == brand and not v.get("post_id")), None)
+        if match is None or not str(pending[match].get("podstawa", "")).strip():
+            return False
+        basis_file = data_dir / "podstawy.json"
+        bases = json.loads(basis_file.read_text(encoding="utf-8")) if basis_file.is_file() else {}
+        if not bases.get(post_id):
+            bases[post_id] = str(pending[match]["podstawa"]).strip()
+            _write_json(basis_file, bases)
+        pending[match]["post_id"] = post_id
+        _write_json(pending_file, pending)
+        return True
+
+
+def _write_json(path: Path, data: dict) -> None:
+    tmp = path.with_suffix(".tmp")
+    tmp.write_text(json.dumps(data, ensure_ascii=False, indent=2), encoding="utf-8")
+    tmp.replace(path)
 
 
 def _drain(stream: BinaryIO, length: int) -> None:
