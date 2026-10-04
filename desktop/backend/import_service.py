@@ -18,7 +18,7 @@ import time
 from pathlib import Path
 from typing import BinaryIO
 
-from .studio_adapter import StudioAdapter
+from .studio_adapter import DEFAULT_LOCATION, StudioAdapter
 
 VIDEO_EXT = {".mp4", ".mov", ".m4v", ".avi", ".mkv"}
 MIN_VIDEO = 10_000
@@ -200,7 +200,7 @@ class ImportService:
                     left -= len(chunk)
                     stream.byku_read = length - left
             thumb = frame_png(video, tmp / "miniaturka.png")
-            post_id = core.create_draft(tmp, brand=brand, video_name=video.name, location=location.strip(),
+            post_id = core.create_draft(tmp, brand=brand, video_name=video.name, location=location.strip() or DEFAULT_LOCATION,
                                         source=f"{SOURCE_TAG}: {title}")
             dest = queue / post_id
             if dest.exists():

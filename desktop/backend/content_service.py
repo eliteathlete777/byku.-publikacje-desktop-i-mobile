@@ -10,7 +10,7 @@ from learning.events import emit
 from learning.store import LearningStore
 from learning.style_lessons import remember_style
 
-from .studio_adapter import StudioAdapter
+from .studio_adapter import DEFAULT_LOCATION, StudioAdapter
 
 THUMBNAIL_MAX = 8 * 1024 * 1024
 PNG_MAGIC = b"\x89PNG\r\n\x1a\n"
@@ -73,7 +73,7 @@ class ContentService:
             _, package = self.adapter.read_package(post_id)
             package.opis = description.strip()
             package.hashtagi = normalize_hashtags(hashtags)
-            package.lokalizacja = location.strip()
+            package.lokalizacja = location.strip() or DEFAULT_LOCATION
             package.historia.append({"kiedy": time.strftime("%Y-%m-%d %H:%M:%S"),
                                      "co": "content_approved" if approve else "content_edited",
                                      "szczegol": "BYKU.PUBLIKACJE DESKTOP"})

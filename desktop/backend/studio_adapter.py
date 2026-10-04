@@ -14,6 +14,9 @@ VIDEO_EXT = {".mp4", ".mov", ".webm", ".m4v"}
 IMAGE_EXT = {".jpg", ".jpeg", ".png", ".webp"}
 
 
+DEFAULT_LOCATION = "Warszawa"  # domyślna lokalizacja każdej rolki; inne miejsca Damian wpisuje sam
+
+
 class StudioAdapter:
     def __init__(self, settings: Settings, core: Any | None = None):
         self.settings = settings
@@ -93,7 +96,7 @@ class StudioAdapter:
         content = {
             "description": getattr(package, "opis", "") or "",
             "hashtags": getattr(package, "hashtagi", "") or "",
-            "location": getattr(package, "lokalizacja", "") or "",
+            "location": getattr(package, "lokalizacja", "") or DEFAULT_LOCATION,
             "revision": content_revision,
             "approved": _approved(history),
         }
@@ -181,6 +184,21 @@ class StudioAdapter:
         (folder / "okladka-wlasna.json").write_text(json.dumps(
             {"sha256": hashlib.sha256(thumb.read_bytes()).hexdigest(), "saved_at": time.strftime("%Y-%m-%d %H:%M:%S"), "accepted_existing": True}), encoding="utf-8")
         return self.get(post_id)
+
+    def ensure_location(self, post_id: str) -> None:
+        """Pusta lokalizacja w paczce = Warszawa (uploadery czytają ją z dysku)."""
+        folder, package = self.read_package(post_id)
+        if (getattr(package, "lokalizacja", "") or "").strip():
+            return
+        self.ensure_writes("Domyślna lokalizacja")
+        package.lokalizacja = DEFAULT_LOCATION
+        package.dopisz_historie("lokalizacja", f"domyślnie {DEFAULT_LOCATION}")
+        core = self.require_core()
+        mag = getattr(core, "_magazyn", None)
+        if mag is not None:
+            mag.zapisz_paczke(folder, package, wymus=True, przelicz_sumy=False)
+        else:
+            core.save(folder, package, recompute=False)
 
     def set_archived(self, post_id: str, archived: bool) -> dict[str, Any]:
         """Ręczne archiwum Stołu: na każdym etapie (też szkic i już zaplanowane). Powrót odtwarza status z platform."""
