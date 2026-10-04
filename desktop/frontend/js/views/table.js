@@ -43,11 +43,11 @@ function drawRuns(uploads) {
     return `<article class="upload-run ${u.running ? "live" : failed ? "bad" : "ok"}">
       <header><b>${esc(name(u.post_id))} · ${esc(LEG_NAME[u.channel] || u.channel)}</b>
         <span class="pill ${u.running ? "running" : failed ? "failed" : "published"}">${u.running ? "Pracuje…" : u.stopped ? "Przerwany (brak postępu)" : failed ? "Zatrzymał się" : ready ? "Gotowe — kliknij Zaplanuj" : "Zakończony"}</span>
-        ${u.running ? `<button type="button" class="btn ghost small" data-music="${esc(u.post_id)}">Muzyka dobrana</button>` : ""}
+        ${u.running && u.channel === "tiktok" ? `<button type="button" class="btn ghost small" data-music="${esc(u.post_id)}">Muzyka dobrana</button>` : ""}
         ${!u.running && failed && u.max_attempts ? `<button type="button" class="btn primary small" data-retry-run="${esc(u.post_id)}" data-ch="${esc(u.channel)}" ${u.attempt >= u.max_attempts ? "disabled" : ""} title="Puść skrypt jeszcze raz (próby: ${u.attempt}/${u.max_attempts})">↻ Ponów</button>` : ""}
         <span class="attempts" title="Próba ${u.attempt} z ${u.max_attempts}">${[...Array(u.max_attempts || 0)].map((_, k) => `<i class="${k < u.attempt ? (k === u.attempt - 1 && failed ? "bad" : "used") : ""}"></i>`).join("")}</span>
         <button type="button" class="btn ghost small" data-open-run="${esc(u.post_id)}">Karta</button></header>
-      <ul class="steps">${u.steps.map(s => `<li class="${s.state}"><span class="box">${ICON[s.state]}</span>${esc(s.label)}</li>`).join("")}</ul>
+      <ul class="steps">${u.steps.filter(s => !(s.id === "muzyka" && u.channel !== "tiktok")).map(s => `<li class="${s.state}"><span class="box">${ICON[s.state]}</span>${esc(s.label)}</li>`).join("")}</ul>
       ${failed && u.problem ? `<p class="step-problem">${esc(u.problem)}</p>` : ""}
     </article>`; }).join("")}` : "";
   $$("[data-music]", box).forEach(b => b.onclick = e => run(e.currentTarget, () => post(`${pub(b.dataset.music)}/music-ready`), "Sygnał muzyki wysłany, Python jedzie dalej."));
