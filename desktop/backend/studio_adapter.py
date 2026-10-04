@@ -183,7 +183,19 @@ class StudioAdapter:
             raise ValueError("Ta rolka nie ma okładki do uznania.")
         (folder / "okladka-wlasna.json").write_text(json.dumps(
             {"sha256": hashlib.sha256(thumb.read_bytes()).hexdigest(), "saved_at": time.strftime("%Y-%m-%d %H:%M:%S"), "accepted_existing": True}), encoding="utf-8")
+        self.resync_sums(post_id)
         return self.get(post_id)
+
+    def resync_sums(self, post_id: str) -> None:
+        """Okładkę zmieniamy w panelu (Studio miniatury), więc sumy kontrolne paczki muszą pójść za plikiem —
+        inaczej uploader odmawia: „suma miniaturka.png się nie zgadza”."""
+        folder, package = self.read_package(post_id)
+        core = self.require_core()
+        mag = getattr(core, "_magazyn", None)
+        if mag is not None:
+            mag.zapisz_paczke(folder, package, wymus=True, przelicz_sumy=True)
+        else:
+            core.save(folder, package, recompute=True)
 
     def ensure_location(self, post_id: str) -> None:
         """Pusta lokalizacja w paczce = Warszawa (uploadery czytają ją z dysku)."""

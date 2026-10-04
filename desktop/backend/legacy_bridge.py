@@ -401,6 +401,8 @@ class LegacyBridge:
         if not legs:
             raise ValueError("Wszystkie platformy tej rolki są już zaplanowane albo opublikowane.")
         self.adapter.ensure_location(post_id)  # raz, zanim ruszą dwa wątki
+        if self.adapter.cover_custom(self.adapter.folder_for(post_id)):
+            self.adapter.resync_sums(post_id)
         started, problems = [], {}
 
         def start(leg: str) -> None:
@@ -430,6 +432,7 @@ class LegacyBridge:
         self.adapter.ensure_location(post_id)
         if not self.adapter.cover_custom(self.adapter.folder_for(post_id)):
             raise ValueError("Brak nowej okładki z tytułem. Zrób ją w Studiu miniatury, zanim ruszy wrzut.")
+        self.adapter.resync_sums(post_id)  # okładka jest świadomą zmianą z panelu (znacznik zgodny z plikiem)
         current = self.runs.get((post_id, channel))
         if current and (current.get("phase") == "preparing" or (current.get("proc") and current["proc"].poll() is None)):
             raise RuntimeError("Ten wrzut już trwa. Poczekaj na checkboxy albo aż strażnik go przerwie.")

@@ -105,6 +105,7 @@ class ContentService:
         tmp.replace(folder / "miniaturka.png")
         (folder / "okladka-wlasna.json").write_text(json.dumps(
             {"sha256": hashlib.sha256(data).hexdigest(), "saved_at": time.strftime("%Y-%m-%d %H:%M:%S")}), encoding="utf-8")
+        self.adapter.resync_sums(post_id)
         self._commit(tx, post_id)
         emit(self.learning, "thumbnail_replaced", post_id=post_id, brand=current["brand"], result="ok")
         return self.adapter.get(post_id)
